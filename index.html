@@ -1,1 +1,1382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SpectraLab — projeto interdisciplinar sobre o Disco de Newton e síntese aditiva das cores no CEP, com foco em óptica, sustentabilidade e acessibilidade digital.">
+<meta name="theme-color" content="#062136">
+<title>SpectraLab • Disco de Newton e Síntese Aditiva — CEP</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌈</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
 
+<style>
+:root{
+  --bg-escuro:#062136;
+  --bg-escuro-2:#0A2E4C;
+  --bg-claro:#FAF5EA;
+  --bg-claro-2:#F0E8D6;
+  --card:#FFFDF6;
+  --tinta:#0E2233;
+  --tinta-suave:#41586B;
+  --texto-claro:#F4F8FB;
+  --texto-claro-suave:#B9CCDA;
+  --agua:#0E7C9E;
+  --agua-viva:#2AB6D4;
+  --sol:#F6A821;
+  --sol-forte:#FFC145;
+  --verde:#1E7A4C;
+  --violeta:#8B5CF6;
+  --vermelho:#EF4444;
+  --ciano:#06B6D4;
+  --linha:rgba(14,34,51,.16);
+  --linha-clara:rgba(244,248,251,.16);
+  --foco:#FFB300;
+  --raio:14px;
+  --fonte-display:'Unbounded', system-ui, sans-serif;
+  --fonte-texto:'Atkinson Hyperlegible', 'Segoe UI', Arial, sans-serif;
+  --sombra:0 14px 40px -18px rgba(6,33,54,.35);
+  --grad-espectro: linear-gradient(90deg, #8B5CF6, #3B82F6, #06B6D4, #10B981, #F59E0B, #EF4444);
+  --newton-red:#E63946;
+  --newton-orange:#F77F00;
+  --newton-yellow:#FCBF49;
+  --newton-green:#2A9D8F;
+  --newton-blue:#0077B6;
+  --newton-indigo:#5A189A;
+  --newton-violet:#9D4EDD;
+}
+
+html.alto-contraste{
+  --bg-escuro:#000; --bg-escuro-2:#000;
+  --bg-claro:#000; --bg-claro-2:#000;
+  --card:#000;
+  --tinta:#fff; --tinta-suave:#fff;
+  --texto-claro:#fff; --texto-claro-suave:#fff;
+  --agua:#FFD400; --agua-viva:#FFD400;
+  --sol:#FFD400; --sol-forte:#FFD400;
+  --verde:#FFD400; --violeta:#FFD400; --vermelho:#FFD400; --ciano:#FFD400;
+  --linha:#fff; --linha-clara:#fff;
+  --sombra:none;
+}
+html.alto-contraste a, html.alto-contraste button{ text-decoration:underline; }
+html.alto-contraste .cartao, html.alto-contraste .caixa{ border:2px solid #fff !important; }
+
+html.pausado *, html.pausado *::before, html.pausado *::after{
+  animation-play-state:paused !important;
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; font-size:100%; }
+body{
+  font-family:var(--fonte-texto);
+  color:var(--tinta);
+  background:var(--bg-claro);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; }
+button{ font-family:inherit; cursor:pointer; }
+
+:focus-visible{
+  outline:3px solid var(--foco);
+  outline-offset:3px;
+  border-radius:4px;
+}
+
+body::after{
+  content:""; position:fixed; inset:0; z-index:9990; pointer-events:none; opacity:.045;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.pular{
+  position:absolute; left:-999px; top:0; z-index:10001;
+  background:var(--sol); color:#1B1200; font-weight:700;
+  padding:.8rem 1.4rem; border-radius:0 0 var(--raio) 0;
+}
+.pular:focus{ left:0; }
+
+.barra-a11y{
+  background:var(--bg-escuro);
+  border-bottom:1px solid var(--linha-clara);
+  color:var(--texto-claro);
+  font-size:.85rem;
+}
+.barra-a11y .miolo{
+  max-width:1200px; margin:0 auto; padding:.45rem 1.2rem;
+  display:flex; align-items:center; gap:.8rem; flex-wrap:wrap;
+}
+.barra-a11y .rotulo{ letter-spacing:.12em; text-transform:uppercase; font-size:.7rem; opacity:.85; }
+.barra-a11y button{
+  background:transparent; color:var(--texto-claro);
+  border:1px solid var(--linha-clara); border-radius:8px;
+  padding:.28rem .7rem; font-size:.85rem; transition:background .2s, border-color .2s;
+}
+.barra-a11y button:hover{ background:rgba(255,255,255,.12); border-color:var(--sol); }
+.barra-a11y .sep{ width:1px; height:1.1rem; background:var(--linha-clara); }
+
+.cabecalho{
+  position:sticky; top:0; z-index:1000;
+  background:rgba(6,33,54,.92); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--linha-clara);
+  color:var(--texto-claro);
+}
+html.alto-contraste .cabecalho{ background:#000; }
+.cabecalho .miolo{
+  max-width:1200px; margin:0 auto; padding:.8rem 1.2rem;
+  display:flex; align-items:center; gap:1.5rem;
+}
+.marca{ display:flex; align-items:center; gap:.65rem; text-decoration:none; }
+.marca svg{ width:42px; height:42px; flex:none; }
+.marca .nome{ font-family:var(--fonte-display); font-weight:800; font-size:1.05rem; letter-spacing:.04em; line-height:1.1; }
+.marca .nome small{ display:block; font-family:var(--fonte-texto); font-weight:400; font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--texto-claro-suave); }
+
+.menu{ display:flex; gap:.2rem; margin-left:auto; list-style:none; }
+.menu a{
+  text-decoration:none; font-size:.92rem; padding:.5rem .8rem; border-radius:8px;
+  color:var(--texto-claro-suave); transition:color .2s, background .2s; position:relative;
+}
+.menu a:hover{ color:var(--texto-claro); background:rgba(255,255,255,.08); }
+.btn-menu{
+  display:none; margin-left:auto; background:none; border:1px solid var(--linha-clara);
+  color:var(--texto-claro); border-radius:10px; padding:.5rem .8rem; font-size:1rem;
+}
+
+@media (max-width:880px){
+  .btn-menu{ display:block; }
+  .menu{
+    position:absolute; top:100%; left:0; right:0;
+    flex-direction:column; background:var(--bg-escuro);
+    border-bottom:1px solid var(--linha-clara);
+    padding:1rem 1.2rem 1.4rem; gap:.3rem;
+    display:none;
+  }
+  .menu.aberto{ display:flex; }
+  .menu a{ display:block; padding:.8rem; font-size:1.05rem; }
+}
+
+.abertura{
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(1000px 520px at 82% -10%, rgba(139,92,246,.16), transparent 60%),
+    radial-gradient(700px 500px at 8% 110%, rgba(6,182,212,.12), transparent 55%),
+    radial-gradient(600px 400px at 50% 50%, rgba(246,168,33,.06), transparent 50%),
+    var(--bg-escuro);
+  color:var(--texto-claro);
+  padding:clamp(3rem,7vw,5.5rem) 1.2rem clamp(5rem,9vw,7rem);
+}
+.abertura .miolo{
+  max-width:1200px; margin:0 auto;
+  display:grid; grid-template-columns:1.05fr .95fr; gap:3rem; align-items:center;
+}
+@media (max-width:960px){ .abertura .miolo{ grid-template-columns:1fr; } }
+
+.olho{
+  font-size:.8rem; letter-spacing:.28em; text-transform:uppercase;
+  color:var(--sol-forte); display:inline-flex; align-items:center; gap:.6rem;
+}
+.olho::before{ content:""; width:34px; height:2px; background:var(--grad-espectro); }
+
+.titulo-abertura{
+  font-family:var(--fonte-display); font-weight:800;
+  font-size:clamp(2rem,5.2vw,3.9rem); line-height:1.08; margin:1.1rem 0 1.4rem;
+}
+.linha-mask{ display:block; overflow:hidden; }
+.linha-mask > span{ display:block; transform:translateY(115%); animation:sobe .9s cubic-bezier(.2,.7,.2,1) forwards; }
+.linha-mask:nth-child(2) > span{ animation-delay:.15s; }
+.linha-mask:nth-child(3) > span{ animation-delay:.3s; }
+@keyframes sobe{ to{ transform:translateY(0); } }
+.titulo-abertura .hl{
+  background:var(--grad-espectro);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  font-style:normal;
+}
+
+.abertura p.resumo{
+  max-width:52ch; color:var(--texto-claro-suave); font-size:1.06rem;
+}
+.acoes{ display:flex; gap:1rem; flex-wrap:wrap; margin-top:2rem; }
+.btn{
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.9rem 1.6rem; border-radius:999px; font-weight:700; font-size:.98rem;
+  text-decoration:none; border:2px solid transparent; transition:transform .2s, box-shadow .2s, background .2s;
+}
+.btn:hover{ transform:translateY(-3px); }
+.btn-sol{ background:var(--grad-espectro); color:#fff; box-shadow:0 10px 26px -12px rgba(139,92,246,.5); }
+.btn-sol:hover{ opacity:.9; }
+.btn-contorno{ border-color:var(--texto-claro-suave); color:var(--texto-claro); }
+.btn-contorno:hover{ border-color:var(--violeta); color:var(--violeta); }
+
+.legenda-mini{ display:flex; gap:1.6rem; flex-wrap:wrap; margin-top:2.2rem; font-size:.85rem; color:var(--texto-claro-suave); }
+.legenda-mini span{ display:flex; align-items:center; gap:.5rem; }
+.legenda-mini b{ color:var(--texto-claro); }
+
+.cena{ width:100%; height:auto; filter:drop-shadow(0 20px 40px rgba(0,0,0,.35)); }
+.disco-gira{ transform-origin:250px 240px; animation:girar 6s linear infinite; }
+@keyframes girar{ to{ transform:rotate(360deg); } }
+.raio-branco{ stroke-dasharray:10 12; animation:fluir 1.6s linear infinite; }
+@keyframes fluir{ to{ stroke-dashoffset:-44; } }
+.selo-temp{ animation:flutuar 4s ease-in-out infinite; }
+@keyframes flutuar{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-8px);} }
+
+.letreiro{
+  background:var(--bg-escuro-2); border-top:1px solid var(--linha-clara);
+  color:var(--texto-claro-suave); overflow:hidden; font-size:.92rem;
+}
+.letreiro-trilho{
+  display:flex; gap:3.5rem; width:max-content; padding:.85rem 0;
+  animation:rolar 34s linear infinite; white-space:nowrap;
+}
+.letreiro:hover .letreiro-trilho{ animation-play-state:paused; }
+@keyframes rolar{ to{ transform:translateX(-50%); } }
+.letreiro b{ color:var(--violeta); }
+
+.faixa{ padding:clamp(3.5rem,7vw,6rem) 1.2rem; }
+.faixa .miolo{ max-width:1200px; margin:0 auto; }
+.faixa-escura{ background:var(--bg-escuro); color:var(--texto-claro); }
+.faixa-clara{ background:var(--bg-claro); }
+.faixa-clara-2{ background:var(--bg-claro-2); }
+
+.titulo-secao{
+  font-family:var(--fonte-display); font-weight:800;
+  font-size:clamp(1.6rem,3.6vw,2.6rem); line-height:1.15; margin:.8rem 0 1rem;
+}
+.subtitulo-secao{ max-width:62ch; color:var(--tinta-suave); font-size:1.05rem; }
+.faixa-escura .subtitulo-secao{ color:var(--texto-claro-suave); }
+.chip-secao{
+  display:inline-block; font-size:.74rem; letter-spacing:.24em; text-transform:uppercase;
+  border:1px solid currentColor; border-radius:999px; padding:.35rem 1rem; color:var(--violeta);
+}
+.faixa-escura .chip-secao{ color:var(--sol-forte); }
+
+.revelar{ opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
+.revelar.visivel{ opacity:1; transform:none; }
+
+.grade-projeto{ display:grid; grid-template-columns:1fr 1fr; gap:3.5rem; align-items:center; margin-top:2.5rem; }
+@media (max-width:920px){ .grade-projeto{ grid-template-columns:1fr; } }
+.colagem{ position:relative; min-height:420px; }
+.colagem figure{
+  position:absolute; border-radius:var(--raio); overflow:hidden;
+  box-shadow:var(--sombra); border:6px solid var(--card);
+  transform:rotate(var(--rot)); transition:transform .35s ease;
+}
+.colagem figure:hover{ transform:rotate(0deg) scale(1.03); z-index:5; }
+.colagem figcaption{ position:absolute; bottom:0; left:0; right:0; background:rgba(6,33,54,.85); color:#fff; font-size:.75rem; padding:.4rem .7rem; }
+.foto-1{ top:0; left:0; width:62%; --rot:-3deg; }
+.foto-2{ top:34%; right:0; width:56%; --rot:2.5deg; }
+.foto-3{ bottom:0; left:12%; width:44%; --rot:-1.5deg; }
+
+.lista-projeto{ list-style:none; display:grid; gap:1rem; margin-top:1.6rem; }
+.lista-projeto li{
+  display:flex; gap:.9rem; align-items:flex-start;
+  background:var(--card); border:1px solid var(--linha); border-radius:var(--raio); padding:1rem 1.2rem;
+}
+.lista-projeto .icone{
+  flex:none; width:38px; height:38px; border-radius:10px; display:grid; place-items:center;
+  background:var(--bg-escuro); color:var(--violeta); font-size:1.1rem;
+}
+.lista-projeto b{ display:block; }
+.lista-projeto p{ font-size:.92rem; color:var(--tinta-suave); }
+
+.optica-grade{ display:grid; grid-template-columns:.9fr 1.1fr; gap:3.5rem; align-items:start; }
+@media (max-width:920px){ .optica-grade{ grid-template-columns:1fr; } }
+.optica-fixa{ position:sticky; top:110px; }
+@media (max-width:920px){ .optica-fixa{ position:static; } }
+.formulas{ display:flex; flex-wrap:wrap; gap:.7rem; margin-top:1.6rem; }
+.formula{
+  font-family:var(--fonte-display); font-size:.95rem; font-weight:600;
+  background:var(--bg-escuro-2); color:var(--sol-forte);
+  border:1px solid var(--linha-clara); border-radius:10px; padding:.55rem .95rem;
+}
+.formula small{ display:block; font-family:var(--fonte-texto); font-weight:400; font-size:.68rem; color:var(--texto-claro-suave); letter-spacing:.05em; }
+
+.principios{ display:grid; gap:1.2rem; counter-reset:principio; }
+.principio{
+  background:var(--card); border:1px solid var(--linha); border-left:5px solid var(--violeta);
+  border-radius:var(--raio); padding:1.6rem 1.6rem 1.6rem 4.6rem; position:relative;
+  box-shadow:var(--sombra);
+}
+.principio::before{
+  counter-increment:principio; content:"0" counter(principio);
+  position:absolute; left:1.3rem; top:1.5rem;
+  font-family:var(--fonte-display); font-weight:800; font-size:1.3rem; color:var(--violeta);
+}
+.principio h3{ font-family:var(--fonte-display); font-size:1.05rem; margin-bottom:.5rem; }
+.principio p{ font-size:.95rem; color:var(--tinta-suave); }
+.principio .tag{ display:inline-block; margin-top:.7rem; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--violeta); border:1px solid var(--violeta); padding:.2rem .6rem; border-radius:999px; }
+
+.sim-grade{ display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; margin-top:2.5rem; }
+@media (max-width:920px){ .sim-grade{ grid-template-columns:1fr; } }
+.painel{
+  background:var(--bg-escuro-2); border:1px solid var(--linha-clara);
+  border-radius:var(--raio); padding:1.8rem;
+}
+.controle{ margin-bottom:1.7rem; }
+.controle label{ display:flex; justify-content:space-between; font-weight:700; margin-bottom:.5rem; color:var(--texto-claro); }
+.controle output{ color:var(--sol-forte); font-family:var(--fonte-display); }
+.controle input[type="range"]{ width:100%; accent-color:var(--violeta); height:1.4rem; }
+.controle .escala{ display:flex; justify-content:space-between; font-size:.72rem; color:var(--texto-claro-suave); margin-top:.2rem; }
+
+#disco-canvas-wrapper{
+  width:100%; min-height:420px; display:flex; justify-content:center; align-items:center;
+  background:rgba(0,0,0,.25); border-radius:var(--raio); border:1px solid var(--linha-clara);
+  margin-top:1rem; position:relative;
+}
+#disco-canvas-wrapper canvas{ border-radius:var(--raio); display:block !important; }
+
+.cor-identificada{
+  margin-top:1rem; padding:1rem 1.4rem; border-radius:12px;
+  background:rgba(255,255,255,.06); border:2px solid var(--linha-clara);
+  min-height:78px; display:flex; align-items:center; gap:1rem;
+  transition:all .3s ease;
+}
+.cor-identificada .swatch{
+  width:56px; height:56px; border-radius:50%; flex:none;
+  border:3px solid rgba(255,255,255,.35); background:#333;
+  transition:background .25s ease, transform .25s ease;
+}
+.cor-identificada.ativa .swatch{ transform:scale(1.08); }
+.cor-identificada .info{ flex:1; }
+.cor-identificada .nome{
+  font-family:var(--fonte-display); font-weight:700; font-size:1.2rem; color:var(--texto-claro);
+  display:block;
+}
+.cor-identificada .desc{ font-size:.85rem; color:var(--texto-claro-suave); display:block; margin-top:.15rem; }
+
+.botoes-sim{ display:flex; gap:.8rem; flex-wrap:wrap; margin-top:1rem; }
+.btn-sim{
+  background:var(--violeta); color:#fff; border:none; border-radius:999px;
+  padding:.6rem 1.3rem; font-weight:700; font-size:.9rem; cursor:pointer;
+  transition:background .2s, transform .2s;
+}
+.btn-sim:hover{ background:var(--sol); color:#1B1200; transform:translateY(-2px); }
+.btn-sim.secundario{ background:transparent; border:2px solid var(--texto-claro-suave); color:var(--texto-claro); }
+.btn-sim.secundario:hover{ border-color:var(--sol-forte); color:var(--sol-forte); background:transparent; }
+
+.resultados{ display:grid; grid-template-columns:repeat(2,1fr); gap:.9rem; margin-top:1.4rem; }
+.resultado{
+  background:rgba(255,255,255,.05); border:1px solid var(--linha-clara);
+  border-radius:10px; padding:.9rem 1rem;
+}
+.resultado .valor{ font-family:var(--fonte-display); font-weight:800; font-size:1.25rem; color:var(--sol-forte); }
+.resultado .nome{ font-size:.76rem; color:var(--texto-claro-suave); margin-top:.15rem; }
+
+.notas-sim{ font-size:.78rem; color:var(--texto-claro-suave); margin-top:1.4rem; border-top:1px dashed var(--linha-clara); padding-top:.9rem; }
+
+.acess-grid{ display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:start; margin-top:2.5rem; }
+@media (max-width:920px){ .acess-grid{ grid-template-columns:1fr; } }
+.citacao{
+  border-left:6px solid var(--violeta); padding:1.2rem 1.5rem; background:var(--card);
+  border-radius:0 var(--raio) var(--raio) 0; font-size:1.15rem; font-style:italic;
+  box-shadow:var(--sombra);
+}
+.citacao footer{ font-style:normal; font-size:.85rem; color:var(--tinta-suave); margin-top:.6rem; }
+.check-a11y{ list-style:none; display:grid; gap:.7rem; }
+.check-a11y li{ display:flex; gap:.75rem; align-items:flex-start; font-size:.98rem; }
+.check-a11y li::before{ content:"✔"; color:var(--verde); font-weight:700; flex:none; }
+.selos{ display:flex; gap:.7rem; flex-wrap:wrap; margin-top:1.6rem; }
+.selo{ font-size:.78rem; font-weight:700; border:2px solid var(--violeta); color:var(--violeta); border-radius:999px; padding:.35rem .9rem; }
+
+.ods-linha{ display:flex; gap:.8rem; flex-wrap:wrap; margin:1.8rem 0; }
+.ods{
+  font-family:var(--fonte-display); font-weight:600; font-size:.82rem;
+  padding:.6rem 1rem; border-radius:10px; color:#fff;
+}
+.ods-4{ background:#C5192D; } .ods-9{ background:#F36D25; }
+.ods-10{ background:#DD1367; } .ods-11{ background:#BF8B2E; }
+.impacto-cols{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; margin-top:1rem; }
+@media (max-width:920px){ .impacto-cols{ grid-template-columns:1fr; } }
+.impacto-card{
+  background:var(--bg-escuro-2); border:1px solid var(--linha-clara);
+  border-radius:var(--raio); padding:1.6rem;
+}
+.impacto-card h3{ font-family:var(--fonte-display); font-size:1rem; color:var(--sol-forte); margin-bottom:.6rem; }
+.impacto-card p{ font-size:.92rem; color:var(--texto-claro-suave); }
+.linha-tempo{ list-style:none; margin-top:2.5rem; border-left:3px solid var(--violeta); padding-left:1.6rem; display:grid; gap:1.4rem; }
+.linha-tempo li{ position:relative; }
+.linha-tempo li::before{
+  content:""; position:absolute; left:-2.05rem; top:.35rem; width:13px; height:13px;
+  border-radius:50%; background:var(--violeta); border:3px solid var(--bg-escuro);
+}
+.linha-tempo b{ font-family:var(--fonte-display); font-size:.95rem; }
+.linha-tempo p{ font-size:.9rem; color:var(--texto-claro-suave); }
+
+.equipe-grade{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; margin-top:2.5rem; }
+@media (max-width:920px){ .equipe-grade{ grid-template-columns:1fr; } }
+.membro{
+  background:var(--card); border:1px solid var(--linha); border-radius:var(--raio);
+  padding:1.6rem; text-align:center; box-shadow:var(--sombra);
+  transition:transform .3s ease;
+}
+.membro:hover{ transform:translateY(-6px); }
+.avatar{
+  width:74px; height:74px; border-radius:50%; margin:0 auto .9rem;
+  display:grid; place-items:center; font-family:var(--fonte-display); font-weight:800;
+  font-size:1.3rem; color:#fff; background:linear-gradient(135deg,var(--violeta),var(--bg-escuro-2));
+}
+.membro h3{ font-family:var(--fonte-display); font-size:1rem; }
+.membro .funcao{ font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--violeta); margin:.3rem 0 .6rem; }
+.membro p{ font-size:.88rem; color:var(--tinta-suave); }
+.nota-edicao{ font-size:.8rem; color:var(--tinta-suave); margin-top:1.4rem; font-style:italic; }
+
+.faq{ max-width:820px; margin:2.5rem auto 0; display:grid; gap:.9rem; }
+.faq-item{ background:var(--card); border:1px solid var(--linha); border-radius:var(--raio); overflow:hidden; }
+.faq-pergunta{
+  width:100%; text-align:left; background:none; border:none;
+  padding:1.2rem 1.4rem; font-size:1rem; font-weight:700; color:var(--tinta);
+  display:flex; justify-content:space-between; align-items:center; gap:1rem;
+}
+.faq-pergunta::after{ content:"+"; font-family:var(--fonte-display); font-size:1.5rem; color:var(--violeta); transition:transform .3s; flex:none; }
+.faq-item.aberta .faq-pergunta::after{ transform:rotate(45deg); }
+.faq-resposta{ max-height:0; overflow:hidden; transition:max-height .35s ease; }
+.faq-item.aberta .faq-resposta{ max-height:500px; }
+.faq-resposta p{ padding:0 1.4rem 1.3rem; color:var(--tinta-suave); font-size:.95rem; }
+
+.rodape{ background:var(--bg-escuro); color:var(--texto-claro-suave); padding:3.5rem 1.2rem 2rem; border-top:4px solid var(--violeta); }
+.rodape .miolo{ max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:2.5rem; }
+@media (max-width:820px){ .rodape .miolo{ grid-template-columns:1fr; } }
+.rodape h3{ font-family:var(--fonte-display); font-size:.95rem; color:var(--texto-claro); margin-bottom:.9rem; }
+.rodape ul{ list-style:none; display:grid; gap:.5rem; font-size:.92rem; }
+.rodape a:hover{ color:var(--violeta); }
+.rodape .fim{ max-width:1200px; margin:2.5rem auto 0; padding-top:1.4rem; border-top:1px solid var(--linha-clara); font-size:.8rem; display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+
+.voltar-topo{
+  position:fixed; right:1.2rem; bottom:1.2rem; z-index:1200;
+  width:52px; height:52px; border-radius:50%; border:none;
+  background:var(--grad-espectro); color:#fff; font-size:1.3rem; font-weight:700;
+  box-shadow:0 10px 26px -10px rgba(0,0,0,.5);
+  opacity:0; pointer-events:none; transition:opacity .3s, transform .3s;
+}
+.voltar-topo.aparece{ opacity:1; pointer-events:auto; }
+.voltar-topo:hover{ transform:translateY(-4px); }
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ animation:none !important; transition:none !important; }
+  html{ scroll-behavior:auto; }
+  .linha-mask > span{ transform:none; }
+  .revelar{ opacity:1; transform:none; }
+  .letreiro-trilho{ animation:none; flex-wrap:wrap; width:auto; }
+}
+</style>
+</head>
+<body>
+
+<a class="pular" href="#conteudo">Pular para o conteúdo principal</a>
+
+<div class="barra-a11y" role="region" aria-label="Ferramentas de acessibilidade">
+  <div class="miolo">
+    <span class="rotulo">Acessibilidade</span>
+    <button type="button" id="btn-aumentar" aria-label="Aumentar o tamanho da fonte">A+</button>
+    <button type="button" id="btn-reduzir" aria-label="Reduzir o tamanho da fonte">A−</button>
+    <button type="button" id="btn-fonte-padrao" aria-label="Restaurar tamanho padrão da fonte">A padrão</button>
+    <span class="sep" aria-hidden="true"></span>
+    <button type="button" id="btn-contraste" aria-pressed="false">◐ Alto contraste</button>
+    <button type="button" id="btn-pausar" aria-pressed="false">⏸ Pausar animações</button>
+  </div>
+</div>
+
+<header class="cabecalho">
+  <div class="miolo">
+    <a class="marca" href="#inicio" aria-label="SpectraLab — página inicial">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <defs>
+          <linearGradient id="gradDisco" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#E63946"/>
+            <stop offset="16%" stop-color="#F77F00"/>
+            <stop offset="32%" stop-color="#FCBF49"/>
+            <stop offset="48%" stop-color="#2A9D8F"/>
+            <stop offset="64%" stop-color="#0077B6"/>
+            <stop offset="80%" stop-color="#5A189A"/>
+            <stop offset="100%" stop-color="#9D4EDD"/>
+          </linearGradient>
+        </defs>
+        <circle cx="24" cy="24" r="18" fill="url(#gradDisco)" stroke="#0E2233" stroke-width="1.5"/>
+        <circle cx="24" cy="24" r="4" fill="#FAF5EA" stroke="#0E2233" stroke-width="1.5"/>
+      </svg>
+      <span class="nome">SPECTRALAB<small>CEP • Disco de Newton</small></span>
+    </a>
+
+    <button class="btn-menu" id="botao-menu" aria-expanded="false" aria-controls="menu-principal">☰ Menu</button>
+
+    <nav aria-label="Navegação principal">
+      <ul class="menu" id="menu-principal">
+        <li><a href="#projeto">O Projeto</a></li>
+        <li><a href="#optica">Óptica</a></li>
+        <li><a href="#simulador">Disco Interativo</a></li>
+        <li><a href="#acessibilidade">Acessibilidade</a></li>
+        <li><a href="#impacto">Impacto</a></li>
+        <li><a href="#equipe">Equipe</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="conteudo">
+
+<section class="abertura" id="inicio" aria-label="Apresentação do projeto">
+  <div class="miolo">
+    <div>
+      <p class="olho"><span>Física • Óptica • Síntese Aditiva • Inclusão</span></p>
+      <h1 class="titulo-abertura">
+        <span class="linha-mask"><span>SETE CORES <em class="hl">GIRAM</em>.</span></span>
+        <span class="linha-mask"><span>O OLHO <em class="hl">FUNDE</em>.</span></span>
+        <span class="linha-mask"><span>O BRANCO <em class="hl">RENASCE</em>.</span></span>
+      </h1>
+      <p class="resumo">
+        O <strong>SpectraLab</strong> recria o célebre <strong>Disco de Newton (1704)</strong>:
+        um experimento que prova que a luz branca é, na verdade, a soma de todas as cores do espectro.
+        Quando as sete faixas giram rápido o bastante, nossos olhos fazem o resto — e o branco emerge da mistura.
+        Ciência de verdade, em um site feito para <em>todas as pessoas</em>.
+      </p>
+      <div class="acoes">
+        <a class="btn btn-sol" href="#simulador">🌈 Girar o Disco</a>
+        <a class="btn btn-contorno" href="#optica">Entender a óptica</a>
+      </div>
+      <div class="legenda-mini" aria-label="Resumo rápido">
+        <span><b>1704</b> Opticks, de Newton</span>
+        <span><b>7 cores</b> do espectro visível</span>
+        <span><b>WCAG 2.1</b> como meta de design</span>
+      </div>
+    </div>
+
+    <svg class="cena" viewBox="0 0 500 480" role="img"
+         aria-label="Ilustração animada: um feixe de luz branca incide sobre um disco giratório dividido em sete cores e é refletido como luz branca recomposta.">
+      <defs>
+        <linearGradient id="gradBranco" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#FFFFFF"/>
+          <stop offset="100%" stop-color="#F4F8FB"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Fonte de luz -->
+      <rect x="30" y="200" width="60" height="80" rx="8" fill="#1A3552" stroke="#2AB6D4" stroke-width="2"/>
+      <text x="60" y="245" text-anchor="middle" fill="#FAF5EA" font-size="11" font-family="var(--fonte-texto)">Luz Branca</text>
+
+      <!-- Feixe incidente -->
+      <g class="raio-branco" stroke="url(#gradBranco)" stroke-width="4" fill="none" opacity=".9">
+        <line x1="90" y1="240" x2="170" y2="240"/>
+      </g>
+
+      <!-- Disco de Newton girando -->
+      <g class="disco-gira">
+        <circle cx="250" cy="240" r="90" fill="#FAF5EA" stroke="#0E2233" stroke-width="2"/>
+        <!-- 7 fatias: cada uma ocupa 360/7 ≈ 51.43° -->
+        <path d="M250,240 L340,240 A90,90 0 0,1 306.2,311.3 Z" fill="#E63946"/>
+        <path d="M250,240 L306.2,311.3 A90,90 0 0,1 228.5,328.8 Z" fill="#F77F00"/>
+        <path d="M250,240 L228.5,328.8 A90,90 0 0,1 164.6,287.5 Z" fill="#FCBF49"/>
+        <path d="M250,240 L164.6,287.5 A90,90 0 0,1 160.6,220.4 Z" fill="#2A9D8F"/>
+        <path d="M250,240 L160.6,220.4 A90,90 0 0,1 206.8,162.1 Z" fill="#0077B6"/>
+        <path d="M250,240 L206.8,162.1 A90,90 0 0,1 278.9,153.2 Z" fill="#5A189A"/>
+        <path d="M250,240 L278.9,153.2 A90,90 0 0,1 340,240 Z" fill="#9D4EDD"/>
+        <circle cx="250" cy="240" r="12" fill="#FAF5EA" stroke="#0E2233" stroke-width="2"/>
+      </g>
+
+      <!-- Feixe refletido (branco recomposto) -->
+      <g class="raio-branco" stroke="url(#gradBranco)" stroke-width="4" fill="none" opacity=".9">
+        <line x1="340" y1="240" x2="460" y2="240"/>
+      </g>
+
+      <!-- Anteparo branco -->
+      <rect x="455" y="200" width="20" height="80" rx="4" fill="#FAF5EA" stroke="#2AB6D4" stroke-width="2"/>
+      <text x="465" y="310" text-anchor="middle" fill="#B9CCDA" font-size="10" font-family="var(--fonte-texto)">Branco</text>
+
+      <!-- Selo -->
+      <g class="selo-temp">
+        <rect x="175" y="400" width="150" height="44" rx="22" fill="url(#gradEspectro)"/>
+        <text x="250" y="428" text-anchor="middle" fill="#fff" font-family="var(--fonte-display)" font-weight="800" font-size="13">Síntese Aditiva</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<div class="letreiro" aria-hidden="true">
+  <div class="letreiro-trilho">
+    <span>🌈 Luz branca = <b>soma das sete cores</b></span>
+    <span>🧠 Nosso olho funde as cores em <b>~1/16 de segundo</b></span>
+    <span>📖 Isaac Newton, <b>Opticks (1704)</b></span>
+    <span>♿ Design <b>inclusivo</b> e acessível</span>
+    <span>🎯 ODS 4 — <b>Educação de qualidade</b></span>
+    <span>🌈 Luz branca = <b>soma das sete cores</b></span>
+    <span>🧠 Nosso olho funde as cores em <b>~1/16 de segundo</b></span>
+    <span>📖 Isaac Newton, <b>Opticks (1704)</b></span>
+    <span>♿ Design <b>inclusivo</b> e acessível</span>
+    <span>🎯 ODS 4 — <b>Educação de qualidade</b></span>
+  </div>
+</div>
+
+<section class="faixa faixa-clara" id="projeto">
+  <div class="miolo">
+    <span class="chip-secao">O Projeto</span>
+    <h2 class="titulo-secao">O Disco de Newton no laboratório do CEP</h2>
+    <p class="subtitulo-secao">
+      Nosso projeto recria um dos experimentos mais elegantes da história da ciência: o disco de sete cores
+      que, ao girar, revela que o branco não é ausência de cor, mas sim a presença de todas elas.
+    </p>
+
+    <div class="grade-projeto revelar">
+      <div class="colagem">
+        <figure class="foto-1">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%230A2E4C' width='400' height='300'/%3E%3Ccircle cx='200' cy='140' r='85' fill='%23FAF5EA' stroke='%2341586B' stroke-width='2'/%3E%3Cpath d='M200,140 L285,140 A85,85 0 0,1 253,207 Z' fill='%23E63946'/%3E%3Cpath d='M200,140 L253,207 A85,85 0 0,1 178,224 Z' fill='%23F77F00'/%3E%3Cpath d='M200,140 L178,224 A85,85 0 0,1 117,185 Z' fill='%23FCBF49'/%3E%3Cpath d='M200,140 L117,185 A85,85 0 0,1 114,120 Z' fill='%232A9D8F'/%3E%3Cpath d='M200,140 L114,120 A85,85 0 0,1 157,63 Z' fill='%230077B6'/%3E%3Cpath d='M200,140 L157,63 A85,85 0 0,1 226,55 Z' fill='%235A189A'/%3E%3Cpath d='M200,140 L226,55 A85,85 0 0,1 285,140 Z' fill='%239D4EDD'/%3E%3Ctext x='200' y='270' text-anchor='middle' fill='%232AB6D4' font-size='16'%3EDisco de Newton%3C/text%3E%3C/svg%3E" alt="Disco colorido dividido em sete fatias">
+          <figcaption>Disco dividido em 7 setores</figcaption>
+        </figure>
+        <figure class="foto-2">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%230E7C9E' width='400' height='300'/%3E%3Ccircle cx='200' cy='140' r='85' fill='%23FAF5EA' opacity='0.95' stroke='%2341586B' stroke-width='2'/%3E%3Ctext x='200' y='148' text-anchor='middle' fill='%230A2E4C' font-size='22' font-weight='bold'%3EBRANCO%3C/text%3E%3Ctext x='200' y='270' text-anchor='middle' fill='%23FAF5EA' font-size='16'%3EGiro rápido%3C/text%3E%3C/svg%3E" alt="Disco girando rapidamente aparece branco">
+          <figcaption>Percepção do branco</figcaption>
+        </figure>
+        <figure class="foto-3">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23F6A821' width='400' height='300'/%3E%3Crect x='40' y='70' width='320' height='160' rx='10' fill='%230A2E4C'/%3E%3Cdefs%3E%3ClinearGradient id='g1' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0%25' stop-color='%23E63946'/%3E%3Cstop offset='16%25' stop-color='%23F77F00'/%3E%3Cstop offset='32%25' stop-color='%23FCBF49'/%3E%3Cstop offset='48%25' stop-color='%232A9D8F'/%3E%3Cstop offset='64%25' stop-color='%230077B6'/%3E%3Cstop offset='80%25' stop-color='%235A189A'/%3E%3Cstop offset='100%25' stop-color='%239D4EDD'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='60' y='95' width='280' height='110' rx='5' fill='url(%23g1)'/%3E%3Ctext x='200' y='260' text-anchor='middle' fill='%231B1200' font-size='16'%3EEspectro visível%3C/text%3E%3C/svg%3E" alt="Faixa com as sete cores do espectro">
+          <figcaption>As sete cores decompostas</figcaption>
+        </figure>
+      </div>
+
+      <div>
+        <h3 style="font-family:var(--fonte-display); font-size:1.3rem; margin-bottom:1rem;">Como funciona o Disco de Newton</h3>
+        <p style="color:var(--tinta-suave); margin-bottom:1.5rem;">
+          Em 1704, no livro <em>Opticks</em>, Isaac Newton apresentou um disco de papelão pintado com sete cores.
+          Ao girá-lo rapidamente, as cores se fundem no olho humano e o disco parece branco. O experimento
+          comprova que a <strong>luz branca é policromática</strong>: ela é composta por radiações de diferentes
+          comprimentos de onda, cada uma correspondendo a uma cor do espectro visível.
+        </p>
+        <ul class="lista-projeto">
+          <li>
+            <span class="icone">🌈</span>
+            <div>
+              <b>As 7 cores do espectro</b>
+              <p>Vermelho, laranja, amarelo, verde, azul, anil e violeta — cada uma com seu comprimento de onda entre 380nm e 750nm.</p>
+            </div>
+          </li>
+          <li>
+            <span class="icone">🧠</span>
+            <div>
+              <b>Persistência retiniana</b>
+              <p>O olho humano mantém a imagem por ~1/16 de segundo. Se o disco gira mais rápido que isso, o cérebro soma as sete cores.</p>
+            </div>
+          </li>
+          <li>
+            <span class="icone">✨</span>
+            <div>
+              <b>Síntese aditiva</b>
+              <p>A soma das cores-luz resulta no branco. É o mesmo princípio usado em telas de TV, monitores e projetores RGB.</p>
+            </div>
+          </li>
+          <li>
+            <span class="icone">🔬</span>
+            <div>
+              <b>Revolução na óptica</b>
+              <p>Antes de Newton, acreditava-se que o branco era "puro" e as cores eram "impurezas". Ele provou o contrário.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faixa faixa-clara-2" id="optica">
+  <div class="miolo">
+    <span class="chip-secao">Fundamentos Científicos</span>
+    <h2 class="titulo-secao">A física por trás da síntese aditiva</h2>
+    <p class="subtitulo-secao">
+      Entenda como o comportamento da luz, do olho humano e do cérebro produzem, juntos, a ilusão (verdadeira)
+      de que as sete cores somadas resultam em branco.
+    </p>
+
+    <div class="optica-grade revelar">
+      <div class="optica-fixa">
+        <h3 style="font-family:var(--fonte-display); font-size:1.3rem; margin-bottom:1rem;">O que é síntese aditiva?</h3>
+        <p style="color:var(--tinta-suave); margin-bottom:1rem;">
+          A <strong>síntese aditiva</strong> é o processo pelo qual diferentes radiações luminosas, somadas,
+          produzem uma nova cor percebida. Diferente da mistura de tintas (síntese subtrativa), na luz
+          estamos <em>adicionando</em> energia: vermelho + verde + azul = branco.
+        </p>
+        <p style="color:var(--tinta-suave); margin-bottom:1rem;">
+          No Disco de Newton, as sete faixas refletem suas respectivas cores em sequência rápida.
+          Os três tipos de cones da retina (sensíveis a comprimentos curtos, médios e longos) são estimulados
+          de forma tão rápida que o cérebro interpreta a média temporal como branco.
+        </p>
+        <div class="formulas">
+          <div class="formula">
+            R + G + B = Branco
+            <small>Primárias aditivas</small>
+          </div>
+          <div class="formula">
+            f ≥ 16 Hz
+            <small>Frequência mínima de fusão</small>
+          </div>
+          <div class="formula">
+            λ ∈ [380, 750] nm
+            <small>Espectro visível</small>
+          </div>
+          <div class="formula">
+            3 tipos de cones
+            <small>S, M e L (retina)</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="principios">
+        <div class="principio">
+          <h3>Decomposição da luz branca</h3>
+          <p>Antes de Newton, um prisma já havia separado a luz branca em um arco-íris. O mérito de Newton foi demonstrar que as cores <em>não</em> eram adicionadas pelo vidro — elas já estavam presentes na luz original. O disco é a prova inversa: as cores somadas recompõem o branco.</p>
+          <span class="tag">Opticks, 1704</span>
+        </div>
+
+        <div class="principio">
+          <h3>Persistência retiniana</h3>
+          <p>A retina mantém uma imagem por aproximadamente 1/16 a 1/20 de segundo após o estímulo cessar. Se o disco gira a mais de ~10 rotações por segundo, as sete imagens consecutivas se sobrepõem no olho e o cérebro as interpreta como uma única imagem branca.</p>
+          <span class="tag">Fisiologia da visão</span>
+        </div>
+
+        <div class="principio">
+          <h3>Visão tricromática</h3>
+          <p>Possuímos três tipos de cones na retina: S (azul), M (verde) e L (vermelho). Quando as sete cores do disco estimulam os três tipos simultaneamente e de forma equilibrada, o cérebro interpreta o estímulo total como branco — exatamente como faz uma tela LCD com pixels RGB.</p>
+          <span class="tag">Teoria de Young-Helmholtz</span>
+        </div>
+
+        <div class="principio">
+          <h3>Síntese aditiva vs. subtrativa</h3>
+          <p>Na <strong>síntese aditiva</strong> (luz), somar todas as cores gera branco — é o caso do Disco de Newton, telas e projetores. Na <strong>síntese subtrativa</strong> (tintas, pigmentos), somar todas as cores gera preto ou marrom — é o caso da pintura e da impressão CMYK.</p>
+          <span class="tag">Cor-luz vs. cor-pigmento</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faixa faixa-escura" id="simulador">
+  <div class="miolo">
+    <span class="chip-secao">Simulação Interativa</span>
+    <h2 class="titulo-secao">Gire o Disco de Newton</h2>
+    <p class="subtitulo-secao">
+      Ajuste a velocidade e o número de cores. <strong>Passe o mouse sobre as fatias</strong> para identificar cada cor
+      do espectro. Observe como, em alta velocidade, as cores se fundem em uma mancha branca.
+    </p>
+
+    <div class="sim-grade revelar">
+      <div class="painel">
+        <h3 style="font-family:var(--fonte-display); color:var(--sol-forte); margin-bottom:1.5rem;">Controles do disco</h3>
+
+        <div class="controle">
+          <label for="velocidade">
+            Velocidade de rotação
+            <output id="vel-valor">50</output> rpm
+          </label>
+          <input type="range" id="velocidade" min="0" max="300" value="50" step="5">
+          <div class="escala">
+            <span>Parado</span>
+            <span>Muito rápido</span>
+          </div>
+        </div>
+
+        <div class="controle">
+          <label for="num-cores">
+            Número de cores
+            <output id="cores-valor">7</output>
+          </label>
+          <input type="range" id="num-cores" min="2" max="12" value="7" step="1">
+          <div class="escala">
+            <span>2</span>
+            <span>12</span>
+          </div>
+        </div>
+
+        <div class="botoes-sim">
+          <button class="btn-sim" id="btn-pausar-disco" type="button">⏸ Pausar</button>
+          <button class="btn-sim secundario" id="btn-reset-disco" type="button">↻ Reiniciar</button>
+        </div>
+
+        <div class="cor-identificada" id="cor-display" aria-live="polite">
+          <div class="swatch" id="cor-swatch"></div>
+          <div class="info">
+            <span class="nome" id="cor-nome">Passe o mouse sobre o disco</span>
+            <span class="desc" id="cor-desc">Cada fatia corresponde a uma cor do espectro visível.</span>
+          </div>
+        </div>
+
+        <div class="resultados">
+          <div class="resultado">
+            <div class="valor" id="freq-fusao">—</div>
+            <div class="nome">Frequência de fusão</div>
+          </div>
+          <div class="resultado">
+            <div class="valor" id="estado-disco">Girando</div>
+            <div class="nome">Estado atual</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="painel">
+        <h3 style="font-family:var(--fonte-display); color:var(--sol-forte); margin-bottom:1.5rem;">Disco em tempo real</h3>
+        <div id="disco-canvas-wrapper" aria-label="Disco de Newton interativo"></div>
+        <div class="notas-sim">
+          <strong>Dica:</strong> com velocidade acima de 200 rpm, você observará o fenômeno da <em>fusão cromática</em>:
+          as cores se misturam e o centro do disco tende ao branco/cinza, demonstrando a síntese aditiva.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faixa faixa-clara" id="acessibilidade">
+  <div class="miolo">
+    <span class="chip-secao">Design Inclusivo</span>
+    <h2 class="titulo-secao">Um site feito para todas as pessoas</h2>
+    <p class="subtitulo-secao">
+      Acreditamos que a ciência deve ser acessível. Por isso, o SpectraLab foi desenvolvido seguindo as diretrizes
+      WCAG 2.1 para garantir que qualquer pessoa possa navegar, compreender e interagir com o conteúdo.
+    </p>
+
+    <div class="acess-grid revelar">
+      <div>
+        <blockquote class="citacao">
+          "Acessibilidade digital não é um recurso opcional — é um direito fundamental que garante autonomia, inclusão e cidadania para pessoas com deficiência."
+          <footer>— W3C Web Accessibility Initiative (WAI)</footer>
+        </blockquote>
+
+        <ul class="check-a11y">
+          <li>Contraste adequado entre texto e fundo (razão mínima 4.5:1)</li>
+          <li>Tipografia Atkinson Hyperlegible, desenvolvida pelo Braille Institute para máxima legibilidade</li>
+          <li>Navegação completa por teclado com foco sempre visível</li>
+          <li>Controles de tamanho de fonte (A+ / A−) para melhor visualização</li>
+          <li>Modo alto contraste para pessoas com baixa visão ou daltonismo</li>
+          <li>Opção de pausar todas as animações para evitar desconforto</li>
+          <li>Textos alternativos (alt) em todas as imagens e ilustrações</li>
+          <li>Estrutura semântica HTML5 com landmarks ARIA</li>
+          <li>Link "pular para o conteúdo" para navegação rápida</li>
+          <li>Respeito à preferência de movimento reduzido do sistema operacional</li>
+        </ul>
+
+        <div class="selos">
+          <span class="selo">WCAG 2.1 AA</span>
+          <span class="selo">Navegação por teclado</span>
+          <span class="selo">Leitor de tela compatível</span>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-family:var(--fonte-display); font-size:1.3rem; margin-bottom:1rem;">Como usar os recursos de acessibilidade</h3>
+        <p style="color:var(--tinta-suave); margin-bottom:1.5rem;">
+          Na barra superior da página, você encontrará ferramentas para personalizar sua experiência de navegação de acordo com suas necessidades.
+        </p>
+
+        <div style="background:var(--card); border:1px solid var(--linha); border-radius:var(--raio); padding:1.2rem; margin-bottom:1rem;">
+          <strong style="display:block; margin-bottom:.5rem;">🔤 Tamanho da fonte</strong>
+          <p style="color:var(--tinta-suave); font-size:.95rem;">Clique em "A+" para aumentar o tamanho do texto ou "A−" para diminuir. Use "A padrão" para restaurar o tamanho original.</p>
+        </div>
+
+        <div style="background:var(--card); border:1px solid var(--linha); border-radius:var(--raio); padding:1.2rem; margin-bottom:1rem;">
+          <strong style="display:block; margin-bottom:.5rem;">◐ Alto contraste</strong>
+          <p style="color:var(--tinta-suave); font-size:.95rem;">Ativa o modo preto e branco com texto amarelo, ideal para pessoas com baixa visão ou fotofobia.</p>
+        </div>
+
+        <div style="background:var(--card); border:1px solid var(--linha); border-radius:var(--raio); padding:1.2rem;">
+          <strong style="display:block; margin-bottom:.5rem;">⏸ Pausar animações</strong>
+          <p style="color:var(--tinta-suave); font-size:.95rem;">Interrompe todas as animações e transições da página, reduzindo estímulos visuais que podem causar desconforto.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faixa faixa-escura" id="impacto">
+  <div class="miolo">
+    <span class="chip-secao">Impacto Social e Educacional</span>
+    <h2 class="titulo-secao">Alinhado com os Objetivos de Desenvolvimento Sustentável</h2>
+    <p class="subtitulo-secao">
+      O SpectraLab contribui diretamente para a Agenda 2030 da ONU, promovendo educação de qualidade, inovação tecnológica, redução das desigualdades e ciência acessível para todos.
+    </p>
+
+    <div class="ods-linha">
+      <span class="ods ods-4">ODS 4 • Educação de Qualidade</span>
+      <span class="ods ods-9">ODS 9 • Indústria, Inovação e Infraestrutura</span>
+      <span class="ods ods-10">ODS 10 • Redução das Desigualdades</span>
+      <span class="ods ods-11">ODS 11 • Cidades e Comunidades Sustentáveis</span>
+    </div>
+
+    <div class="impacto-cols revelar">
+      <div class="impacto-card">
+        <h3>ODS 4 — Educação</h3>
+        <p>O Objetivo 4 visa garantir educação inclusiva, equitativa e de qualidade. O projeto transforma conceitos abstratos de óptica em um experimento visual e interativo, estimulando o interesse pela física e mostrando como a ciência explica fenômenos do cotidiano.</p>
+      </div>
+
+      <div class="impacto-card">
+        <h3>ODS 9 — Inovação</h3>
+        <p>Construir infraestruturas resilientes, promover a industrialização inclusiva e fomentar a inovação. O Disco de Newton é o ancestral conceitual de todas as telas modernas (RGB), holografia, LEDs e espectrômetros.</p>
+      </div>
+
+      <div class="impacto-card">
+        <h3>ODS 10 — Desigualdades</h3>
+        <p>Reduzir a desigualdade dentro e entre países. Ao disponibilizar um simulador gratuito e um site totalmente acessível, democratizamos o acesso ao conhecimento científico de qualidade, independentemente de limitações físicas, econômicas ou geográficas.</p>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--fonte-display); color:var(--sol-forte); margin-top:3rem; margin-bottom:1rem;">Cronograma de implementação</h3>
+    <ul class="linha-tempo">
+      <li>
+        <b>Fase 1 — Pesquisa histórica</b>
+        <p>Estudo da obra <em>Opticks</em> de Newton (1704), das experiências com prismas e da formulação da teoria corpuscular-ondulatória da luz.</p>
+      </li>
+      <li>
+        <b>Fase 2 — Montagem experimental</b>
+        <p>Construção física do disco com sete setores pintados, motor de baixa rotação e demonstração ao vivo da fusão cromática.</p>
+      </li>
+      <li>
+        <b>Fase 3 — Desenvolvimento digital</b>
+        <p>Criação do simulador interativo em p5.js e do site acessível, integrando o conceito de síntese aditiva com visualização dinâmica.</p>
+      </li>
+      <li>
+        <b>Fase 4 — Divulgação e replicação</b>
+        <p>Apresentação em feiras científicas, oficinas para outras turmas e disponibilização do material para escolas da rede pública.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="faixa faixa-clara" id="equipe">
+  <div class="miolo">
+    <span class="chip-secao">Quem faz acontecer</span>
+    <h2 class="titulo-secao">Equipe SpectraLab</h2>
+    <p class="subtitulo-secao">
+      Um time multidisciplinar unindo conhecimentos de física, programação, design e comunicação para criar uma solução inovadora e acessível sobre síntese aditiva das cores.
+    </p>
+
+    <div class="equipe-grade revelar">
+      <div class="membro">
+        <div class="avatar">TH</div>
+        <h3>Tarso Heringer</h3>
+        <div class="funcao">Main Developer</div>
+        <p>Responsável principal pelo desenvolvimento do simulador interativo do Disco de Newton e toda a arquitetura front-end do projeto SpectraLab.</p>
+      </div>
+
+      <div class="membro">
+        <div class="avatar">ML</div>
+        <h3>Mycael Leandro</h3>
+        <div class="funcao">Líder do Time</div>
+        <p>Coordena as atividades da equipe, organiza o cronograma de entregas e garante a integração entre as partes científica e tecnológica do projeto.</p>
+      </div>
+
+      <div class="membro">
+        <div class="avatar">GK</div>
+        <h3>Guilherme Kaidi</h3>
+        <div class="funcao">Main Helper</div>
+        <p>Auxilia diretamente no desenvolvimento, revisão de código, testes do simulador e apoio na fundamentação teórica da óptica.</p>
+      </div>
+
+      <div class="membro">
+        <div class="avatar">NM</div>
+        <h3>Nicolas Moura</h3>
+        <div class="funcao">Secondary Helper</div>
+        <p>Colabora na pesquisa de referências, elaboração de materiais didáticos e apoio nas atividades experimentais de montagem do disco.</p>
+      </div>
+
+      <div class="membro">
+        <div class="avatar">PG</div>
+        <h3>Pedro Guimarães</h3>
+        <div class="funcao">Secondary Developer</div>
+        <p>Contribui com o desenvolvimento do site, implementação de recursos de acessibilidade e integração do simulador com a interface.</p>
+      </div>
+    </div>
+
+    <p class="nota-edicao">
+      <strong>Nota:</strong> Esta é a equipe real do projeto SpectraLab, um trabalho acadêmico interdisciplinar do Centro Educacional Progressão (CEP) sobre o Disco de Newton e síntese aditiva.
+    </p>
+  </div>
+</section>
+
+<section class="faixa faixa-clara-2" id="faq">
+  <div class="miolo">
+    <span class="chip-secao">Perguntas Frequentes</span>
+    <h2 class="titulo-secao">Tire suas dúvidas sobre o Disco de Newton</h2>
+    <p class="subtitulo-secao">
+      Reunimos as perguntas mais comuns sobre síntese aditiva, as sete cores do espectro e o experimento original de Isaac Newton.
+    </p>
+
+    <div class="faq">
+      <div class="faq-item">
+        <button class="faq-pergunta" aria-expanded="false">
+          Por que exatamente sete cores?
+        </button>
+        <div class="faq-resposta">
+          <p>O espectro visível é contínuo — não existem "sete cores" objetivas na natureza. Newton escolheu sete por razões musicais e filosóficas: ele quis fazer uma analogia com as sete notas da escala diatônica (dó, ré, mi, fá, sol, lá, si) e com os sete "planetas" conhecidos na época. Cientificamente, poderíamos dividir o espectro em qualquer número de faixas.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-pergunta" aria-expanded="false">
+          O disco vira branco mesmo, ou só parece branco?
+        </button>
+        <div class="faq-resposta">
+          <p>Ele <em>parece</em> branco para o olho humano, mas fisicamente continua refletindo as sete cores separadamente. É uma ilusão de óptica baseada na persistência retiniana e na síntese aditiva. Se você fotografar o disco girando com uma câmera de alta velocidade (muitos quadros por segundo), verá as cores distintas em cada foto.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-pergunta" aria-expanded="false">
+          Qual a diferença entre síntese aditiva e subtrativa?
+        </button>
+        <div class="faq-resposta">
+          <p>Na <strong>síntese aditiva</strong> (luz), partimos do escuro e somamos cores-luz: vermelho + verde + azul = branco. É o princípio do Disco de Newton, de telas RGB e de projetores. Na <strong>síntese subtrativa</strong> (pigmentos), partimos do branco (papel) e subtraímos cores com tintas: ciano + magenta + amarelo ≈ preto. É o princípio da impressão CMYK e da pintura.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-pergunta" aria-expanded="false">
+          Por que o branco é a soma das cores?
+        </button>
+        <div class="faq-resposta">
+          <p>Porque nossa retina possui três tipos de cones sensíveis a comprimentos de onda curtos (S, azul), médios (M, verde) e longos (L, vermelho). Quando todos os três são estimulados de forma equilibrada e simultânea, o cérebro interpreta a combinação como branco. A luz solar "branca" faz exatamente isso: contém todos os comprimentos do espectro visível em intensidades comparáveis.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-pergunta" aria-expanded="false">
+          Quem foi Isaac Newton e quando ele fez esse experimento?
+        </button>
+        <div class="faq-resposta">
+          <p>Isaac Newton (1643–1727) foi um físico, matemático e astrônomo inglês, considerado um dos cientistas mais influentes da história. Ele começou seus experimentos com prismas por volta de 1666, em sua casa em Woolsthorpe, durante a peste bubônica. Publicou suas descobertas sobre a luz e as cores no livro <em>Opticks</em>, em 1704, revolucionando a óptica.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-pergunta" aria-expanded="false">
+          O que Newton descobriu antes do disco?
+        </button>
+        <div class="faq-resposta">
+          <p>Antes do disco, Newton fez o experimento inverso: fez a luz do sol passar por um prisma e observou que ela se separava em um arco-íris (espectro). Depois, usou uma lente e um segundo prisma para recombinar as cores em luz branca. Isso provou que as cores estavam na luz original, e não eram criadas pelo vidro — ideia revolucionária para a época.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-pergunta" aria-expanded="false">
+          Onde a síntese aditiva aparece no meu dia a dia?
+        </button>
+        <div class="faq-resposta">
+          <p>Em praticamente toda tela que você usa! Monitores, TVs, smartphones e projetores usam pixels com subpixels vermelho, verde e azul (RGB). Variando a intensidade de cada um, o olho faz a síntese aditiva e percebe milhões de cores — inclusive o branco, quando os três subpixels estão no máximo. O Disco de Newton é o ancestral conceitual de toda a tecnologia de imagem moderna.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="rodape">
+  <div class="miolo">
+    <div>
+      <h3>SpectraLab</h3>
+      <p style="margin-bottom:1rem;">
+        Projeto interdisciplinar sobre o Disco de Newton e síntese aditiva do CEP, unindo óptica, tecnologia e acessibilidade digital.
+      </p>
+      <p style="font-size:.85rem;">
+        Desenvolvido com ❤️ pela equipe SpectraLab • Centro Educacional Progressão
+      </p>
+    </div>
+
+    <div>
+      <h3>Navegação</h3>
+      <ul>
+        <li><a href="#projeto">O Projeto</a></li>
+        <li><a href="#optica">Óptica</a></li>
+        <li><a href="#simulador">Disco Interativo</a></li>
+        <li><a href="#acessibilidade">Acessibilidade</a></li>
+        <li><a href="#impacto">Impacto</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3>Recursos</h3>
+      <ul>
+        <li><a href="#equipe">Equipe</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#inicio">Voltar ao topo</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="fim">
+    <p>© 2026 SpectraLab • Centro Educacional Progressão. Todos os direitos reservados.</p>
+    <p>Design acessível seguindo WCAG 2.1 AA</p>
+  </div>
+</footer>
+
+<button class="voltar-topo" id="voltar-topo" aria-label="Voltar ao topo da página">↑</button>
+
+<script>
+// =========================================
+// PALETA DO DISCO DE NEWTON (expandida p/ N cores)
+// =========================================
+const ESPECTRO = [
+  { nome: "Vermelho", hex: "#E63946", rgb: [230, 57, 70],   lambda: "~700 nm", desc: "Maior comprimento de onda visível, menor energia." },
+  { nome: "Laranja",  hex: "#F77F00", rgb: [247, 127, 0],  lambda: "~620 nm", desc: "Transição entre vermelho e amarelo." },
+  { nome: "Amarelo",  hex: "#FCBF49", rgb: [252, 191, 73], lambda: "~580 nm", desc: "Alta luminosidade, muito sensível ao olho." },
+  { nome: "Verde",    hex: "#2A9D8F", rgb: [42, 157, 143], lambda: "~530 nm", desc: "Centro do espectro visível." },
+  { nome: "Azul",     hex: "#0077B6", rgb: [0, 119, 182],  lambda: "~470 nm", desc: "Alta energia, comprimento curto." },
+  { nome: "Anil",     hex: "#5A189A", rgb: [90, 24, 154],  lambda: "~430 nm", desc: "Entre azul e violeta." },
+  { nome: "Violeta",  hex: "#9D4EDD", rgb: [157, 78, 221], lambda: "~400 nm", desc: "Menor comprimento, maior energia." },
+  { nome: "Rosa",     hex: "#E91E63", rgb: [233, 30, 99],  lambda: "extra",  desc: "Cor extrassistêmica (mistura)." },
+  { nome: "Ciano",    hex: "#00BCD4", rgb: [0, 188, 212],  lambda: "extra",  desc: "Mistura aditiva de verde e azul." },
+  { nome: "Lima",     hex: "#CDDC39", rgb: [205, 220, 57], lambda: "extra",  desc: "Mistura aditiva de verde e amarelo." },
+  { nome: "Pêssego",  hex: "#FFAB91", rgb: [255, 171, 145],lambda: "extra",  desc: "Tom claro entre vermelho e laranja." },
+  { nome: "Lavanda",  hex: "#B39DDB", rgb: [179, 157, 219],lambda: "extra",  desc: "Tom claro entre violeta e branco." }
+];
+
+// =========================================
+// ESTADO GLOBAL DO DISCO
+// =========================================
+let velocidade = 50;
+let numCores = 7;
+let pausado = false;
+
+const velInput = document.getElementById('velocidade');
+const coresInput = document.getElementById('num-cores');
+const velValor = document.getElementById('vel-valor');
+const coresValor = document.getElementById('cores-valor');
+const btnPausarDisco = document.getElementById('btn-pausar-disco');
+const btnResetDisco = document.getElementById('btn-reset-disco');
+const freqFusao = document.getElementById('freq-fusao');
+const estadoDisco = document.getElementById('estado-disco');
+const corSwatch = document.getElementById('cor-swatch');
+const corNome = document.getElementById('cor-nome');
+const corDesc = document.getElementById('cor-desc');
+const corDisplay = document.getElementById('cor-display');
+
+function atualizarDisplays() {
+  velValor.textContent = velocidade;
+  coresValor.textContent = numCores;
+  // Frequência em Hz aproximada (rpm / 60)
+  const hz = (velocidade / 60).toFixed(1);
+  freqFusao.textContent = hz + ' Hz';
+  estadoDisco.textContent = pausado ? 'Pausado' : (velocidade === 0 ? 'Parado' : 'Girando');
+}
+
+if (velInput) velInput.addEventListener('input', e => { velocidade = parseInt(e.target.value); atualizarDisplays(); });
+if (coresInput) coresInput.addEventListener('input', e => { numCores = parseInt(e.target.value); atualizarDisplays(); });
+
+if (btnPausarDisco) {
+  btnPausarDisco.addEventListener('click', () => {
+    pausado = !pausado;
+    btnPausarDisco.textContent = pausado ? '▶ Retomar' : '⏸ Pausar';
+    atualizarDisplays();
+  });
+}
+if (btnResetDisco) {
+  btnResetDisco.addEventListener('click', () => {
+    velocidade = 50; numCores = 7; pausado = false;
+    velInput.value = 50; coresInput.value = 7;
+    btnPausarDisco.textContent = '⏸ Pausar';
+    atualizarDisplays();
+  });
+}
+
+atualizarDisplays();
+
+// =========================================
+// SKETCH P5.JS — DISCO DE NEWTON INTERATIVO
+// =========================================
+const discoSketch = (p) => {
+  let angulo = 0;
+  let raio = 170;
+  let hoverIndex = -1;
+
+  p.setup = () => {
+    const wrapper = document.getElementById('disco-canvas-wrapper');
+    const w = Math.min(wrapper.offsetWidth - 20, 460);
+    const h = 400;
+    const canvas = p.createCanvas(w, h);
+    canvas.parent('disco-canvas-wrapper');
+    raio = Math.min(w, h) / 2 - 20;
+    p.textAlign(p.CENTER, p.CENTER);
+  };
+
+  p.draw = () => {
+    p.clear();
+
+    // Fundo escuro sutil
+    p.noStroke();
+    p.fill(10, 20, 35, 40);
+    p.rect(0, 0, p.width, p.height);
+
+    p.translate(p.width / 2, p.height / 2);
+
+    // Rotação
+    if (!pausado && !document.documentElement.classList.contains('pausado')) {
+      angulo += (velocidade / 60) * 0.04;
+    }
+    p.rotate(angulo);
+
+    const angSetor = p.TWO_PI / numCores;
+    hoverIndex = -1;
+
+    // Desenha fatias
+    for (let i = 0; i < numCores; i++) {
+      const cor = ESPECTRO[i % ESPECTRO.length];
+      p.fill(cor.rgb[0], cor.rgb[1], cor.rgb[2]);
+      p.noStroke();
+      p.arc(0, 0, raio * 2, raio * 2, i * angSetor, (i + 1) * angSetor);
+    }
+
+    // Linhas divisórias sutis
+    p.stroke(255, 255, 255, 80);
+    p.strokeWeight(1);
+    for (let i = 0; i < numCores; i++) {
+      const a = i * angSetor;
+      p.line(0, 0, p.cos(a) * raio, p.sin(a) * raio);
+    }
+
+    // Centro branco (eixo)
+    p.noStroke();
+    p.fill(250, 245, 234);
+    p.circle(0, 0, raio * 0.18);
+    p.fill(14, 34, 51);
+    p.circle(0, 0, raio * 0.06);
+
+    // Detecção de hover — precisa "desrotacionar" o mouse
+    const mx = p.mouseX - p.width / 2;
+    const my = p.mouseY - p.height / 2;
+    const rx = mx * p.cos(-angulo) - my * p.sin(-angulo);
+    const ry = mx * p.sin(-angulo) + my * p.cos(-angulo);
+    const dist = p.sqrt(rx * rx + ry * ry);
+
+    if (dist <= raio && dist > raio * 0.1) {
+      let mA = p.atan2(ry, rx);
+      if (mA < 0) mA += p.TWO_PI;
+      const idx = p.floor(mA / angSetor);
+      if (idx >= 0 && idx < numCores) {
+        hoverIndex = idx;
+        // Destaque na fatia
+        p.push();
+        p.fill(255, 255, 255, 90);
+        p.noStroke();
+        p.arc(0, 0, raio * 2, raio * 2, idx * angSetor, (idx + 1) * angSetor);
+        p.stroke(255);
+        p.strokeWeight(3);
+        p.noFill();
+        p.arc(0, 0, raio * 2 - 4, raio * 2 - 4, idx * angSetor, (idx + 1) * angSetor);
+        p.pop();
+      }
+    }
+
+    // Atualiza painel externo
+    if (hoverIndex >= 0) {
+      const c = ESPECTRO[hoverIndex % ESPECTRO.length];
+      if (corSwatch) corSwatch.style.background = c.hex;
+      if (corNome) corNome.textContent = c.nome + ' (' + c.lambda + ')';
+      if (corDesc) corDesc.textContent = c.desc;
+      if (corDisplay) corDisplay.classList.add('ativa');
+    } else {
+      if (corSwatch) corSwatch.style.background = '#333';
+      if (corNome) corNome.textContent = 'Passe o mouse sobre o disco';
+      if (corDesc) corDesc.textContent = 'Cada fatia corresponde a uma cor do espectro visível.';
+      if (corDisplay) corDisplay.classList.remove('ativa');
+    }
+  };
+
+  p.windowResized = () => {
+    const wrapper = document.getElementById('disco-canvas-wrapper');
+    if (wrapper) {
+      const w = Math.min(wrapper.offsetWidth - 20, 460);
+      p.resizeCanvas(w, 400);
+      raio = Math.min(w, 400) / 2 - 20;
+    }
+  };
+};
+
+new p5(discoSketch);
+
+// =========================================
+// MENU MOBILE
+// =========================================
+const btnMenu = document.getElementById('botao-menu');
+const menu = document.getElementById('menu-principal');
+btnMenu.addEventListener('click', () => {
+  const aberto = menu.classList.toggle('aberto');
+  btnMenu.setAttribute('aria-expanded', aberto);
+});
+
+menu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    menu.classList.remove('aberto');
+    btnMenu.setAttribute('aria-expanded', 'false');
+  });
+});
+
+// =========================================
+// VOLTAR AO TOPO
+// =========================================
+const voltarTopo = document.getElementById('voltar-topo');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 500) voltarTopo.classList.add('aparece');
+  else voltarTopo.classList.remove('aparece');
+});
+voltarTopo.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// =========================================
+// REVELAR AO ROLAR
+// =========================================
+const revelarElementos = document.querySelectorAll('.revelar');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visivel');
+  });
+}, { threshold: 0.1 });
+revelarElementos.forEach(el => observer.observe(el));
+
+// =========================================
+// FAQ ACORDEÃO
+// =========================================
+document.querySelectorAll('.faq-pergunta').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const aberta = item.classList.contains('aberta');
+    document.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('aberta');
+      i.querySelector('.faq-pergunta').setAttribute('aria-expanded', 'false');
+    });
+    if (!aberta) {
+      item.classList.add('aberta');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+
+// =========================================
+// ACESSIBILIDADE (fonte, contraste, pausa)
+// =========================================
+let fontSize = 100;
+const btnAumentar = document.getElementById('btn-aumentar');
+const btnReduzir = document.getElementById('btn-reduzir');
+const btnPadrao = document.getElementById('btn-fonte-padrao');
+const btnContraste = document.getElementById('btn-contraste');
+const btnPausar = document.getElementById('btn-pausar');
+
+btnAumentar.addEventListener('click', () => {
+  fontSize = Math.min(150, fontSize + 10);
+  document.documentElement.style.fontSize = fontSize + '%';
+});
+btnReduzir.addEventListener('click', () => {
+  fontSize = Math.max(80, fontSize - 10);
+  document.documentElement.style.fontSize = fontSize + '%';
+});
+btnPadrao.addEventListener('click', () => {
+  fontSize = 100;
+  document.documentElement.style.fontSize = '100%';
+});
+btnContraste.addEventListener('click', () => {
+  const ativo = document.documentElement.classList.toggle('alto-contraste');
+  btnContraste.setAttribute('aria-pressed', ativo);
+});
+btnPausar.addEventListener('click', () => {
+  const pausadoGlobal = document.documentElement.classList.toggle('pausado');
+  btnPausar.setAttribute('aria-pressed', pausadoGlobal);
+});
+</script>
+
+</body>
+</html>
