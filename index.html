@@ -39,13 +39,6 @@
   --fonte-texto:'Atkinson Hyperlegible', 'Segoe UI', Arial, sans-serif;
   --sombra:0 14px 40px -18px rgba(6,33,54,.35);
   --grad-espectro: linear-gradient(90deg, #8B5CF6, #3B82F6, #06B6D4, #10B981, #F59E0B, #EF4444);
-  --newton-red:#E63946;
-  --newton-orange:#F77F00;
-  --newton-yellow:#FCBF49;
-  --newton-green:#2A9D8F;
-  --newton-blue:#0077B6;
-  --newton-indigo:#5A189A;
-  --newton-violet:#9D4EDD;
 }
 
 html.alto-contraste{
@@ -746,8 +739,8 @@ html.alto-contraste .cabecalho{ background:#000; }
     <span class="chip-secao">Simulação Interativa</span>
     <h2 class="titulo-secao">Gire o Disco de Newton</h2>
     <p class="subtitulo-secao">
-      Ajuste a velocidade e o número de cores. <strong>Passe o mouse sobre as fatias</strong> para identificar cada cor
-      do espectro. Observe como, em alta velocidade, as cores se fundem em uma mancha branca.
+      Ajuste a velocidade até o máximo. <strong>Em altas rotações, observe a mágica da óptica:</strong> 
+      as cores se fundem e o disco se torna completamente branco, simulando a persistência retiniana do olho humano!
     </p>
 
     <div class="sim-grade revelar">
@@ -759,10 +752,11 @@ html.alto-contraste .cabecalho{ background:#000; }
             Velocidade de rotação
             <output id="vel-valor">50</output> rpm
           </label>
-          <input type="range" id="velocidade" min="0" max="300" value="50" step="5">
+          <!-- AUMENTO DO LIMITE DE VELOCIDADE PARA 3000 RPM -->
+          <input type="range" id="velocidade" min="0" max="3000" value="50" step="10">
           <div class="escala">
             <span>Parado</span>
-            <span>Muito rápido</span>
+            <span>Fusão Cromática (Branco)</span>
           </div>
         </div>
 
@@ -794,11 +788,11 @@ html.alto-contraste .cabecalho{ background:#000; }
         <div class="resultados">
           <div class="resultado">
             <div class="valor" id="freq-fusao">—</div>
-            <div class="nome">Frequência de fusão</div>
+            <div class="nome">Frequência (Hz)</div>
           </div>
           <div class="resultado">
             <div class="valor" id="estado-disco">Girando</div>
-            <div class="nome">Estado atual</div>
+            <div class="nome">Estado visual</div>
           </div>
         </div>
       </div>
@@ -807,8 +801,9 @@ html.alto-contraste .cabecalho{ background:#000; }
         <h3 style="font-family:var(--fonte-display); color:var(--sol-forte); margin-bottom:1.5rem;">Disco em tempo real</h3>
         <div id="disco-canvas-wrapper" aria-label="Disco de Newton interativo"></div>
         <div class="notas-sim">
-          <strong>Dica:</strong> com velocidade acima de 200 rpm, você observará o fenômeno da <em>fusão cromática</em>:
-          as cores se misturam e o centro do disco tende ao branco/cinza, demonstrando a síntese aditiva.
+          <strong>Como funciona a simulação:</strong> Acima de ~600 RPM, o código ativa o algoritmo de <em>Fusão Cromática</em>. 
+          Ele calcula a média aditiva das cores (RGB) e pinta o disco de branco/cinza, reproduzindo fielmente 
+          o que acontece na sua retina quando a frequência ultrapassa o limite de processamento visual (~16 a 60 Hz).
         </div>
       </div>
     </div>
@@ -1101,7 +1096,7 @@ html.alto-contraste .cabecalho{ background:#000; }
 
 <script>
 // =========================================
-// PALETA DO DISCO DE NEWTON (expandida p/ N cores)
+// PALETA DO DISCO DE NEWTON
 // =========================================
 const ESPECTRO = [
   { nome: "Vermelho", hex: "#E63946", rgb: [230, 57, 70],   lambda: "~700 nm", desc: "Maior comprimento de onda visível, menor energia." },
@@ -1141,9 +1136,22 @@ const corDisplay = document.getElementById('cor-display');
 function atualizarDisplays() {
   velValor.textContent = velocidade;
   coresValor.textContent = numCores;
+  
   const hz = (velocidade / 60).toFixed(1);
   freqFusao.textContent = hz + ' Hz';
-  estadoDisco.textContent = pausado ? 'Pausado' : (velocidade === 0 ? 'Parado' : 'Girando');
+  
+  // Atualiza o texto de estado baseado na fusão cromática
+  if (pausado) {
+    estadoDisco.textContent = 'Pausado';
+  } else if (velocidade === 0) {
+    estadoDisco.textContent = 'Parado';
+  } else if (velocidade >= 1200) {
+    estadoDisco.textContent = 'Branco Puro';
+  } else if (velocidade >= 600) {
+    estadoDisco.textContent = 'Fundindo...';
+  } else {
+    estadoDisco.textContent = 'Girando';
+  }
 }
 
 if (velInput) velInput.addEventListener('input', e => { velocidade = parseInt(e.target.value); atualizarDisplays(); });
@@ -1169,11 +1177,11 @@ atualizarDisplays();
 
 // =========================================
 // SKETCH P5.JS — DISCO DE NEWTON INTERATIVO
+// COM ALGORITMO DE FUSÃO CROMÁTICA (BRANCO)
 // =========================================
 const discoSketch = (p) => {
   let angulo = 0;
   let raio = 170;
-  let hoverIndex = -1;
 
   p.setup = () => {
     const wrapper = document.getElementById('disco-canvas-wrapper');
@@ -1194,69 +1202,118 @@ const discoSketch = (p) => {
 
     p.translate(p.width / 2, p.height / 2);
 
+    // Lógica de Rotação
     if (!pausado && !document.documentElement.classList.contains('pausado')) {
-      angulo += (velocidade / 60) * 0.04;
+      // Aumenta o incremento do ângulo proporcionalmente à velocidade
+      angulo += (velocidade / 60) * 0.05; 
     }
+
+    // ==========================================
+    // ALGORITMO DE FUSÃO CROMÁTICA (SÍNTESE ADITIVA)
+    // ==========================================
+    // O olho humano/monitor não consegue processar frames individuais acima de certa velocidade.
+    // A partir de 600 RPM, começamos a misturar as cores matematicamente até virar branco em 1200 RPM.
+    let fatorFusao = 0;
+    if (velocidade > 600) {
+      // Mapeia a velocidade entre 600 e 1200 RPM para um fator de 0.0 a 1.0
+      fatorFusao = p.constrain(p.map(velocidade, 600, 1200, 0, 1), 0, 1);
+    }
+
     p.rotate(angulo);
 
     const angSetor = p.TWO_PI / numCores;
-    hoverIndex = -1;
+    let hoverIndex = -1;
 
+    // Calcular a cor média (branco/cinza resultante) para a síntese aditiva
+    let sumR = 0, sumG = 0, sumB = 0;
+    for(let i = 0; i < numCores; i++) {
+      let c = ESPECTRO[i % ESPECTRO.length].rgb;
+      sumR += c[0]; sumG += c[1]; sumB += c[2];
+    }
+    let avgR = sumR / numCores;
+    let avgG = sumG / numCores;
+    let avgB = sumB / numCores;
+
+    // Desenhar as fatias
     for (let i = 0; i < numCores; i++) {
       const cor = ESPECTRO[i % ESPECTRO.length];
-      p.fill(cor.rgb[0], cor.rgb[1], cor.rgb[2]);
+      
+      // Interpola a cor original com a cor média (branco) baseado na velocidade (fatorFusao)
+      let r = p.lerp(cor.rgb[0], avgR, fatorFusao);
+      let g = p.lerp(cor.rgb[1], avgG, fatorFusao);
+      let b = p.lerp(cor.rgb[2], avgB, fatorFusao);
+
+      p.fill(r, g, b);
       p.noStroke();
       p.arc(0, 0, raio * 2, raio * 2, i * angSetor, (i + 1) * angSetor);
     }
 
-    p.stroke(255, 255, 255, 80);
-    p.strokeWeight(1);
-    for (let i = 0; i < numCores; i++) {
-      const a = i * angSetor;
-      p.line(0, 0, p.cos(a) * raio, p.sin(a) * raio);
+    // Desenhar as linhas divisórias (elas desaparecem quando o disco fica branco)
+    if (fatorFusao < 0.95) {
+      p.stroke(255, 255, 255, p.map(fatorFusao, 0, 1, 80, 0));
+      p.strokeWeight(1);
+      for (let i = 0; i < numCores; i++) {
+        const a = i * angSetor;
+        p.line(0, 0, p.cos(a) * raio, p.sin(a) * raio);
+      }
     }
 
+    // Eixo central
     p.noStroke();
     p.fill(250, 245, 234);
     p.circle(0, 0, raio * 0.18);
     p.fill(14, 34, 51);
     p.circle(0, 0, raio * 0.06);
 
-    const mx = p.mouseX - p.width / 2;
-    const my = p.mouseY - p.height / 2;
-    const rx = mx * p.cos(-angulo) - my * p.sin(-angulo);
-    const ry = mx * p.sin(-angulo) + my * p.cos(-angulo);
-    const dist = p.sqrt(rx * rx + ry * ry);
+    // ==========================================
+    // DETECÇÃO DE HOVER (Só funciona se não estiver fundido)
+    // ==========================================
+    if (fatorFusao < 0.5) {
+      const mx = p.mouseX - p.width / 2;
+      const my = p.mouseY - p.height / 2;
+      const rx = mx * p.cos(-angulo) - my * p.sin(-angulo);
+      const ry = mx * p.sin(-angulo) + my * p.cos(-angulo);
+      const dist = p.sqrt(rx * rx + ry * ry);
 
-    if (dist <= raio && dist > raio * 0.1) {
-      let mA = p.atan2(ry, rx);
-      if (mA < 0) mA += p.TWO_PI;
-      const idx = p.floor(mA / angSetor);
-      if (idx >= 0 && idx < numCores) {
-        hoverIndex = idx;
-        p.push();
-        p.fill(255, 255, 255, 90);
-        p.noStroke();
-        p.arc(0, 0, raio * 2, raio * 2, idx * angSetor, (idx + 1) * angSetor);
-        p.stroke(255);
-        p.strokeWeight(3);
-        p.noFill();
-        p.arc(0, 0, raio * 2 - 4, raio * 2 - 4, idx * angSetor, (idx + 1) * angSetor);
-        p.pop();
+      if (dist <= raio && dist > raio * 0.1) {
+        let mA = p.atan2(ry, rx);
+        if (mA < 0) mA += p.TWO_PI;
+        const idx = p.floor(mA / angSetor);
+        if (idx >= 0 && idx < numCores) {
+          hoverIndex = idx;
+          p.push();
+          p.fill(255, 255, 255, 90);
+          p.noStroke();
+          p.arc(0, 0, raio * 2, raio * 2, idx * angSetor, (idx + 1) * angSetor);
+          p.stroke(255);
+          p.strokeWeight(3);
+          p.noFill();
+          p.arc(0, 0, raio * 2 - 4, raio * 2 - 4, idx * angSetor, (idx + 1) * angSetor);
+          p.pop();
+        }
       }
     }
 
-    if (hoverIndex >= 0) {
+    // Atualizar painel lateral de informações
+    if (hoverIndex >= 0 && fatorFusao < 0.5) {
       const c = ESPECTRO[hoverIndex % ESPECTRO.length];
       if (corSwatch) corSwatch.style.background = c.hex;
       if (corNome) corNome.textContent = c.nome + ' (' + c.lambda + ')';
       if (corDesc) corDesc.textContent = c.desc;
       if (corDisplay) corDisplay.classList.add('ativa');
     } else {
-      if (corSwatch) corSwatch.style.background = '#333';
-      if (corNome) corNome.textContent = 'Passe o mouse sobre o disco';
-      if (corDesc) corDesc.textContent = 'Cada fatia corresponde a uma cor do espectro visível.';
-      if (corDisplay) corDisplay.classList.remove('ativa');
+      if (fatorFusao >= 0.5) {
+        // Quando funde, mostra a cor branca resultante
+        if (corSwatch) corSwatch.style.background = `rgb(${avgR}, ${avgG}, ${avgB})`;
+        if (corNome) corNome.textContent = 'Branco (Síntese Aditiva)';
+        if (corDesc) corDesc.textContent = 'As cores se fundiram devido à alta velocidade (persistência retiniana).';
+        if (corDisplay) corDisplay.classList.add('ativa');
+      } else {
+        if (corSwatch) corSwatch.style.background = '#333';
+        if (corNome) corNome.textContent = 'Passe o mouse sobre o disco';
+        if (corDesc) corDesc.textContent = 'Cada fatia corresponde a uma cor do espectro visível.';
+        if (corDisplay) corDisplay.classList.remove('ativa');
+      }
     }
   };
 
@@ -1338,7 +1395,7 @@ const btnAumentar = document.getElementById('btn-aumentar');
 const btnReduzir = document.getElementById('btn-reduzir');
 const btnPadrao = document.getElementById('btn-fonte-padrao');
 const btnContraste = document.getElementById('btn-contraste');
-const btnPausar = document.getElementById('btn-pausar');
+const btnPausarGlobal = document.getElementById('btn-pausar');
 
 btnAumentar.addEventListener('click', () => {
   fontSize = Math.min(150, fontSize + 10);
@@ -1356,9 +1413,9 @@ btnContraste.addEventListener('click', () => {
   const ativo = document.documentElement.classList.toggle('alto-contraste');
   btnContraste.setAttribute('aria-pressed', ativo);
 });
-btnPausar.addEventListener('click', () => {
+btnPausarGlobal.addEventListener('click', () => {
   const pausadoGlobal = document.documentElement.classList.toggle('pausado');
-  btnPausar.setAttribute('aria-pressed', pausadoGlobal);
+  btnPausarGlobal.setAttribute('aria-pressed', pausadoGlobal);
 });
 </script>
 
