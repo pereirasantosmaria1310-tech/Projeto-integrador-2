@@ -553,19 +553,15 @@ html.alto-contraste .cabecalho{ background:#000; }
         </linearGradient>
       </defs>
 
-      <!-- Fonte de luz -->
       <rect x="30" y="200" width="60" height="80" rx="8" fill="#1A3552" stroke="#2AB6D4" stroke-width="2"/>
       <text x="60" y="245" text-anchor="middle" fill="#FAF5EA" font-size="11" font-family="var(--fonte-texto)">Luz Branca</text>
 
-      <!-- Feixe incidente -->
       <g class="raio-branco" stroke="url(#gradBranco)" stroke-width="4" fill="none" opacity=".9">
         <line x1="90" y1="240" x2="170" y2="240"/>
       </g>
 
-      <!-- Disco de Newton girando -->
       <g class="disco-gira">
         <circle cx="250" cy="240" r="90" fill="#FAF5EA" stroke="#0E2233" stroke-width="2"/>
-        <!-- 7 fatias: cada uma ocupa 360/7 ≈ 51.43° -->
         <path d="M250,240 L340,240 A90,90 0 0,1 306.2,311.3 Z" fill="#E63946"/>
         <path d="M250,240 L306.2,311.3 A90,90 0 0,1 228.5,328.8 Z" fill="#F77F00"/>
         <path d="M250,240 L228.5,328.8 A90,90 0 0,1 164.6,287.5 Z" fill="#FCBF49"/>
@@ -576,16 +572,13 @@ html.alto-contraste .cabecalho{ background:#000; }
         <circle cx="250" cy="240" r="12" fill="#FAF5EA" stroke="#0E2233" stroke-width="2"/>
       </g>
 
-      <!-- Feixe refletido (branco recomposto) -->
       <g class="raio-branco" stroke="url(#gradBranco)" stroke-width="4" fill="none" opacity=".9">
         <line x1="340" y1="240" x2="460" y2="240"/>
       </g>
 
-      <!-- Anteparo branco -->
       <rect x="455" y="200" width="20" height="80" rx="4" fill="#FAF5EA" stroke="#2AB6D4" stroke-width="2"/>
       <text x="465" y="310" text-anchor="middle" fill="#B9CCDA" font-size="10" font-family="var(--fonte-texto)">Branco</text>
 
-      <!-- Selo -->
       <g class="selo-temp">
         <rect x="175" y="400" width="150" height="44" rx="22" fill="url(#gradEspectro)"/>
         <text x="250" y="428" text-anchor="middle" fill="#fff" font-family="var(--fonte-display)" font-weight="800" font-size="13">Síntese Aditiva</text>
@@ -947,38 +940,38 @@ html.alto-contraste .cabecalho{ background:#000; }
 
     <div class="equipe-grade revelar">
       <div class="membro">
-        <div class="avatar">TH</div>
-        <h3>Tarso Heringer</h3>
+        <div class="avatar">AL</div>
+        <h3>Agatha Letícia</h3>
+        <div class="funcao">Líder do Projeto</div>
+        <p>Coordena as atividades da equipe, organiza o cronograma de entregas e garante a integração entre as partes científica, tecnológica e de apresentação do projeto SpectraLab.</p>
+      </div>
+
+      <div class="membro">
+        <div class="avatar">AB</div>
+        <h3>Angelina Brasil</h3>
         <div class="funcao">Main Developer</div>
-        <p>Responsável principal pelo desenvolvimento do simulador interativo do Disco de Newton e toda a arquitetura front-end do projeto SpectraLab.</p>
+        <p>Responsável principal pelo desenvolvimento do simulador interativo do Disco de Newton e pela arquitetura front-end do projeto, incluindo a lógica de identificação de cores.</p>
       </div>
 
       <div class="membro">
-        <div class="avatar">ML</div>
-        <h3>Mycael Leandro</h3>
-        <div class="funcao">Líder do Time</div>
-        <p>Coordena as atividades da equipe, organiza o cronograma de entregas e garante a integração entre as partes científica e tecnológica do projeto.</p>
-      </div>
-
-      <div class="membro">
-        <div class="avatar">GK</div>
-        <h3>Guilherme Kaidi</h3>
+        <div class="avatar">LM</div>
+        <h3>Lucca Marins</h3>
         <div class="funcao">Main Helper</div>
-        <p>Auxilia diretamente no desenvolvimento, revisão de código, testes do simulador e apoio na fundamentação teórica da óptica.</p>
+        <p>Auxilia diretamente no desenvolvimento, revisão de código, testes do simulador e apoio na fundamentação teórica da óptica newtoniana e da síntese aditiva.</p>
       </div>
 
       <div class="membro">
-        <div class="avatar">NM</div>
-        <h3>Nicolas Moura</h3>
-        <div class="funcao">Secondary Helper</div>
-        <p>Colabora na pesquisa de referências, elaboração de materiais didáticos e apoio nas atividades experimentais de montagem do disco.</p>
-      </div>
-
-      <div class="membro">
-        <div class="avatar">PG</div>
-        <h3>Pedro Guimarães</h3>
+        <div class="avatar">MG</div>
+        <h3>Maria Gabrielle</h3>
         <div class="funcao">Secondary Developer</div>
-        <p>Contribui com o desenvolvimento do site, implementação de recursos de acessibilidade e integração do simulador com a interface.</p>
+        <p>Contribui com o desenvolvimento do site, implementação de recursos de acessibilidade, design visual e integração do simulador com a interface da página.</p>
+      </div>
+
+      <div class="membro">
+        <div class="avatar">YS</div>
+        <h3>Yasmin dos Santos</h3>
+        <div class="funcao">Secondary Helper</div>
+        <p>Colabora na pesquisa de referências históricas, elaboração de materiais didáticos, redação de conteúdo científico e apoio nas atividades experimentais de montagem do disco.</p>
       </div>
     </div>
 
@@ -1148,7 +1141,6 @@ const corDisplay = document.getElementById('cor-display');
 function atualizarDisplays() {
   velValor.textContent = velocidade;
   coresValor.textContent = numCores;
-  // Frequência em Hz aproximada (rpm / 60)
   const hz = (velocidade / 60).toFixed(1);
   freqFusao.textContent = hz + ' Hz';
   estadoDisco.textContent = pausado ? 'Pausado' : (velocidade === 0 ? 'Parado' : 'Girando');
@@ -1196,14 +1188,12 @@ const discoSketch = (p) => {
   p.draw = () => {
     p.clear();
 
-    // Fundo escuro sutil
     p.noStroke();
     p.fill(10, 20, 35, 40);
     p.rect(0, 0, p.width, p.height);
 
     p.translate(p.width / 2, p.height / 2);
 
-    // Rotação
     if (!pausado && !document.documentElement.classList.contains('pausado')) {
       angulo += (velocidade / 60) * 0.04;
     }
@@ -1212,7 +1202,6 @@ const discoSketch = (p) => {
     const angSetor = p.TWO_PI / numCores;
     hoverIndex = -1;
 
-    // Desenha fatias
     for (let i = 0; i < numCores; i++) {
       const cor = ESPECTRO[i % ESPECTRO.length];
       p.fill(cor.rgb[0], cor.rgb[1], cor.rgb[2]);
@@ -1220,7 +1209,6 @@ const discoSketch = (p) => {
       p.arc(0, 0, raio * 2, raio * 2, i * angSetor, (i + 1) * angSetor);
     }
 
-    // Linhas divisórias sutis
     p.stroke(255, 255, 255, 80);
     p.strokeWeight(1);
     for (let i = 0; i < numCores; i++) {
@@ -1228,14 +1216,12 @@ const discoSketch = (p) => {
       p.line(0, 0, p.cos(a) * raio, p.sin(a) * raio);
     }
 
-    // Centro branco (eixo)
     p.noStroke();
     p.fill(250, 245, 234);
     p.circle(0, 0, raio * 0.18);
     p.fill(14, 34, 51);
     p.circle(0, 0, raio * 0.06);
 
-    // Detecção de hover — precisa "desrotacionar" o mouse
     const mx = p.mouseX - p.width / 2;
     const my = p.mouseY - p.height / 2;
     const rx = mx * p.cos(-angulo) - my * p.sin(-angulo);
@@ -1248,7 +1234,6 @@ const discoSketch = (p) => {
       const idx = p.floor(mA / angSetor);
       if (idx >= 0 && idx < numCores) {
         hoverIndex = idx;
-        // Destaque na fatia
         p.push();
         p.fill(255, 255, 255, 90);
         p.noStroke();
@@ -1261,7 +1246,6 @@ const discoSketch = (p) => {
       }
     }
 
-    // Atualiza painel externo
     if (hoverIndex >= 0) {
       const c = ESPECTRO[hoverIndex % ESPECTRO.length];
       if (corSwatch) corSwatch.style.background = c.hex;
@@ -1347,7 +1331,7 @@ document.querySelectorAll('.faq-pergunta').forEach(btn => {
 });
 
 // =========================================
-// ACESSIBILIDADE (fonte, contraste, pausa)
+// ACESSIBILIDADE
 // =========================================
 let fontSize = 100;
 const btnAumentar = document.getElementById('btn-aumentar');
