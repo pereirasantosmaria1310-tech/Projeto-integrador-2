@@ -740,7 +740,7 @@ html.alto-contraste .cabecalho{ background:#000; }
     <h2 class="titulo-secao">Gire o Disco de Newton</h2>
     <p class="subtitulo-secao">
       Ajuste a velocidade até o máximo. <strong>Em altas rotações, observe a mágica da óptica:</strong> 
-      as cores se fundem e o disco se torna completamente branco, simulando a persistência retiniana do olho humano!
+      as cores se fundem e o disco se torna completamente BRANCO, simulando perfeitamente a persistência retiniana!
     </p>
 
     <div class="sim-grade revelar">
@@ -752,7 +752,6 @@ html.alto-contraste .cabecalho{ background:#000; }
             Velocidade de rotação
             <output id="vel-valor">50</output> rpm
           </label>
-          <!-- AUMENTO DO LIMITE DE VELOCIDADE PARA 3000 RPM -->
           <input type="range" id="velocidade" min="0" max="3000" value="50" step="10">
           <div class="escala">
             <span>Parado</span>
@@ -801,9 +800,7 @@ html.alto-contraste .cabecalho{ background:#000; }
         <h3 style="font-family:var(--fonte-display); color:var(--sol-forte); margin-bottom:1.5rem;">Disco em tempo real</h3>
         <div id="disco-canvas-wrapper" aria-label="Disco de Newton interativo"></div>
         <div class="notas-sim">
-          <strong>Como funciona a simulação:</strong> Acima de ~600 RPM, o código ativa o algoritmo de <em>Fusão Cromática</em>. 
-          Ele calcula a média aditiva das cores (RGB) e pinta o disco de branco/cinza, reproduzindo fielmente 
-          o que acontece na sua retina quando a frequência ultrapassa o limite de processamento visual (~16 a 60 Hz).
+          <strong>Como funciona:</strong> Acima de 800 RPM, o algoritmo de <em>Fusão Cromática</em> entra em ação, interpolando matematicamente cada cor em direção ao <strong>Branco Puro (#FFFFFF)</strong>, reproduzindo com exatidão o que a retina humana percebe.
         </div>
       </div>
     </div>
@@ -1140,14 +1137,13 @@ function atualizarDisplays() {
   const hz = (velocidade / 60).toFixed(1);
   freqFusao.textContent = hz + ' Hz';
   
-  // Atualiza o texto de estado baseado na fusão cromática
   if (pausado) {
     estadoDisco.textContent = 'Pausado';
   } else if (velocidade === 0) {
     estadoDisco.textContent = 'Parado';
-  } else if (velocidade >= 1200) {
+  } else if (velocidade >= 1500) {
     estadoDisco.textContent = 'Branco Puro';
-  } else if (velocidade >= 600) {
+  } else if (velocidade >= 800) {
     estadoDisco.textContent = 'Fundindo...';
   } else {
     estadoDisco.textContent = 'Girando';
@@ -1176,8 +1172,7 @@ if (btnResetDisco) {
 atualizarDisplays();
 
 // =========================================
-// SKETCH P5.JS — DISCO DE NEWTON INTERATIVO
-// COM ALGORITMO DE FUSÃO CROMÁTICA (BRANCO)
+// SKETCH P5.JS — DISCO PERFEITO E FUSÃO PARA BRANCO PURO
 // =========================================
 const discoSketch = (p) => {
   let angulo = 0;
@@ -1190,85 +1185,70 @@ const discoSketch = (p) => {
     const canvas = p.createCanvas(w, h);
     canvas.parent('disco-canvas-wrapper');
     raio = Math.min(w, h) / 2 - 20;
+    
+    // Garante precisão matemática absoluta para o círculo
+    p.angleMode(p.RADIANS);
     p.textAlign(p.CENTER, p.CENTER);
   };
 
   p.draw = () => {
     p.clear();
 
+    // Fundo suave
     p.noStroke();
     p.fill(10, 20, 35, 40);
     p.rect(0, 0, p.width, p.height);
 
     p.translate(p.width / 2, p.height / 2);
 
-    // Lógica de Rotação
     if (!pausado && !document.documentElement.classList.contains('pausado')) {
-      // Aumenta o incremento do ângulo proporcionalmente à velocidade
       angulo += (velocidade / 60) * 0.05; 
     }
 
-    // ==========================================
-    // ALGORITMO DE FUSÃO CROMÁTICA (SÍNTESE ADITIVA)
-    // ==========================================
-    // O olho humano/monitor não consegue processar frames individuais acima de certa velocidade.
-    // A partir de 600 RPM, começamos a misturar as cores matematicamente até virar branco em 1200 RPM.
+    // Lógica de Fusão para o BRANCO PURO
     let fatorFusao = 0;
-    if (velocidade > 600) {
-      // Mapeia a velocidade entre 600 e 1200 RPM para um fator de 0.0 a 1.0
-      fatorFusao = p.constrain(p.map(velocidade, 600, 1200, 0, 1), 0, 1);
+    if (velocidade > 800) {
+      // Começa a fundir em 800 RPM, atinge o branco puro em 1500 RPM
+      fatorFusao = p.constrain(p.map(velocidade, 800, 1500, 0, 1), 0, 1);
     }
 
     p.rotate(angulo);
 
+    // Cálculo do ângulo exato para garantir fatias 100% iguais
     const angSetor = p.TWO_PI / numCores;
     let hoverIndex = -1;
 
-    // Calcular a cor média (branco/cinza resultante) para a síntese aditiva
-    let sumR = 0, sumG = 0, sumB = 0;
-    for(let i = 0; i < numCores; i++) {
-      let c = ESPECTRO[i % ESPECTRO.length].rgb;
-      sumR += c[0]; sumG += c[1]; sumB += c[2];
-    }
-    let avgR = sumR / numCores;
-    let avgG = sumG / numCores;
-    let avgB = sumB / numCores;
-
-    // Desenhar as fatias
+    // DESENHO DO CÍRCULO PERFEITO
     for (let i = 0; i < numCores; i++) {
       const cor = ESPECTRO[i % ESPECTRO.length];
       
-      // Interpola a cor original com a cor média (branco) baseado na velocidade (fatorFusao)
-      let r = p.lerp(cor.rgb[0], avgR, fatorFusao);
-      let g = p.lerp(cor.rgb[1], avgG, fatorFusao);
-      let b = p.lerp(cor.rgb[2], avgB, fatorFusao);
+      // Interpolação direta para o BRANCO PURO (255, 255, 255)
+      let r = p.lerp(cor.rgb[0], 255, fatorFusao);
+      let g = p.lerp(cor.rgb[1], 255, fatorFusao);
+      let b = p.lerp(cor.rgb[2], 255, fatorFusao);
 
       p.fill(r, g, b);
-      p.noStroke();
-      p.arc(0, 0, raio * 2, raio * 2, i * angSetor, (i + 1) * angSetor);
+      p.noStroke(); // Remove bordas para não haver falhas visuais
+      
+      // O modo PIE desenha a fatia perfeitamente fechada até o centro, formando um círculo impecável
+      p.arc(0, 0, raio * 2, raio * 2, i * angSetor, (i + 1) * angSetor, p.PIE);
     }
 
-    // Desenhar as linhas divisórias (elas desaparecem quando o disco fica branco)
-    if (fatorFusao < 0.95) {
-      p.stroke(255, 255, 255, p.map(fatorFusao, 0, 1, 80, 0));
-      p.strokeWeight(1);
-      for (let i = 0; i < numCores; i++) {
-        const a = i * angSetor;
-        p.line(0, 0, p.cos(a) * raio, p.sin(a) * raio);
-      }
-    }
+    // Borda externa fina para dar acabamento ao círculo
+    p.noFill();
+    p.stroke(255, 255, 255, 50);
+    p.strokeWeight(2);
+    p.circle(0, 0, raio * 2);
 
     // Eixo central
     p.noStroke();
     p.fill(250, 245, 234);
-    p.circle(0, 0, raio * 0.18);
+    p.circle(0, 0, raio * 0.15);
     p.fill(14, 34, 51);
-    p.circle(0, 0, raio * 0.06);
+    p.circle(0, 0, raio * 0.05);
 
-    // ==========================================
-    // DETECÇÃO DE HOVER (Só funciona se não estiver fundido)
-    // ==========================================
-    if (fatorFusao < 0.5) {
+    // DETECÇÃO DE HOVER (Desativada visualmente quando estiver quase branco para evitar piscar)
+    if (fatorFusao < 0.8) {
       const mx = p.mouseX - p.width / 2;
       const my = p.mouseY - p.height / 2;
       const rx = mx * p.cos(-angulo) - my * p.sin(-angulo);
@@ -1282,31 +1262,26 @@ const discoSketch = (p) => {
         if (idx >= 0 && idx < numCores) {
           hoverIndex = idx;
           p.push();
-          p.fill(255, 255, 255, 90);
+          p.fill(255, 255, 255, 100);
           p.noStroke();
-          p.arc(0, 0, raio * 2, raio * 2, idx * angSetor, (idx + 1) * angSetor);
-          p.stroke(255);
-          p.strokeWeight(3);
-          p.noFill();
-          p.arc(0, 0, raio * 2 - 4, raio * 2 - 4, idx * angSetor, (idx + 1) * angSetor);
+          p.arc(0, 0, raio * 2, raio * 2, idx * angSetor, (idx + 1) * angSetor, p.PIE);
           p.pop();
         }
       }
     }
 
-    // Atualizar painel lateral de informações
-    if (hoverIndex >= 0 && fatorFusao < 0.5) {
+    // Atualizar painel lateral
+    if (hoverIndex >= 0 && fatorFusao < 0.8) {
       const c = ESPECTRO[hoverIndex % ESPECTRO.length];
       if (corSwatch) corSwatch.style.background = c.hex;
       if (corNome) corNome.textContent = c.nome + ' (' + c.lambda + ')';
       if (corDesc) corDesc.textContent = c.desc;
       if (corDisplay) corDisplay.classList.add('ativa');
     } else {
-      if (fatorFusao >= 0.5) {
-        // Quando funde, mostra a cor branca resultante
-        if (corSwatch) corSwatch.style.background = `rgb(${avgR}, ${avgG}, ${avgB})`;
-        if (corNome) corNome.textContent = 'Branco (Síntese Aditiva)';
-        if (corDesc) corDesc.textContent = 'As cores se fundiram devido à alta velocidade (persistência retiniana).';
+      if (fatorFusao >= 0.8) {
+        if (corSwatch) corSwatch.style.background = '#FFFFFF';
+        if (corNome) corNome.textContent = 'Branco Puro (Síntese Aditiva)';
+        if (corDesc) corDesc.textContent = 'As cores se fundiram completamente devido à alta velocidade.';
         if (corDisplay) corDisplay.classList.add('ativa');
       } else {
         if (corSwatch) corSwatch.style.background = '#333';
