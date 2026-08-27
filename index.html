@@ -3,71 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="SpectraLab — tratado interativo sobre o Disco de Newton e a síntese aditiva das cores. Projeto interdisciplinar do CEP.">
-<meta name="theme-color" content="#f4efe3">
-<title>SpectraLab • Tratado da Luz — CEP</title>
+<meta name="description" content="SpectraLab — Observatório Espectral: projeto interdisciplinar sobre o Disco de Newton e síntese aditiva das cores no CEP.">
+<meta name="theme-color" content="#05060a">
+<title>SpectraLab • Observatório Espectral — CEP</title>
 
+<!-- Ícone -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌈</text></svg>">
 
-<!-- NOVA TIPOGRAFIA: Fraunces + Spectral + IBM Plex Mono -->
+<!-- Fontes -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
+<!-- p5.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
 
 <style>
 /* =========================================================
-   1. TOKENS DE DESIGN — "TRATADO DA LUZ"
-   Pergaminho, nanquim, latão, vinho e viridiano
+   1. VARIÁVEIS DE DESIGN — TEMA "OBSERVATÓRIO ESPECTRAL"
    ========================================================= */
 :root {
-  --papel: #f4efe3;
-  --papel-2: #ece3d0;
-  --cartao: #faf7ee;
-  --tinta: #181410;
-  --tinta-2: #241e17;
-  --tinta-suave: #5a5344;
-  --tinta-fraca: #8a8271;
-  --latao: #9c742c;
-  --latao-vivo: #c29a3f;
-  --vinho: #7f1d2b;
-  --viridiano: #205249;
-  --linha: rgba(24, 20, 16, 0.18);
-  --linha-forte: rgba(24, 20, 16, 0.45);
-  --papel-no-escuro: #efe8d8;
-  --linha-no-escuro: rgba(239, 232, 216, 0.22);
-  --foco: #7f1d2b;
-  --fonte-display: 'Fraunces', 'Georgia', serif;
-  --fonte-texto: 'Spectral', 'Georgia', serif;
-  --fonte-mono: 'IBM Plex Mono', 'Courier New', monospace;
-  --sombra-dura: 7px 7px 0 rgba(24, 20, 16, 0.85);
-  --sombra-dura-latao: 7px 7px 0 rgba(156, 116, 44, 0.9);
+  --bg: #05060a;
+  --bg-suave: #0a0d16;
+  --vidro: rgba(255, 255, 255, 0.04);
+  --vidro-forte: rgba(255, 255, 255, 0.07);
+  --borda: rgba(255, 255, 255, 0.09);
+  --borda-forte: rgba(255, 255, 255, 0.16);
+  --texto: #eef2f8;
+  --texto-suave: #9aa8bd;
+  --texto-fraco: #6b7a92;
+  --violeta: #8b5cf6;
+  --ciano: #22d3ee;
+  --verde: #34d399;
+  --ambar: #fbbf24;
+  --vermelho: #f43f5e;
+  --foco: #ffb300;
+  --raio: 20px;
+  --raio-sm: 12px;
+  --fonte-display: 'Unbounded', system-ui, sans-serif;
+  --fonte-texto: 'Atkinson Hyperlegible', 'Segoe UI', Arial, sans-serif;
+  --sombra: 0 30px 80px -30px rgba(0, 0, 0, 0.8);
+  --brilho-violeta: 0 0 50px rgba(139, 92, 246, 0.25);
+  --brilho-ciano: 0 0 50px rgba(34, 211, 238, 0.2);
   --grad-espectro: linear-gradient(90deg,
     #e63946, #f77f00, #fcbf49, #2a9d8f, #0077b6, #5a189a, #9d4edd);
+  --grad-acao: linear-gradient(135deg, #8b5cf6, #22d3ee);
 }
 
 /* =========================================================
-   2. ALTO CONTRASTE (ACESSIBILIDADE)
+   2. MODO ALTO CONTRASTE (ACESSIBILIDADE)
    ========================================================= */
 html.alto-contraste {
-  --papel: #000;
-  --papel-2: #000;
-  --cartao: #000;
-  --tinta: #fff;
-  --tinta-2: #fff;
-  --tinta-suave: #fff;
-  --tinta-fraca: #ffff00;
-  --latao: #ffff00;
-  --latao-vivo: #ffff00;
-  --vinho: #ffff00;
-  --viridiano: #ffff00;
-  --linha: #fff;
-  --linha-forte: #fff;
-  --papel-no-escuro: #fff;
-  --linha-no-escuro: #fff;
-  --sombra-dura: none;
-  --sombra-dura-latao: none;
+  --bg: #000000;
+  --bg-suave: #000000;
+  --vidro: #000000;
+  --vidro-forte: #000000;
+  --borda: #ffffff;
+  --borda-forte: #ffffff;
+  --texto: #ffffff;
+  --texto-suave: #ffffff;
+  --texto-fraco: #ffff00;
+  --violeta: #ffff00;
+  --ciano: #ffff00;
+  --verde: #ffff00;
+  --ambar: #ffff00;
+  --vermelho: #ffff00;
+  --sombra: none;
+  --brilho-violeta: none;
+  --brilho-ciano: none;
 }
 html.alto-contraste a,
 html.alto-contraste button {
@@ -75,7 +78,7 @@ html.alto-contraste button {
 }
 
 /* =========================================================
-   3. PAUSA GLOBAL DE ANIMAÇÕES
+   3. PAUSA GLOBAL DE ANIMAÇÕES (ACESSIBILIDADE)
    ========================================================= */
 html.pausado *,
 html.pausado *::before,
@@ -99,10 +102,11 @@ html {
 }
 body {
   font-family: var(--fonte-texto);
-  background: var(--papel);
-  color: var(--tinta);
-  line-height: 1.75;
+  background: var(--bg);
+  color: var(--texto);
+  line-height: 1.7;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 img {
   max-width: 100%;
@@ -116,53 +120,67 @@ button {
   cursor: pointer;
 }
 ::selection {
-  background: var(--vinho);
-  color: var(--papel);
+  background: var(--violeta);
+  color: #fff;
 }
+
+/* Foco visível para teclado */
 :focus-visible {
   outline: 3px solid var(--foco);
   outline-offset: 3px;
-  border-radius: 2px;
+  border-radius: 6px;
 }
 
-/* Grão de papel */
+/* Aurora de fundo fixa */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(1100px 700px at 85% -10%, rgba(139, 92, 246, 0.14), transparent 60%),
+    radial-gradient(900px 650px at -10% 30%, rgba(34, 211, 238, 0.10), transparent 55%),
+    radial-gradient(1000px 750px at 50% 110%, rgba(251, 191, 36, 0.07), transparent 60%);
+}
+
+/* Textura de ruído sutil */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 9990;
   pointer-events: none;
-  opacity: 0.05;
+  opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* =========================================================
-   5. LINK PULAR
+   5. LINK "PULAR PARA CONTEÚDO"
    ========================================================= */
 .pular {
   position: absolute;
   left: -999px;
   top: 0;
   z-index: 10001;
-  background: var(--tinta);
-  color: var(--papel);
-  font-family: var(--fonte-mono);
-  font-weight: 600;
+  background: var(--ambar);
+  color: #1b1200;
+  font-weight: 700;
   padding: 0.8rem 1.4rem;
+  border-radius: 0 0 var(--raio-sm) 0;
 }
 .pular:focus {
   left: 0;
 }
 
 /* =========================================================
-   6. BARRA DE ACESSIBILIDADE — FILETE SUPERIOR
+   6. BARRA DE ACESSIBILIDADE
    ========================================================= */
 .barra-a11y {
-  background: var(--tinta);
-  color: var(--papel-no-escuro);
-  font-family: var(--fonte-mono);
-  font-size: 0.8rem;
-  border-bottom: 3px double var(--latao);
+  background: rgba(5, 6, 10, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--borda);
+  color: var(--texto);
+  font-size: 0.85rem;
 }
 .barra-a11y .miolo {
   max-width: 1200px;
@@ -174,51 +192,56 @@ body::after {
   flex-wrap: wrap;
 }
 .barra-a11y .rotulo {
-  letter-spacing: 0.22em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  font-size: 0.66rem;
-  color: var(--latao-vivo);
+  font-size: 0.7rem;
+  color: var(--texto-suave);
 }
 .barra-a11y button {
-  background: transparent;
-  color: var(--papel-no-escuro);
-  border: 1px solid var(--linha-no-escuro);
-  border-radius: 0;
-  padding: 0.28rem 0.75rem;
-  font-family: var(--fonte-mono);
-  font-size: 0.8rem;
-  transition: background 0.2s, color 0.2s;
+  background: var(--vidro);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.83rem;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
 }
 .barra-a11y button:hover {
-  background: var(--papel-no-escuro);
-  color: var(--tinta);
+  background: var(--vidro-forte);
+  border-color: var(--violeta);
+  transform: translateY(-1px);
 }
 .barra-a11y .sep {
   width: 1px;
   height: 1.1rem;
-  background: var(--linha-no-escuro);
+  background: var(--borda);
 }
 
 /* =========================================================
-   7. MASTHEAD (CABEÇALHO DE JORNAL)
+   7. CABEÇALHO FLUTUANTE
    ========================================================= */
 .cabecalho {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: var(--papel);
-  border-bottom: 3px double var(--tinta);
+  background: rgba(5, 6, 10, 0.72);
+  backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid var(--borda);
 }
 .cabecalho::after {
   content: "";
-  display: block;
-  height: 3px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
   background: var(--grad-espectro);
+  opacity: 0.9;
 }
 .cabecalho .miolo {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 1.2rem;
+  padding: 0.9rem 1.2rem;
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -226,63 +249,61 @@ body::after {
 .marca {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.7rem;
   text-decoration: none;
 }
 .marca svg {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   flex: none;
+  filter: drop-shadow(0 0 14px rgba(139, 92, 246, 0.5));
 }
 .marca .nome {
   font-family: var(--fonte-display);
-  font-weight: 900;
-  font-size: 1.35rem;
-  letter-spacing: 0.02em;
-  line-height: 1;
+  font-weight: 800;
+  font-size: 1.02rem;
+  letter-spacing: 0.05em;
+  line-height: 1.1;
 }
 .marca .nome small {
   display: block;
-  font-family: var(--fonte-mono);
+  font-family: var(--fonte-texto);
   font-weight: 400;
-  font-size: 0.6rem;
-  letter-spacing: 0.28em;
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--tinta-suave);
-  margin-top: 0.3rem;
+  color: var(--texto-suave);
 }
 .menu {
   display: flex;
-  gap: 0.1rem;
+  gap: 0.25rem;
   margin-left: auto;
   list-style: none;
 }
 .menu a {
   text-decoration: none;
-  font-family: var(--fonte-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 0.55rem 0.85rem;
-  color: var(--tinta-suave);
+  font-size: 0.92rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  color: var(--texto-suave);
   border: 1px solid transparent;
-  transition: all 0.25s;
+  transition: color 0.25s, background 0.25s, border-color 0.25s, box-shadow 0.25s;
 }
 .menu a:hover {
-  color: var(--papel);
-  background: var(--tinta);
-  border-color: var(--tinta);
-  box-shadow: 3px 3px 0 var(--latao);
+  color: #fff;
+  background: var(--vidro-forte);
+  border-color: var(--borda-forte);
+  box-shadow: var(--brilho-violeta);
 }
 .btn-menu {
   display: none;
   margin-left: auto;
   background: none;
-  border: 1px solid var(--tinta);
-  color: var(--tinta);
+  border: 1px solid var(--borda);
+  color: var(--texto);
+  border-radius: 10px;
   padding: 0.5rem 0.8rem;
-  font-family: var(--fonte-mono);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 @media (max-width: 880px) {
   .btn-menu {
@@ -294,8 +315,8 @@ body::after {
     left: 0;
     right: 0;
     flex-direction: column;
-    background: var(--papel);
-    border-bottom: 3px double var(--tinta);
+    background: var(--bg);
+    border-bottom: 1px solid var(--borda);
     padding: 1rem 1.2rem 1.4rem;
     gap: 0.3rem;
     display: none;
@@ -306,27 +327,24 @@ body::after {
   .menu a {
     display: block;
     padding: 0.8rem;
-    font-size: 0.95rem;
+    font-size: 1.05rem;
   }
 }
 
 /* =========================================================
-   8. CAPA (HERO) — FRONTISPÍCIO
+   8. ABERTURA (HERO) CINEMATOGRÁFICA
    ========================================================= */
 .abertura {
   position: relative;
-  padding: clamp(3.5rem, 7vw, 6rem) 1.2rem clamp(4rem, 8vw, 6rem);
-  border-bottom: 1px solid var(--linha-forte);
-  background:
-    repeating-linear-gradient(0deg, transparent 0 34px, rgba(24, 20, 16, 0.035) 34px 35px),
-    var(--papel);
+  overflow: hidden;
+  padding: clamp(4rem, 9vw, 7rem) 1.2rem clamp(4.5rem, 8vw, 6.5rem);
 }
 .abertura .miolo {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
-  gap: 3.5rem;
+  gap: 3rem;
   align-items: center;
 }
 @media (max-width: 960px) {
@@ -335,27 +353,27 @@ body::after {
   }
 }
 .olho {
-  font-family: var(--fonte-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.3em;
+  font-size: 0.8rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--vinho);
+  color: var(--ambar);
   display: inline-flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.6rem;
 }
 .olho::before {
-  content: "❦";
-  font-size: 1rem;
-  color: var(--latao);
+  content: "";
+  width: 36px;
+  height: 2px;
+  background: var(--grad-espectro);
+  box-shadow: 0 0 14px rgba(139, 92, 246, 0.8);
 }
 .titulo-abertura {
   font-family: var(--fonte-display);
-  font-weight: 340;
-  font-size: clamp(2.4rem, 6vw, 4.6rem);
-  line-height: 1.04;
-  margin: 1.2rem 0 1.5rem;
-  letter-spacing: -0.015em;
+  font-weight: 800;
+  font-size: clamp(2rem, 5.2vw, 3.9rem);
+  line-height: 1.08;
+  margin: 1.1rem 0 1.4rem;
 }
 .linha-mask {
   display: block;
@@ -378,72 +396,63 @@ body::after {
   }
 }
 .titulo-abertura .hl {
-  font-style: italic;
-  font-weight: 560;
-  color: var(--vinho);
+  background: var(--grad-espectro);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: normal;
 }
 .abertura p.resumo {
-  max-width: 54ch;
-  color: var(--tinta-suave);
-  font-size: 1.08rem;
-  font-weight: 300;
-}
-.abertura p.resumo::first-letter {
-  font-family: var(--fonte-display);
-  font-weight: 700;
-  font-size: 3.4em;
-  float: left;
-  line-height: 0.82;
-  padding-right: 0.12em;
-  color: var(--latao);
+  max-width: 52ch;
+  color: var(--texto-suave);
+  font-size: 1.06rem;
 }
 .acoes {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-top: 2.2rem;
+  margin-top: 2rem;
 }
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.9rem 1.8rem;
-  font-family: var(--fonte-mono);
-  font-weight: 600;
-  font-size: 0.85rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  gap: 0.5rem;
+  padding: 0.95rem 1.7rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.98rem;
   text-decoration: none;
-  border: 1.5px solid var(--tinta);
-  border-radius: 0;
-  transition: transform 0.2s, box-shadow 0.2s, background 0.2s, color 0.2s;
+  border: 1px solid transparent;
+  transition: transform 0.25s, box-shadow 0.25s, background 0.25s, border-color 0.25s;
 }
 .btn:hover {
-  transform: translate(-3px, -3px);
+  transform: translateY(-3px);
 }
 .btn-sol {
-  background: var(--tinta);
-  color: var(--papel);
+  background: var(--grad-acao);
+  color: #fff;
+  box-shadow: 0 14px 40px -14px rgba(139, 92, 246, 0.7);
 }
 .btn-sol:hover {
-  box-shadow: var(--sombra-dura-latao);
+  box-shadow: 0 20px 50px -14px rgba(139, 92, 246, 0.9);
 }
 .btn-contorno {
-  background: transparent;
-  color: var(--tinta);
+  border-color: var(--borda-forte);
+  color: var(--texto);
+  background: var(--vidro);
+  backdrop-filter: blur(10px);
 }
 .btn-contorno:hover {
-  box-shadow: var(--sombra-dura);
-  background: var(--cartao);
+  border-color: var(--ciano);
+  box-shadow: var(--brilho-ciano);
 }
 .legenda-mini {
   display: flex;
-  gap: 1.8rem;
+  gap: 1.6rem;
   flex-wrap: wrap;
-  margin-top: 2.4rem;
-  font-family: var(--fonte-mono);
-  font-size: 0.75rem;
-  color: var(--tinta-suave);
+  margin-top: 2.2rem;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
 }
 .legenda-mini span {
   display: flex;
@@ -451,18 +460,15 @@ body::after {
   gap: 0.5rem;
 }
 .legenda-mini b {
-  color: var(--vinho);
+  color: var(--texto);
 }
 
-/* Cena SVG — moldura de gravura */
+/* Cena SVG animada */
 .cena {
   width: 100%;
   height: auto;
-  border: 1.5px solid var(--tinta);
-  outline: 1px solid var(--linha-forte);
-  outline-offset: 6px;
-  background: var(--tinta-2);
-  box-shadow: var(--sombra-dura);
+  filter: drop-shadow(0 24px 60px rgba(0, 0, 0, 0.55))
+          drop-shadow(0 0 46px rgba(139, 92, 246, 0.22));
 }
 .disco-gira {
   transform-origin: 250px 240px;
@@ -495,22 +501,22 @@ body::after {
 }
 
 /* =========================================================
-   9. LETREIRO TIPOGRÁFICO
+   9. LETREIRO CONTÍNUO
    ========================================================= */
 .letreiro {
-  background: var(--papel-2);
-  border-block: 1px solid var(--linha-forte);
-  color: var(--tinta-suave);
+  background: rgba(10, 13, 22, 0.7);
+  border-block: 1px solid var(--borda);
+  color: var(--texto-suave);
   overflow: hidden;
-  font-family: var(--fonte-mono);
-  font-size: 0.8rem;
+  font-size: 0.92rem;
+  backdrop-filter: blur(8px);
 }
 .letreiro-trilho {
   display: flex;
   gap: 3.5rem;
   width: max-content;
-  padding: 0.8rem 0;
-  animation: rolar 36s linear infinite;
+  padding: 0.85rem 0;
+  animation: rolar 34s linear infinite;
   white-space: nowrap;
 }
 .letreiro:hover .letreiro-trilho {
@@ -522,12 +528,11 @@ body::after {
   }
 }
 .letreiro b {
-  color: var(--vinho);
-  font-weight: 600;
+  color: var(--ciano);
 }
 
 /* =========================================================
-   10. SEÇÕES — CAPÍTULOS DO TRATADO
+   10. SEÇÕES GENÉRICAS
    ========================================================= */
 .faixa {
   padding: clamp(3.5rem, 7vw, 6rem) 1.2rem;
@@ -537,56 +542,49 @@ body::after {
   margin: 0 auto;
 }
 .faixa-clara {
-  background: var(--papel);
+  background: transparent;
 }
 .faixa-clara-2 {
-  background: var(--papel-2);
-  border-block: 1px solid var(--linha-forte);
+  background: rgba(255, 255, 255, 0.02);
+  border-block: 1px solid var(--borda);
 }
 .faixa-escura {
-  background: var(--tinta);
-  color: var(--papel-no-escuro);
-  border-block: 3px double var(--latao);
+  background: rgba(3, 4, 8, 0.55);
+  border-block: 1px solid var(--borda);
 }
 .chip-secao {
-  display: inline-block;
-  font-family: var(--fonte-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.3em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--vinho);
-  border: 1px solid var(--vinho);
-  padding: 0.4rem 1rem;
+  border: 1px solid var(--borda-forte);
+  border-radius: 999px;
+  padding: 0.4rem 1.1rem;
+  color: var(--ambar);
+  background: var(--vidro);
+  backdrop-filter: blur(8px);
 }
-.faixa-escura .chip-secao {
-  color: var(--latao-vivo);
-  border-color: var(--latao-vivo);
+.chip-secao::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--grad-espectro);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.9);
 }
 .titulo-secao {
   font-family: var(--fonte-display);
-  font-weight: 400;
-  font-size: clamp(1.9rem, 4vw, 3rem);
-  line-height: 1.12;
-  margin: 1rem 0 1.1rem;
-  letter-spacing: -0.01em;
-}
-.titulo-secao::after {
-  content: "";
-  display: block;
-  width: 90px;
-  height: 4px;
-  margin-top: 0.9rem;
-  background: var(--grad-espectro);
+  font-weight: 800;
+  font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+  line-height: 1.15;
+  margin: 0.9rem 0 1rem;
 }
 .subtitulo-secao {
-  max-width: 64ch;
-  color: var(--tinta-suave);
-  font-size: 1.06rem;
-  font-weight: 300;
-}
-.faixa-escura .subtitulo-secao {
-  color: var(--linha-no-escuro);
-  color: rgba(239, 232, 216, 0.75);
+  max-width: 62ch;
+  color: var(--texto-suave);
+  font-size: 1.05rem;
 }
 .revelar {
   opacity: 0;
@@ -599,7 +597,7 @@ body::after {
 }
 
 /* =========================================================
-   11. PROJETO — PRANCHAS E LISTA
+   11. GRID DO PROJETO + COLAGEM
    ========================================================= */
 .grade-projeto {
   display: grid;
@@ -619,30 +617,27 @@ body::after {
 }
 .colagem figure {
   position: absolute;
-  border: 1.5px solid var(--tinta);
-  outline: 1px solid var(--linha-forte);
-  outline-offset: 4px;
-  background: var(--cartao);
+  border-radius: var(--raio);
+  overflow: hidden;
+  border: 1px solid var(--borda-forte);
+  background: var(--bg-suave);
   transform: rotate(var(--rot));
   transition: transform 0.35s ease, box-shadow 0.35s ease;
-  box-shadow: var(--sombra-dura);
+  box-shadow: var(--sombra);
 }
 .colagem figure:hover {
   transform: rotate(0deg) scale(1.03);
   z-index: 5;
-  box-shadow: var(--sombra-dura-latao);
+  box-shadow: var(--brilho-violeta);
 }
 .colagem figcaption {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--tinta);
-  color: var(--papel-no-escuro);
-  font-family: var(--fonte-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  background: rgba(5, 6, 10, 0.85);
+  color: #fff;
+  font-size: 0.75rem;
   padding: 0.4rem 0.7rem;
 }
 .foto-1 { top: 0; left: 0; width: 62%; --rot: -3deg; }
@@ -657,41 +652,42 @@ body::after {
 }
 .lista-projeto li {
   display: flex;
-  gap: 1rem;
+  gap: 0.9rem;
   align-items: flex-start;
-  background: var(--cartao);
-  border: 1px solid var(--linha-forte);
-  padding: 1.1rem 1.3rem;
-  transition: transform 0.25s, box-shadow 0.25s;
+  background: var(--vidro);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 1rem 1.2rem;
+  backdrop-filter: blur(12px);
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 .lista-projeto li:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: var(--sombra-dura);
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: var(--brilho-violeta);
+  transform: translateX(6px);
 }
 .lista-projeto .icone {
   flex: none;
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
   display: grid;
   place-items: center;
-  background: var(--papel-2);
-  border: 1px solid var(--tinta);
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--ciano);
   font-size: 1.1rem;
+  border: 1px solid var(--borda-forte);
 }
 .lista-projeto b {
   display: block;
-  font-family: var(--fonte-display);
-  font-weight: 600;
-  font-size: 1.05rem;
 }
 .lista-projeto p {
-  font-size: 0.93rem;
-  color: var(--tinta-suave);
-  font-weight: 300;
+  font-size: 0.92rem;
+  color: var(--texto-suave);
 }
 
 /* =========================================================
-   12. ÓPTICA — COLUNA + PRINCÍPIOS NUMERADOS
+   12. ÓPTICA: COLUNA FIXA + PRINCÍPIOS
    ========================================================= */
 .optica-grade {
   display: grid;
@@ -706,7 +702,7 @@ body::after {
 }
 .optica-fixa {
   position: sticky;
-  top: 120px;
+  top: 110px;
 }
 @media (max-width: 920px) {
   .optica-fixa {
@@ -720,21 +716,23 @@ body::after {
   margin-top: 1.6rem;
 }
 .formula {
-  font-family: var(--fonte-mono);
-  font-size: 0.9rem;
+  font-family: var(--fonte-display);
+  font-size: 0.95rem;
   font-weight: 600;
-  background: var(--tinta);
-  color: var(--latao-vivo);
-  border: 1px solid var(--tinta);
+  background: rgba(139, 92, 246, 0.12);
+  color: var(--ambar);
+  border: 1px solid var(--borda-forte);
+  border-radius: 12px;
   padding: 0.55rem 0.95rem;
+  backdrop-filter: blur(8px);
 }
 .formula small {
   display: block;
+  font-family: var(--fonte-texto);
   font-weight: 400;
-  font-size: 0.64rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(239, 232, 216, 0.7);
+  font-size: 0.68rem;
+  color: var(--texto-suave);
+  letter-spacing: 0.05em;
 }
 .principios {
   display: grid;
@@ -742,54 +740,50 @@ body::after {
   counter-reset: principio;
 }
 .principio {
-  background: var(--cartao);
-  border: 1px solid var(--linha-forte);
-  border-left: 5px solid var(--latao);
-  padding: 1.6rem 1.6rem 1.6rem 4.8rem;
+  background: var(--vidro);
+  border: 1px solid var(--borda);
+  border-left: 4px solid transparent;
+  border-image: linear-gradient(180deg, #8b5cf6, #22d3ee) 1;
+  border-radius: var(--raio);
+  padding: 1.6rem 1.6rem 1.6rem 4.6rem;
   position: relative;
-  transition: transform 0.25s, box-shadow 0.25s;
-}
-.principio:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: var(--sombra-dura);
+  box-shadow: var(--sombra);
+  backdrop-filter: blur(12px);
 }
 .principio::before {
   counter-increment: principio;
-  content: "§" counter(principio);
+  content: "0" counter(principio);
   position: absolute;
-  left: 1.2rem;
+  left: 1.3rem;
   top: 1.5rem;
   font-family: var(--fonte-display);
-  font-style: italic;
-  font-weight: 700;
-  font-size: 1.35rem;
-  color: var(--vinho);
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: var(--ciano);
 }
 .principio h3 {
   font-family: var(--fonte-display);
-  font-weight: 600;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   margin-bottom: 0.5rem;
 }
 .principio p {
   font-size: 0.95rem;
-  color: var(--tinta-suave);
-  font-weight: 300;
+  color: var(--texto-suave);
 }
 .principio .tag {
   display: inline-block;
   margin-top: 0.7rem;
-  font-family: var(--fonte-mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--viridiano);
-  border: 1px solid var(--viridiano);
+  color: var(--ciano);
+  border: 1px solid rgba(34, 211, 238, 0.4);
   padding: 0.2rem 0.6rem;
+  border-radius: 999px;
 }
 
 /* =========================================================
-   13. SIMULADOR — CÂMARA ESCURA
+   13. SIMULADOR PREMIUM
    ========================================================= */
 .sim-grade {
   display: grid;
@@ -803,11 +797,12 @@ body::after {
   }
 }
 .painel {
-  background: rgba(239, 232, 216, 0.04);
-  border: 1px solid var(--linha-no-escuro);
-  outline: 1px solid var(--linha-no-escuro);
-  outline-offset: 5px;
-  padding: 1.9rem;
+  background: rgba(10, 13, 22, 0.6);
+  border: 1px solid var(--borda-forte);
+  border-radius: var(--raio);
+  padding: 1.8rem;
+  backdrop-filter: blur(14px);
+  box-shadow: var(--sombra);
 }
 .controle {
   margin-bottom: 1.7rem;
@@ -815,51 +810,46 @@ body::after {
 .controle label {
   display: flex;
   justify-content: space-between;
-  font-family: var(--fonte-mono);
-  font-size: 0.82rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-weight: 600;
-  margin-bottom: 0.6rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
 }
 .controle output {
-  color: var(--latao-vivo);
+  color: var(--ambar);
+  font-family: var(--fonte-display);
 }
 .controle input[type="range"] {
   width: 100%;
-  height: 4px;
+  height: 1.2rem;
   -webkit-appearance: none;
   appearance: none;
-  background: var(--linha-no-escuro);
-  border-radius: 0;
-  outline-offset: 6px;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.35), rgba(34, 211, 238, 0.35));
+  border-radius: 999px;
+  border: 1px solid var(--borda-forte);
 }
 .controle input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  background: var(--latao-vivo);
-  border: 2px solid var(--tinta);
-  border-radius: 0;
-  transform: rotate(45deg);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--grad-acao);
+  border: 2px solid #fff;
   cursor: pointer;
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.8);
 }
 .controle input[type="range"]::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  background: var(--latao-vivo);
-  border: 2px solid var(--tinta);
-  border-radius: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--violeta);
+  border: 2px solid #fff;
   cursor: pointer;
 }
 .controle .escala {
   display: flex;
   justify-content: space-between;
-  font-family: var(--fonte-mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.08em;
-  color: rgba(239, 232, 216, 0.6);
-  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--texto-suave);
+  margin-top: 0.35rem;
 }
 #disco-canvas-wrapper {
   width: 100%;
@@ -867,41 +857,37 @@ body::after {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: radial-gradient(circle at 50% 45%, #2a241c 0%, #14100c 75%);
-  border: 1px solid var(--linha-no-escuro);
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: var(--raio);
+  border: 1px solid var(--borda-forte);
   margin-top: 1rem;
 }
 #disco-canvas-wrapper canvas {
+  border-radius: var(--raio);
   display: block !important;
 }
-.fig-caption {
-  font-family: var(--fonte-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(239, 232, 216, 0.6);
-  margin-top: 0.8rem;
-  text-align: center;
-}
 .cor-identificada {
-  margin-top: 1.2rem;
-  padding: 1rem 1.3rem;
-  background: rgba(239, 232, 216, 0.05);
-  border: 1px solid var(--linha-no-escuro);
-  min-height: 80px;
+  margin-top: 1rem;
+  padding: 1rem 1.4rem;
+  border-radius: 14px;
+  background: var(--vidro);
+  border: 1px solid var(--borda-forte);
+  min-height: 78px;
   display: flex;
   align-items: center;
   gap: 1rem;
-  transition: border-color 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  backdrop-filter: blur(8px);
 }
 .cor-identificada .swatch {
-  width: 54px;
-  height: 54px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   flex: none;
-  border: 2px solid var(--papel-no-escuro);
+  border: 3px solid rgba(255, 255, 255, 0.35);
   background: #333;
   transition: background 0.25s, transform 0.25s;
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.15);
 }
 .cor-identificada.ativa .swatch {
   transform: scale(1.08);
@@ -911,48 +897,45 @@ body::after {
 }
 .cor-identificada .nome {
   font-family: var(--fonte-display);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.2rem;
   display: block;
 }
 .cor-identificada .desc {
-  font-size: 0.83rem;
-  color: rgba(239, 232, 216, 0.65);
+  font-size: 0.85rem;
+  color: var(--texto-suave);
   display: block;
   margin-top: 0.15rem;
-  font-weight: 300;
 }
 .botoes-sim {
   display: flex;
   gap: 0.8rem;
   flex-wrap: wrap;
-  margin-top: 1.2rem;
+  margin-top: 1rem;
 }
 .btn-sim {
-  background: var(--latao-vivo);
-  color: var(--tinta);
-  border: 1.5px solid var(--latao-vivo);
-  border-radius: 0;
-  padding: 0.65rem 1.4rem;
-  font-family: var(--fonte-mono);
-  font-weight: 600;
-  font-size: 0.8rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  transition: transform 0.2s, box-shadow 0.2s;
+  background: var(--grad-acao);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1.3rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: transform 0.25s, box-shadow 0.25s;
+  box-shadow: 0 8px 24px -10px rgba(139, 92, 246, 0.7);
 }
 .btn-sim:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0 rgba(239, 232, 216, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -10px rgba(139, 92, 246, 0.9);
 }
 .btn-sim.secundario {
   background: transparent;
-  border-color: var(--linha-no-escuro);
-  color: var(--papel-no-escuro);
+  border: 1px solid var(--borda-forte);
+  color: var(--texto);
 }
 .btn-sim.secundario:hover {
-  border-color: var(--papel-no-escuro);
-  box-shadow: 4px 4px 0 rgba(194, 154, 63, 0.5);
+  border-color: var(--ambar);
+  color: var(--ambar);
 }
 .resultados {
   display: grid;
@@ -961,31 +944,28 @@ body::after {
   margin-top: 1.4rem;
 }
 .resultado {
-  background: rgba(239, 232, 216, 0.05);
-  border: 1px solid var(--linha-no-escuro);
+  background: var(--vidro);
+  border: 1px solid var(--borda-forte);
+  border-radius: 12px;
   padding: 0.9rem 1rem;
 }
 .resultado .valor {
   font-family: var(--fonte-display);
-  font-weight: 700;
-  font-size: 1.3rem;
-  color: var(--latao-vivo);
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--ambar);
 }
 .resultado .nome {
-  font-family: var(--fonte-mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(239, 232, 216, 0.6);
-  margin-top: 0.2rem;
+  font-size: 0.76rem;
+  color: var(--texto-suave);
+  margin-top: 0.15rem;
 }
 .notas-sim {
-  font-size: 0.8rem;
-  color: rgba(239, 232, 216, 0.65);
+  font-size: 0.78rem;
+  color: var(--texto-suave);
   margin-top: 1.4rem;
-  border-top: 1px dashed var(--linha-no-escuro);
+  border-top: 1px dashed var(--borda-forte);
   padding-top: 0.9rem;
-  font-weight: 300;
 }
 
 /* =========================================================
@@ -1004,24 +984,21 @@ body::after {
   }
 }
 .citacao {
-  border-left: 5px solid var(--vinho);
-  padding: 1.3rem 1.6rem;
-  background: var(--cartao);
-  border-top: 1px solid var(--linha-forte);
-  border-bottom: 1px solid var(--linha-forte);
-  border-right: 1px solid var(--linha-forte);
-  font-size: 1.2rem;
+  border-left: 5px solid transparent;
+  border-image: var(--grad-espectro) 1;
+  padding: 1.2rem 1.5rem;
+  background: var(--vidro);
+  border-radius: 0 var(--raio) var(--raio) 0;
+  font-size: 1.15rem;
   font-style: italic;
-  font-weight: 300;
+  box-shadow: var(--sombra);
+  backdrop-filter: blur(12px);
 }
 .citacao footer {
   font-style: normal;
-  font-family: var(--fonte-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--tinta-suave);
-  margin-top: 0.7rem;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  margin-top: 0.6rem;
 }
 .check-a11y {
   list-style: none;
@@ -1032,12 +1009,11 @@ body::after {
   display: flex;
   gap: 0.75rem;
   align-items: flex-start;
-  font-size: 0.97rem;
-  font-weight: 300;
+  font-size: 0.98rem;
 }
 .check-a11y li::before {
-  content: "✳";
-  color: var(--viridiano);
+  content: "✔";
+  color: var(--verde);
   font-weight: 700;
   flex: none;
 }
@@ -1048,40 +1024,32 @@ body::after {
   margin-top: 1.6rem;
 }
 .selo {
-  font-family: var(--fonte-mono);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  border: 1px solid var(--vinho);
-  color: var(--vinho);
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  color: #c4b5fd;
+  border-radius: 999px;
   padding: 0.35rem 0.9rem;
+  background: rgba(139, 92, 246, 0.1);
 }
 .caixa-info {
-  background: var(--cartao);
-  border: 1px solid var(--linha-forte);
-  padding: 1.2rem 1.4rem;
+  background: var(--vidro);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 1.2rem;
   margin-bottom: 1rem;
-  transition: transform 0.25s, box-shadow 0.25s;
-}
-.caixa-info:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: var(--sombra-dura);
 }
 .caixa-info strong {
   display: block;
-  font-family: var(--fonte-display);
-  font-weight: 600;
   margin-bottom: 0.5rem;
 }
 .caixa-info p {
-  color: var(--tinta-suave);
-  font-size: 0.94rem;
-  font-weight: 300;
+  color: var(--texto-suave);
+  font-size: 0.95rem;
 }
 
 /* =========================================================
-   15. IMPACTO — ODS E CRONOLOGIA
+   15. IMPACTO: ODS + LINHA DO TEMPO
    ========================================================= */
 .ods-linha {
   display: flex;
@@ -1090,12 +1058,13 @@ body::after {
   margin: 1.8rem 0;
 }
 .ods {
-  font-family: var(--fonte-mono);
+  font-family: var(--fonte-display);
   font-weight: 600;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
+  font-size: 0.82rem;
   padding: 0.6rem 1rem;
+  border-radius: 12px;
   color: #fff;
+  box-shadow: 0 8px 22px -10px rgba(0, 0, 0, 0.6);
 }
 .ods-4 { background: #C5192D; }
 .ods-9 { background: #F36D25; }
@@ -1113,34 +1082,36 @@ body::after {
   }
 }
 .impacto-card {
-  background: rgba(239, 232, 216, 0.04);
-  border: 1px solid var(--linha-no-escuro);
-  padding: 1.7rem;
-  transition: transform 0.25s, box-shadow 0.25s;
+  background: var(--vidro);
+  border: 1px solid var(--borda-forte);
+  border-radius: var(--raio);
+  padding: 1.6rem;
+  backdrop-filter: blur(12px);
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 .impacto-card:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 6px 6px 0 rgba(194, 154, 63, 0.55);
+  transform: translateY(-6px);
+  border-color: rgba(251, 191, 36, 0.5);
+  box-shadow: 0 0 34px rgba(251, 191, 36, 0.15);
 }
 .impacto-card h3 {
   font-family: var(--fonte-display);
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: var(--latao-vivo);
+  font-size: 1rem;
+  color: var(--ambar);
   margin-bottom: 0.6rem;
 }
 .impacto-card p {
   font-size: 0.92rem;
-  color: rgba(239, 232, 216, 0.75);
-  font-weight: 300;
+  color: var(--texto-suave);
 }
 .linha-tempo {
   list-style: none;
   margin-top: 2.5rem;
-  border-left: 1.5px solid var(--latao);
-  padding-left: 1.8rem;
+  border-left: 3px solid transparent;
+  border-image: var(--grad-espectro) 1;
+  padding-left: 1.6rem;
   display: grid;
-  gap: 1.6rem;
+  gap: 1.4rem;
 }
 .linha-tempo li {
   position: relative;
@@ -1148,27 +1119,26 @@ body::after {
 .linha-tempo li::before {
   content: "";
   position: absolute;
-  left: -2.2rem;
-  top: 0.4rem;
-  width: 12px;
-  height: 12px;
-  background: var(--latao-vivo);
-  border: 2px solid var(--tinta);
-  transform: rotate(45deg);
+  left: -2.05rem;
+  top: 0.35rem;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--violeta);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.8);
 }
 .linha-tempo b {
   font-family: var(--fonte-display);
-  font-weight: 600;
-  font-size: 1.02rem;
+  font-size: 0.95rem;
 }
 .linha-tempo p {
   font-size: 0.9rem;
-  color: rgba(239, 232, 216, 0.7);
-  font-weight: 300;
+  color: var(--texto-suave);
 }
 
 /* =========================================================
-   16. EQUIPE — RETRATOS TIPOGRÁFICOS
+   16. EQUIPE
    ========================================================= */
 .equipe-grade {
   display: grid;
@@ -1182,60 +1152,58 @@ body::after {
   }
 }
 .membro {
-  background: var(--cartao);
-  border: 1px solid var(--linha-forte);
-  padding: 1.8rem 1.5rem;
+  background: var(--vidro);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 1.6rem;
   text-align: center;
-  transition: transform 0.25s, box-shadow 0.25s;
+  box-shadow: var(--sombra);
+  backdrop-filter: blur(12px);
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 .membro:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: var(--sombra-dura);
+  transform: translateY(-6px);
+  border-color: rgba(34, 211, 238, 0.45);
+  box-shadow: var(--brilho-ciano);
 }
 .avatar {
-  width: 80px;
-  height: 80px;
+  width: 78px;
+  height: 78px;
   border-radius: 50%;
-  margin: 0 auto 1rem;
+  margin: 0 auto 0.9rem;
   display: grid;
   place-items: center;
   font-family: var(--fonte-display);
-  font-style: italic;
-  font-weight: 700;
-  font-size: 1.5rem;
-  color: var(--vinho);
-  background: var(--papel-2);
-  border: 1.5px solid var(--tinta);
-  outline: 1px solid var(--linha-forte);
-  outline-offset: 4px;
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: #fff;
+  background: var(--grad-acao);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12), 0 0 26px rgba(139, 92, 246, 0.4);
 }
 .membro h3 {
   font-family: var(--fonte-display);
-  font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 .membro .funcao {
-  font-family: var(--fonte-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.22em;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--latao);
-  margin: 0.4rem 0 0.7rem;
+  color: var(--ciano);
+  margin: 0.3rem 0 0.6rem;
 }
 .membro p {
   font-size: 0.88rem;
-  color: var(--tinta-suave);
-  font-weight: 300;
+  color: var(--texto-suave);
 }
 .nota-edicao {
   font-size: 0.8rem;
-  color: var(--tinta-suave);
-  margin-top: 1.6rem;
+  color: var(--texto-suave);
+  margin-top: 1.4rem;
   font-style: italic;
 }
 
 /* =========================================================
-   17. FAQ — PERGUNTAS & RESPOSTAS
+   17. FAQ
    ========================================================= */
 .faq {
   max-width: 820px;
@@ -1244,9 +1212,11 @@ body::after {
   gap: 0.9rem;
 }
 .faq-item {
-  background: var(--cartao);
-  border: 1px solid var(--linha-forte);
+  background: var(--vidro);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
   overflow: hidden;
+  backdrop-filter: blur(12px);
 }
 .faq-pergunta {
   width: 100%;
@@ -1254,10 +1224,9 @@ body::after {
   background: none;
   border: none;
   padding: 1.2rem 1.4rem;
-  font-family: var(--fonte-display);
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--tinta);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--texto);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1265,9 +1234,9 @@ body::after {
 }
 .faq-pergunta::after {
   content: "+";
-  font-family: var(--fonte-mono);
-  font-size: 1.4rem;
-  color: var(--vinho);
+  font-family: var(--fonte-display);
+  font-size: 1.5rem;
+  color: var(--ciano);
   transition: transform 0.3s;
   flex: none;
 }
@@ -1284,19 +1253,19 @@ body::after {
 }
 .faq-resposta p {
   padding: 0 1.4rem 1.3rem;
-  color: var(--tinta-suave);
+  color: var(--texto-suave);
   font-size: 0.95rem;
-  font-weight: 300;
 }
 
 /* =========================================================
-   18. COLOFÃO (RODAPÉ)
+   18. RODAPÉ
    ========================================================= */
 .rodape {
-  background: var(--tinta);
-  color: rgba(239, 232, 216, 0.75);
+  background: #03040a;
+  color: var(--texto-suave);
   padding: 3.5rem 1.2rem 2rem;
-  border-top: 3px double var(--latao);
+  border-top: 2px solid transparent;
+  border-image: var(--grad-espectro) 1;
 }
 .rodape .miolo {
   max-width: 1200px;
@@ -1312,32 +1281,25 @@ body::after {
 }
 .rodape h3 {
   font-family: var(--fonte-display);
-  font-weight: 600;
-  font-size: 1rem;
-  color: var(--papel-no-escuro);
+  font-size: 0.95rem;
+  color: var(--texto);
   margin-bottom: 0.9rem;
 }
 .rodape ul {
   list-style: none;
   display: grid;
   gap: 0.5rem;
-  font-size: 0.9rem;
-}
-.rodape a {
-  text-decoration: none;
+  font-size: 0.92rem;
 }
 .rodape a:hover {
-  color: var(--latao-vivo);
-  text-decoration: underline;
+  color: var(--ciano);
 }
 .rodape .fim {
   max-width: 1200px;
   margin: 2.5rem auto 0;
   padding-top: 1.4rem;
-  border-top: 1px solid var(--linha-no-escuro);
-  font-family: var(--fonte-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
+  border-top: 1px solid var(--borda);
+  font-size: 0.8rem;
   display: flex;
   justify-content: space-between;
   gap: 1rem;
@@ -1345,7 +1307,7 @@ body::after {
 }
 
 /* =========================================================
-   19. VOLTAR AO TOPO — SELO
+   19. VOLTAR AO TOPO
    ========================================================= */
 .voltar-topo {
   position: fixed;
@@ -1354,22 +1316,23 @@ body::after {
   z-index: 1200;
   width: 52px;
   height: 52px;
-  border: 1.5px solid var(--tinta);
-  background: var(--latao-vivo);
-  color: var(--tinta);
+  border-radius: 50%;
+  border: none;
+  background: var(--grad-acao);
+  color: #fff;
   font-size: 1.3rem;
   font-weight: 700;
+  box-shadow: 0 10px 26px -10px rgba(0, 0, 0, 0.5);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s, transform 0.3s, box-shadow 0.3s;
+  transition: opacity 0.3s, transform 0.3s;
 }
 .voltar-topo.aparece {
   opacity: 1;
   pointer-events: auto;
 }
 .voltar-topo:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 5px 5px 0 var(--tinta);
+  transform: translateY(-4px);
 }
 
 /* =========================================================
@@ -1402,6 +1365,7 @@ body::after {
 
 <a class="pular" href="#conteudo">Pular para o conteúdo principal</a>
 
+<!-- BARRA DE ACESSIBILIDADE -->
 <div class="barra-a11y" role="region" aria-label="Ferramentas de acessibilidade">
   <div class="miolo">
     <span class="rotulo">Acessibilidade</span>
@@ -1414,6 +1378,7 @@ body::after {
   </div>
 </div>
 
+<!-- CABEÇALHO -->
 <header class="cabecalho">
   <div class="miolo">
     <a class="marca" href="#inicio" aria-label="SpectraLab — página inicial">
@@ -1429,10 +1394,10 @@ body::after {
             <stop offset="100%" stop-color="#9D4EDD"/>
           </linearGradient>
         </defs>
-        <circle cx="24" cy="24" r="18" fill="url(#gradDisco)" stroke="#181410" stroke-width="2"/>
-        <circle cx="24" cy="24" r="4" fill="#f4efe3" stroke="#181410" stroke-width="2"/>
+        <circle cx="24" cy="24" r="18" fill="url(#gradDisco)" stroke="#0E2233" stroke-width="1.5"/>
+        <circle cx="24" cy="24" r="4" fill="#FAF5EA" stroke="#0E2233" stroke-width="1.5"/>
       </svg>
-      <span class="nome">SpectraLab<small>Tratado da Luz • CEP</small></span>
+      <span class="nome">SPECTRALAB<small>CEP • Disco de Newton</small></span>
     </a>
     <button class="btn-menu" id="botao-menu" aria-expanded="false" aria-controls="menu-principal">☰ Menu</button>
     <nav aria-label="Navegação principal">
@@ -1451,23 +1416,25 @@ body::after {
 
 <main id="conteudo">
 
+<!-- ABERTURA -->
 <section class="abertura" id="inicio" aria-label="Apresentação do projeto">
   <div class="miolo">
     <div>
-      <p class="olho"><span>Física · Óptica · Síntese Aditiva · Inclusão</span></p>
+      <p class="olho"><span>Física • Óptica • Síntese Aditiva • Inclusão</span></p>
       <h1 class="titulo-abertura">
-        <span class="linha-mask"><span>Sete cores giram,</span></span>
-        <span class="linha-mask"><span>o olho as funde,</span></span>
-        <span class="linha-mask"><span>e o <em class="hl">branco</em> renasce.</span></span>
+        <span class="linha-mask"><span>SETE CORES <em class="hl">GIRAM</em>.</span></span>
+        <span class="linha-mask"><span>O OLHO <em class="hl">FUNDE</em>.</span></span>
+        <span class="linha-mask"><span>O BRANCO <em class="hl">RENASCE</em>.</span></span>
       </h1>
       <p class="resumo">
-        Neste tratado interativo, o <strong>SpectraLab</strong> recria o célebre Disco de Newton (1704):
-        o experimento que provou ser a luz branca a soma de todas as cores do espectro.
-        Gire o disco depressa o bastante — e o branco emergirá da mistura, diante dos seus olhos.
+        O <strong>SpectraLab</strong> recria o célebre <strong>Disco de Newton (1704)</strong>:
+        um experimento que prova que a luz branca é a soma de todas as cores do espectro.
+        Quando as sete faixas giram rápido o bastante, o branco emerge da mistura.
+        Ciência de verdade, em um site feito para <em>todas as pessoas</em>.
       </p>
       <div class="acoes">
-        <a class="btn btn-sol" href="#simulador">❦ Girar o Disco</a>
-        <a class="btn btn-contorno" href="#optica">Ler a Óptica</a>
+        <a class="btn btn-sol" href="#simulador">🌈 Girar o Disco</a>
+        <a class="btn btn-contorno" href="#optica">Entender a óptica</a>
       </div>
       <div class="legenda-mini" aria-label="Resumo rápido">
         <span><b>1704</b> Opticks, de Newton</span>
@@ -1477,20 +1444,20 @@ body::after {
     </div>
 
     <svg class="cena" viewBox="0 0 500 480" role="img"
-         aria-label="Gravura animada: um feixe de luz branca incide sobre um disco giratório dividido em sete cores e é refletido como luz branca recomposta.">
+         aria-label="Ilustração animada: um feixe de luz branca incide sobre um disco giratório dividido em sete cores e é refletido como luz branca recomposta.">
       <defs>
         <linearGradient id="gradBranco" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stop-color="#FFFFFF"/>
           <stop offset="100%" stop-color="#F4F8FB"/>
         </linearGradient>
       </defs>
-      <rect x="30" y="200" width="60" height="80" rx="4" fill="#241e17" stroke="#c29a3f" stroke-width="1.5"/>
-      <text x="60" y="245" text-anchor="middle" fill="#efe8d8" font-size="11" font-family="IBM Plex Mono, monospace">LUZ BRANCA</text>
+      <rect x="30" y="200" width="60" height="80" rx="8" fill="#1A3552" stroke="#2AB6D4" stroke-width="2"/>
+      <text x="60" y="245" text-anchor="middle" fill="#FAF5EA" font-size="11">Luz Branca</text>
       <g class="raio-branco" stroke="url(#gradBranco)" stroke-width="4" fill="none" opacity=".9">
         <line x1="90" y1="240" x2="170" y2="240"/>
       </g>
       <g class="disco-gira">
-        <circle cx="250" cy="240" r="90" fill="#FAF5EA" stroke="#181410" stroke-width="2"/>
+        <circle cx="250" cy="240" r="90" fill="#FAF5EA" stroke="#0E2233" stroke-width="2"/>
         <path d="M250,240 L340,240 A90,90 0 0,1 306.2,311.3 Z" fill="#E63946"/>
         <path d="M250,240 L306.2,311.3 A90,90 0 0,1 228.5,328.8 Z" fill="#F77F00"/>
         <path d="M250,240 L228.5,328.8 A90,90 0 0,1 164.6,287.5 Z" fill="#FCBF49"/>
@@ -1498,65 +1465,67 @@ body::after {
         <path d="M250,240 L160.6,220.4 A90,90 0 0,1 206.8,162.1 Z" fill="#0077B6"/>
         <path d="M250,240 L206.8,162.1 A90,90 0 0,1 278.9,153.2 Z" fill="#5A189A"/>
         <path d="M250,240 L278.9,153.2 A90,90 0 0,1 340,240 Z" fill="#9D4EDD"/>
-        <circle cx="250" cy="240" r="12" fill="#FAF5EA" stroke="#181410" stroke-width="2"/>
+        <circle cx="250" cy="240" r="12" fill="#FAF5EA" stroke="#0E2233" stroke-width="2"/>
       </g>
       <g class="raio-branco" stroke="url(#gradBranco)" stroke-width="4" fill="none" opacity=".9">
         <line x1="340" y1="240" x2="460" y2="240"/>
       </g>
-      <rect x="455" y="200" width="20" height="80" rx="3" fill="#FAF5EA" stroke="#c29a3f" stroke-width="1.5"/>
-      <text x="465" y="310" text-anchor="middle" fill="#8a8271" font-size="10" font-family="IBM Plex Mono, monospace">BRANCO</text>
+      <rect x="455" y="200" width="20" height="80" rx="4" fill="#FAF5EA" stroke="#2AB6D4" stroke-width="2"/>
+      <text x="465" y="310" text-anchor="middle" fill="#B9CCDA" font-size="10">Branco</text>
       <g class="selo-temp">
-        <rect x="175" y="400" width="150" height="44" fill="none" stroke="#c29a3f" stroke-width="1.5"/>
-        <text x="250" y="428" text-anchor="middle" fill="#efe8d8" font-weight="600" font-size="12" font-family="IBM Plex Mono, monospace">SÍNTESE ADITIVA</text>
+        <rect x="175" y="400" width="150" height="44" rx="22" fill="none" stroke="#8B5CF6" stroke-width="1.5"/>
+        <text x="250" y="428" text-anchor="middle" fill="#fff" font-weight="800" font-size="13">Síntese Aditiva</text>
       </g>
     </svg>
   </div>
 </section>
 
+<!-- LETREIRO -->
 <div class="letreiro" aria-hidden="true">
   <div class="letreiro-trilho">
-    <span>❦ Luz branca = <b>soma das sete cores</b></span>
-    <span>❦ O olho funde as cores em <b>~1/16 de segundo</b></span>
-    <span>❦ Isaac Newton, <b>Opticks (1704)</b></span>
-    <span>❦ Design <b>inclusivo</b> e acessível</span>
-    <span>❦ ODS 4 — <b>Educação de qualidade</b></span>
-    <span>❦ Luz branca = <b>soma das sete cores</b></span>
-    <span>❦ O olho funde as cores em <b>~1/16 de segundo</b></span>
-    <span>❦ Isaac Newton, <b>Opticks (1704)</b></span>
-    <span>❦ Design <b>inclusivo</b> e acessível</span>
-    <span>❦ ODS 4 — <b>Educação de qualidade</b></span>
+    <span>🌈 Luz branca = <b>soma das sete cores</b></span>
+    <span>🧠 Nosso olho funde as cores em <b>~1/16 de segundo</b></span>
+    <span>📖 Isaac Newton, <b>Opticks (1704)</b></span>
+    <span>♿ Design <b>inclusivo</b> e acessível</span>
+    <span>🎯 ODS 4 — <b>Educação de qualidade</b></span>
+    <span>🌈 Luz branca = <b>soma das sete cores</b></span>
+    <span>🧠 Nosso olho funde as cores em <b>~1/16 de segundo</b></span>
+    <span>📖 Isaac Newton, <b>Opticks (1704)</b></span>
+    <span>♿ Design <b>inclusivo</b> e acessível</span>
+    <span>🎯 ODS 4 — <b>Educação de qualidade</b></span>
   </div>
 </div>
 
+<!-- O PROJETO -->
 <section class="faixa faixa-clara" id="projeto">
   <div class="miolo">
-    <span class="chip-secao">Cap. I — O Projeto</span>
+    <span class="chip-secao">O Projeto</span>
     <h2 class="titulo-secao">O Disco de Newton no laboratório do CEP</h2>
     <p class="subtitulo-secao">
-      Recriamos um dos experimentos mais elegantes da história da ciência: o disco de sete cores que,
-      ao girar, revela que o branco não é ausência de cor — é a presença de todas elas.
+      Nosso projeto recria um dos experimentos mais elegantes da história da ciência: o disco de sete cores
+      que, ao girar, revela que o branco não é ausência de cor, mas sim a presença de todas elas.
     </p>
     <div class="grade-projeto revelar">
       <div class="colagem">
         <figure class="foto-1">
-          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23241e17' width='400' height='300'/%3E%3Ccircle cx='200' cy='140' r='85' fill='%23FAF5EA' stroke='%23c29a3f' stroke-width='2'/%3E%3Cpath d='M200,140 L285,140 A85,85 0 0,1 253,207 Z' fill='%23E63946'/%3E%3Cpath d='M200,140 L253,207 A85,85 0 0,1 178,224 Z' fill='%23F77F00'/%3E%3Cpath d='M200,140 L178,224 A85,85 0 0,1 117,185 Z' fill='%23FCBF49'/%3E%3Cpath d='M200,140 L117,185 A85,85 0 0,1 114,120 Z' fill='%232A9D8F'/%3E%3Cpath d='M200,140 L114,120 A85,85 0 0,1 157,63 Z' fill='%230077B6'/%3E%3Cpath d='M200,140 L157,63 A85,85 0 0,1 226,55 Z' fill='%235A189A'/%3E%3Cpath d='M200,140 L226,55 A85,85 0 0,1 285,140 Z' fill='%239D4EDD'/%3E%3Ctext x='200' y='270' text-anchor='middle' fill='%23c29a3f' font-size='14'%3EPrancha I — O Disco%3C/text%3E%3C/svg%3E" alt="Disco colorido dividido em sete fatias">
-          <figcaption>Prancha I · Disco de 7 setores</figcaption>
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%230A2E4C' width='400' height='300'/%3E%3Ccircle cx='200' cy='140' r='85' fill='%23FAF5EA' stroke='%2341586B' stroke-width='2'/%3E%3Cpath d='M200,140 L285,140 A85,85 0 0,1 253,207 Z' fill='%23E63946'/%3E%3Cpath d='M200,140 L253,207 A85,85 0 0,1 178,224 Z' fill='%23F77F00'/%3E%3Cpath d='M200,140 L178,224 A85,85 0 0,1 117,185 Z' fill='%23FCBF49'/%3E%3Cpath d='M200,140 L117,185 A85,85 0 0,1 114,120 Z' fill='%232A9D8F'/%3E%3Cpath d='M200,140 L114,120 A85,85 0 0,1 157,63 Z' fill='%230077B6'/%3E%3Cpath d='M200,140 L157,63 A85,85 0 0,1 226,55 Z' fill='%235A189A'/%3E%3Cpath d='M200,140 L226,55 A85,85 0 0,1 285,140 Z' fill='%239D4EDD'/%3E%3Ctext x='200' y='270' text-anchor='middle' fill='%232AB6D4' font-size='16'%3EDisco de Newton%3C/text%3E%3C/svg%3E" alt="Disco colorido dividido em sete fatias">
+          <figcaption>Disco dividido em 7 setores</figcaption>
         </figure>
         <figure class="foto-2">
-          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23205249' width='400' height='300'/%3E%3Ccircle cx='200' cy='140' r='85' fill='%23FAF5EA' opacity='0.95' stroke='%23181410' stroke-width='2'/%3E%3Ctext x='200' y='148' text-anchor='middle' fill='%23241e17' font-size='22' font-weight='bold'%3EBRANCO%3C/text%3E%3Ctext x='200' y='270' text-anchor='middle' fill='%23FAF5EA' font-size='14'%3EPrancha II — Giro rápido%3C/text%3E%3C/svg%3E" alt="Disco girando rapidamente aparece branco">
-          <figcaption>Prancha II · Percepção do branco</figcaption>
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%230E7C9E' width='400' height='300'/%3E%3Ccircle cx='200' cy='140' r='85' fill='%23FAF5EA' opacity='0.95' stroke='%2341586B' stroke-width='2'/%3E%3Ctext x='200' y='148' text-anchor='middle' fill='%230A2E4C' font-size='22' font-weight='bold'%3EBRANCO%3C/text%3E%3Ctext x='200' y='270' text-anchor='middle' fill='%23FAF5EA' font-size='16'%3EGiro rápido%3C/text%3E%3C/svg%3E" alt="Disco girando rapidamente aparece branco">
+          <figcaption>Percepção do branco</figcaption>
         </figure>
         <figure class="foto-3">
-          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%239c742c' width='400' height='300'/%3E%3Crect x='40' y='70' width='320' height='160' rx='4' fill='%23241e17'/%3E%3Cdefs%3E%3ClinearGradient id='g1' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0%25' stop-color='%23E63946'/%3E%3Cstop offset='16%25' stop-color='%23F77F00'/%3E%3Cstop offset='32%25' stop-color='%23FCBF49'/%3E%3Cstop offset='48%25' stop-color='%232A9D8F'/%3E%3Cstop offset='64%25' stop-color='%230077B6'/%3E%3Cstop offset='80%25' stop-color='%235A189A'/%3E%3Cstop offset='100%25' stop-color='%239D4EDD'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='60' y='95' width='280' height='110' rx='2' fill='url(%23g1)'/%3E%3Ctext x='200' y='260' text-anchor='middle' fill='%23181410' font-size='14'%3EPrancha III — Espectro%3C/text%3E%3C/svg%3E" alt="Faixa com as sete cores do espectro">
-          <figcaption>Prancha III · Espectro visível</figcaption>
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23F6A821' width='400' height='300'/%3E%3Crect x='40' y='70' width='320' height='160' rx='10' fill='%230A2E4C'/%3E%3Cdefs%3E%3ClinearGradient id='g1' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0%25' stop-color='%23E63946'/%3E%3Cstop offset='16%25' stop-color='%23F77F00'/%3E%3Cstop offset='32%25' stop-color='%23FCBF49'/%3E%3Cstop offset='48%25' stop-color='%232A9D8F'/%3E%3Cstop offset='64%25' stop-color='%230077B6'/%3E%3Cstop offset='80%25' stop-color='%235A189A'/%3E%3Cstop offset='100%25' stop-color='%239D4EDD'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='60' y='95' width='280' height='110' rx='5' fill='url(%23g1)'/%3E%3Ctext x='200' y='260' text-anchor='middle' fill='%231B1200' font-size='16'%3EEspectro visível%3C/text%3E%3C/svg%3E" alt="Faixa com as sete cores do espectro">
+          <figcaption>As sete cores decompostas</figcaption>
         </figure>
       </div>
       <div>
-        <h3 style="font-family:var(--fonte-display); font-size:1.4rem; font-weight:600; margin-bottom:1rem;">Como funciona o Disco de Newton</h3>
-        <p style="color:var(--tinta-suave); margin-bottom:1.5rem; font-weight:300;">
-          Em 1704, no livro <em>Opticks</em>, Isaac Newton apresentou um disco pintado com sete cores.
-          Ao girá-lo rapidamente, as cores fundem-se no olho humano e o disco parece branco.
-          O experimento comprova que a <strong>luz branca é policromática</strong>.
+        <h3 style="font-family:var(--fonte-display); font-size:1.3rem; margin-bottom:1rem;">Como funciona o Disco de Newton</h3>
+        <p style="color:var(--texto-suave); margin-bottom:1.5rem;">
+          Em 1704, no livro <em>Opticks</em>, Isaac Newton apresentou um disco de papelão pintado com sete cores.
+          Ao girá-lo rapidamente, as cores se fundem no olho humano e o disco parece branco. O experimento
+          comprova que a <strong>luz branca é policromática</strong>.
         </p>
         <ul class="lista-projeto">
           <li>
@@ -1593,31 +1562,33 @@ body::after {
   </div>
 </section>
 
+<!-- ÓPTICA -->
 <section class="faixa faixa-clara-2" id="optica">
   <div class="miolo">
-    <span class="chip-secao">Cap. II — Fundamentos</span>
+    <span class="chip-secao">Fundamentos Científicos</span>
     <h2 class="titulo-secao">A física por trás da síntese aditiva</h2>
     <p class="subtitulo-secao">
-      Como o comportamento da luz, do olho humano e do cérebro produzem, juntos, a percepção
+      Entenda como o comportamento da luz, do olho humano e do cérebro produzem, juntos, a percepção
       de que as sete cores somadas resultam em branco.
     </p>
     <div class="optica-grade revelar">
       <div class="optica-fixa">
-        <h3 style="font-family:var(--fonte-display); font-size:1.4rem; font-weight:600; margin-bottom:1rem;">O que é síntese aditiva?</h3>
-        <p style="color:var(--tinta-suave); margin-bottom:1rem; font-weight:300;">
+        <h3 style="font-family:var(--fonte-display); font-size:1.3rem; margin-bottom:1rem;">O que é síntese aditiva?</h3>
+        <p style="color:var(--texto-suave); margin-bottom:1rem;">
           A <strong>síntese aditiva</strong> é o processo pelo qual diferentes radiações luminosas, somadas,
           produzem uma nova cor percebida. Diferente da mistura de tintas (subtrativa), na luz estamos
           <em>adicionando</em> energia: vermelho + verde + azul = branco.
         </p>
-        <p style="color:var(--tinta-suave); margin-bottom:1rem; font-weight:300;">
-          No Disco de Newton, as sete faixas refletem suas cores em sequência rápida. Os três tipos de
-          cones da retina são estimulados tão depressa que o cérebro interpreta a média temporal como branco.
+        <p style="color:var(--texto-suave); margin-bottom:1rem;">
+          No Disco de Newton, as sete faixas refletem suas respectivas cores em sequência rápida.
+          Os três tipos de cones da retina são estimulados de forma tão rápida que o cérebro interpreta
+          a média temporal como branco.
         </p>
         <div class="formulas">
           <div class="formula">R + G + B = Branco<small>Primárias aditivas</small></div>
-          <div class="formula">f ≥ 16 Hz<small>Frequência de fusão</small></div>
+          <div class="formula">f ≥ 16 Hz<small>Frequência mínima de fusão</small></div>
           <div class="formula">λ ∈ [380, 750] nm<small>Espectro visível</small></div>
-          <div class="formula">3 tipos de cones<small>S, M e L · retina</small></div>
+          <div class="formula">3 tipos de cones<small>S, M e L (retina)</small></div>
         </div>
       </div>
       <div class="principios">
@@ -1634,7 +1605,7 @@ body::after {
         <div class="principio">
           <h3>Visão tricromática</h3>
           <p>Possuímos três tipos de cones na retina: S (azul), M (verde) e L (vermelho). Quando as sete cores do disco estimulam os três tipos simultaneamente e de forma equilibrada, o cérebro interpreta o estímulo total como branco — exatamente como faz uma tela LCD com pixels RGB.</p>
-          <span class="tag">Young–Helmholtz</span>
+          <span class="tag">Teoria de Young-Helmholtz</span>
         </div>
         <div class="principio">
           <h3>Síntese aditiva vs. subtrativa</h3>
@@ -1646,21 +1617,22 @@ body::after {
   </div>
 </section>
 
+<!-- SIMULADOR -->
 <section class="faixa faixa-escura" id="simulador">
   <div class="miolo">
-    <span class="chip-secao">Cap. III — Experimento</span>
+    <span class="chip-secao">Simulação Interativa</span>
     <h2 class="titulo-secao">Gire o Disco de Newton</h2>
     <p class="subtitulo-secao">
-      Ajuste a velocidade até o máximo. <strong>Em altas rotações, as cores fundem-se e o disco
-      torna-se completamente BRANCO</strong> — a persistência retiniana, diante dos seus olhos.
+      Ajuste a velocidade até o máximo. <strong>Em altas rotações, as cores se fundem e o disco se torna
+      completamente BRANCO</strong>, simulando com perfeição a persistência retiniana.
     </p>
     <div class="sim-grade revelar">
       <div class="painel">
-        <h3 style="font-family:var(--fonte-display); color:var(--latao-vivo); margin-bottom:1.5rem; font-weight:600;">Controles do disco</h3>
+        <h3 style="font-family:var(--fonte-display); color:var(--ambar); margin-bottom:1.5rem;">Controles do disco</h3>
         <div class="controle">
           <label for="velocidade">Velocidade de rotação <output id="vel-valor">50</output> rpm</label>
           <input type="range" id="velocidade" min="0" max="3000" value="50" step="10">
-          <div class="escala"><span>Parado</span><span>Fusão · Branco</span></div>
+          <div class="escala"><span>Parado</span><span>Fusão Cromática (Branco)</span></div>
         </div>
         <div class="controle">
           <label for="num-cores">Número de cores <output id="cores-valor">7</output></label>
@@ -1690,25 +1662,25 @@ body::after {
         </div>
       </div>
       <div class="painel">
-        <h3 style="font-family:var(--fonte-display); color:var(--latao-vivo); margin-bottom:1.5rem; font-weight:600;">A câmara do disco</h3>
+        <h3 style="font-family:var(--fonte-display); color:var(--ambar); margin-bottom:1.5rem;">Disco em tempo real</h3>
         <div id="disco-canvas-wrapper" aria-label="Disco de Newton interativo"></div>
-        <p class="fig-caption">Fig. 1 — Disco em rotação, tempo real</p>
         <div class="notas-sim">
-          <strong>Nota do editor:</strong> acima de 800 RPM, o algoritmo de <em>fusão cromática</em> interpola cada
-          cor em direção ao <strong>Branco Puro (#FFFFFF)</strong>, reproduzindo com exatidão o que a retina percebe.
+          <strong>Como funciona:</strong> Acima de 800 RPM, o algoritmo de <em>Fusão Cromática</em> interpola cada cor
+          em direção ao <strong>Branco Puro (#FFFFFF)</strong>, reproduzindo com exatidão o que a retina humana percebe.
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ACESSIBILIDADE -->
 <section class="faixa faixa-clara" id="acessibilidade">
   <div class="miolo">
-    <span class="chip-secao">Cap. IV — Inclusão</span>
-    <h2 class="titulo-secao">Um tratado para todas as pessoas</h2>
+    <span class="chip-secao">Design Inclusivo</span>
+    <h2 class="titulo-secao">Um site feito para todas as pessoas</h2>
     <p class="subtitulo-secao">
-      A ciência deve ser acessível. Por isso, o SpectraLab segue as diretrizes WCAG 2.1 —
-      porque um tratado da luz não pode deixar ninguém no escuro.
+      Acreditamos que a ciência deve ser acessível. Por isso, o SpectraLab foi desenvolvido seguindo
+      as diretrizes WCAG 2.1.
     </p>
     <div class="acess-grid revelar">
       <div>
@@ -1719,7 +1691,7 @@ body::after {
         </blockquote>
         <ul class="check-a11y">
           <li>Contraste adequado entre texto e fundo (razão mínima 4.5:1)</li>
-          <li>Tipografia serifada de alta legibilidade (Spectral)</li>
+          <li>Tipografia Atkinson Hyperlegible, desenvolvida pelo Braille Institute</li>
           <li>Navegação completa por teclado com foco sempre visível</li>
           <li>Controles de tamanho de fonte (A+ / A−)</li>
           <li>Modo alto contraste para pessoas com baixa visão</li>
@@ -1731,14 +1703,14 @@ body::after {
         </ul>
         <div class="selos">
           <span class="selo">WCAG 2.1 AA</span>
-          <span class="selo">Teclado</span>
-          <span class="selo">Leitor de tela</span>
+          <span class="selo">Navegação por teclado</span>
+          <span class="selo">Leitor de tela compatível</span>
         </div>
       </div>
       <div>
-        <h3 style="font-family:var(--fonte-display); font-size:1.4rem; font-weight:600; margin-bottom:1rem;">Como usar os recursos</h3>
-        <p style="color:var(--tinta-suave); margin-bottom:1.5rem; font-weight:300;">
-          Na barra superior da página, encontrará ferramentas para personalizar a sua leitura.
+        <h3 style="font-family:var(--fonte-display); font-size:1.3rem; margin-bottom:1rem;">Como usar os recursos</h3>
+        <p style="color:var(--texto-suave); margin-bottom:1.5rem;">
+          Na barra superior da página, você encontrará ferramentas para personalizar sua experiência.
         </p>
         <div class="caixa-info">
           <strong>🔤 Tamanho da fonte</strong>
@@ -1757,35 +1729,36 @@ body::after {
   </div>
 </section>
 
+<!-- IMPACTO -->
 <section class="faixa faixa-escura" id="impacto">
   <div class="miolo">
-    <span class="chip-secao">Cap. V — Impacto</span>
-    <h2 class="titulo-secao">Alinhado aos Objetivos de Desenvolvimento Sustentável</h2>
+    <span class="chip-secao">Impacto Social e Educacional</span>
+    <h2 class="titulo-secao">Alinhado com os Objetivos de Desenvolvimento Sustentável</h2>
     <p class="subtitulo-secao">
-      O SpectraLab contribui para a Agenda 2030 da ONU: educação de qualidade, inovação,
-      redução das desigualdades e ciência acessível para todos.
+      O SpectraLab contribui diretamente para a Agenda 2030 da ONU, promovendo educação de qualidade,
+      inovação tecnológica, redução das desigualdades e ciência acessível para todos.
     </p>
     <div class="ods-linha">
-      <span class="ods ods-4">ODS 4 · Educação de Qualidade</span>
-      <span class="ods ods-9">ODS 9 · Indústria, Inovação e Infraestrutura</span>
-      <span class="ods ods-10">ODS 10 · Redução das Desigualdades</span>
-      <span class="ods ods-11">ODS 11 · Cidades e Comunidades Sustentáveis</span>
+      <span class="ods ods-4">ODS 4 • Educação de Qualidade</span>
+      <span class="ods ods-9">ODS 9 • Indústria, Inovação e Infraestrutura</span>
+      <span class="ods ods-10">ODS 10 • Redução das Desigualdades</span>
+      <span class="ods ods-11">ODS 11 • Cidades e Comunidades Sustentáveis</span>
     </div>
     <div class="impacto-cols revelar">
       <div class="impacto-card">
         <h3>ODS 4 — Educação</h3>
-        <p>Garantir educação inclusiva, equitativa e de qualidade. O projeto transforma conceitos abstratos de óptica em um experimento visual e interativo, estimulando o interesse pela física.</p>
+        <p>O Objetivo 4 visa garantir educação inclusiva, equitativa e de qualidade. O projeto transforma conceitos abstratos de óptica em um experimento visual e interativo, estimulando o interesse pela física.</p>
       </div>
       <div class="impacto-card">
         <h3>ODS 9 — Inovação</h3>
-        <p>O Disco de Newton é o ancestral conceitual de todas as telas modernas (RGB), da holografia, dos LEDs e dos espectrômetros — fomentar essa compreensão é fomentar inovação.</p>
+        <p>Construir infraestruturas resilientes, promover a industrialização inclusiva e fomentar a inovação. O Disco de Newton é o ancestral conceitual de todas as telas modernas (RGB), holografia, LEDs e espectrômetros.</p>
       </div>
       <div class="impacto-card">
         <h3>ODS 10 — Desigualdades</h3>
-        <p>Ao disponibilizar um simulador gratuito e um site totalmente acessível, democratizamos o acesso ao conhecimento científico de qualidade, sem barreiras.</p>
+        <p>Reduzir a desigualdade dentro e entre países. Ao disponibilizar um simulador gratuito e um site totalmente acessível, democratizamos o acesso ao conhecimento científico de qualidade.</p>
       </div>
     </div>
-    <h3 style="font-family:var(--fonte-display); color:var(--latao-vivo); margin-top:3rem; margin-bottom:1rem; font-weight:600;">Cronograma de implementação</h3>
+    <h3 style="font-family:var(--fonte-display); color:var(--ambar); margin-top:3rem; margin-bottom:1rem;">Cronograma de implementação</h3>
     <ul class="linha-tempo">
       <li>
         <b>Fase 1 — Pesquisa histórica</b>
@@ -1797,23 +1770,24 @@ body::after {
       </li>
       <li>
         <b>Fase 3 — Desenvolvimento digital</b>
-        <p>Criação do simulador interativo em p5.js e do site acessível, integrando síntese aditiva com visualização dinâmica.</p>
+        <p>Criação do simulador interativo em p5.js e do site acessível, integrando o conceito de síntese aditiva com visualização dinâmica.</p>
       </li>
       <li>
         <b>Fase 4 — Divulgação e replicação</b>
-        <p>Apresentação em feiras científicas, oficinas para outras turmas e disponibilização do material para escolas públicas.</p>
+        <p>Apresentação em feiras científicas, oficinas para outras turmas e disponibilização do material para escolas da rede pública.</p>
       </li>
     </ul>
   </div>
 </section>
 
+<!-- EQUIPE -->
 <section class="faixa faixa-clara" id="equipe">
   <div class="miolo">
-    <span class="chip-secao">Cap. VI — Autores</span>
+    <span class="chip-secao">Quem faz acontecer</span>
     <h2 class="titulo-secao">Equipe SpectraLab</h2>
     <p class="subtitulo-secao">
-      Um time de desenvolvedores unindo física, programação, design e comunicação
-      para compor este tratado interativo.
+      Um time de desenvolvedores unindo conhecimentos de física, programação, design e comunicação
+      para criar uma solução inovadora e acessível.
     </p>
     <div class="equipe-grade revelar">
       <div class="membro">
@@ -1847,4 +1821,428 @@ body::after {
         <p>Colabora no desenvolvimento do conteúdo científico interativo, nos testes de usabilidade e na manutenção do código do site.</p>
       </div>
     </div>
-    <
+    <p class="nota-edicao">
+      <strong>Nota:</strong> Esta é a equipe real do projeto SpectraLab, um trabalho acadêmico interdisciplinar
+      do Centro Educacional Progressão (CEP) sobre o Disco de Newton e síntese aditiva.
+    </p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faixa faixa-clara-2" id="faq">
+  <div class="miolo">
+    <span class="chip-secao">Perguntas Frequentes</span>
+    <h2 class="titulo-secao">Tire suas dúvidas sobre o Disco de Newton</h2>
+    <p class="subtitulo-secao">
+      Reunimos as perguntas mais comuns sobre síntese aditiva, as sete cores do espectro
+      e o experimento original de Isaac Newton.
+    </p>
+    <div class="faq">
+      <div class="faq-item">
+        <button class="faq-pergunta" aria-expanded="false">Por que exatamente sete cores?</button>
+        <div class="faq-resposta">
+          <p>O espectro visível é contínuo — não existem "sete cores" objetivas na natureza. Newton escolheu sete por razões musicais e filosóficas: uma analogia com as sete notas da escala diatônica. Cientificamente, poderíamos dividir o espectro em qualquer número de faixas.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-pergunta" aria-expanded="false">O disco vira branco mesmo, ou só parece branco?</button>
+        <div class="faq-resposta">
+          <p>Ele <em>parece</em> branco para o olho humano, mas fisicamente continua refletindo as sete cores separadamente. É uma ilusão de óptica baseada na persistência retiniana e na síntese aditiva. Uma câmera de alta velocidade veria as cores distintas em cada foto.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-pergunta" aria-expanded="false">Qual a diferença entre síntese aditiva e subtrativa?</button>
+        <div class="faq-resposta">
+          <p>Na <strong>síntese aditiva</strong> (luz), partimos do escuro e somamos cores-luz: vermelho + verde + azul = branco. Na <strong>síntese subtrativa</strong> (pigmentos), partimos do branco e subtraímos cores com tintas: ciano + magenta + amarelo ≈ preto.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-pergunta" aria-expanded="false">Por que o branco é a soma das cores?</button>
+        <div class="faq-resposta">
+          <p>Porque nossa retina possui três tipos de cones (S, M e L). Quando todos são estimulados de forma equilibrada e simultânea, o cérebro interpreta a combinação como branco. A luz solar "branca" contém todos os comprimentos do espectro visível.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-pergunta" aria-expanded="false">Quem foi Isaac Newton e quando ele fez esse experimento?</button>
+        <div class="faq-resposta">
+          <p>Isaac Newton (1643–1727) foi um físico, matemático e astrônomo inglês. Começou seus experimentos com prismas por volta de 1666 e publicou suas descobertas sobre a luz e as cores no livro <em>Opticks</em>, em 1704.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-pergunta" aria-expanded="false">Onde a síntese aditiva aparece no meu dia a dia?</button>
+        <div class="faq-resposta">
+          <p>Em praticamente toda tela! Monitores, TVs e smartphones usam pixels com subpixels vermelho, verde e azul (RGB). O Disco de Newton é o ancestral conceitual de toda a tecnologia de imagem moderna.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- RODAPÉ -->
+<footer class="rodape">
+  <div class="miolo">
+    <div>
+      <h3>SpectraLab</h3>
+      <p style="margin-bottom:1rem;">
+        Projeto interdisciplinar sobre o Disco de Newton e síntese aditiva do CEP,
+        unindo óptica, tecnologia e acessibilidade digital.
+      </p>
+      <p style="font-size:.85rem;">Desenvolvido com ❤️ pela equipe SpectraLab • Centro Educacional Progressão</p>
+    </div>
+    <div>
+      <h3>Navegação</h3>
+      <ul>
+        <li><a href="#projeto">O Projeto</a></li>
+        <li><a href="#optica">Óptica</a></li>
+        <li><a href="#simulador">Disco Interativo</a></li>
+        <li><a href="#acessibilidade">Acessibilidade</a></li>
+        <li><a href="#impacto">Impacto</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Recursos</h3>
+      <ul>
+        <li><a href="#equipe">Equipe</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#inicio">Voltar ao topo</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="fim">
+    <p>© 2026 SpectraLab • Centro Educacional Progressão. Todos os direitos reservados.</p>
+    <p>Design acessível seguindo WCAG 2.1 AA</p>
+  </div>
+</footer>
+
+<button class="voltar-topo" id="voltar-topo" aria-label="Voltar ao topo da página">↑</button>
+
+<script>
+/* =========================================================
+   1. PALETA DO DISCO DE NEWTON
+   ========================================================= */
+const ESPECTRO = [
+  { nome: "Vermelho", hex: "#E63946", rgb: [230, 57, 70],   lambda: "~700 nm", desc: "Maior comprimento de onda visível, menor energia." },
+  { nome: "Laranja",  hex: "#F77F00", rgb: [247, 127, 0],  lambda: "~620 nm", desc: "Transição entre vermelho e amarelo." },
+  { nome: "Amarelo",  hex: "#FCBF49", rgb: [252, 191, 73], lambda: "~580 nm", desc: "Alta luminosidade, muito sensível ao olho." },
+  { nome: "Verde",    hex: "#2A9D8F", rgb: [42, 157, 143], lambda: "~530 nm", desc: "Centro do espectro visível." },
+  { nome: "Azul",     hex: "#0077B6", rgb: [0, 119, 182],  lambda: "~470 nm", desc: "Alta energia, comprimento curto." },
+  { nome: "Anil",     hex: "#5A189A", rgb: [90, 24, 154],  lambda: "~430 nm", desc: "Entre azul e violeta." },
+  { nome: "Violeta",  hex: "#9D4EDD", rgb: [157, 78, 221], lambda: "~400 nm", desc: "Menor comprimento, maior energia." },
+  { nome: "Rosa",     hex: "#E91E63", rgb: [233, 30, 99],  lambda: "extra",  desc: "Cor extrassistêmica (mistura)." },
+  { nome: "Ciano",    hex: "#00BCD4", rgb: [0, 188, 212],  lambda: "extra",  desc: "Mistura aditiva de verde e azul." },
+  { nome: "Lima",     hex: "#CDDC39", rgb: [205, 220, 57], lambda: "extra",  desc: "Mistura aditiva de verde e amarelo." },
+  { nome: "Pêssego",  hex: "#FFAB91", rgb: [255, 171, 145],lambda: "extra",  desc: "Tom claro entre vermelho e laranja." },
+  { nome: "Lavanda",  hex: "#B39DDB", rgb: [179, 157, 219],lambda: "extra",  desc: "Tom claro entre violeta e branco." }
+];
+
+/* =========================================================
+   2. ESTADO GLOBAL E REFERÊNCIAS DOM
+   ========================================================= */
+let velocidade = 50;
+let numCores = 7;
+let pausado = false;
+
+const velInput = document.getElementById('velocidade');
+const coresInput = document.getElementById('num-cores');
+const velValor = document.getElementById('vel-valor');
+const coresValor = document.getElementById('cores-valor');
+const btnPausarDisco = document.getElementById('btn-pausar-disco');
+const btnResetDisco = document.getElementById('btn-reset-disco');
+const freqFusao = document.getElementById('freq-fusao');
+const estadoDisco = document.getElementById('estado-disco');
+const corSwatch = document.getElementById('cor-swatch');
+const corNome = document.getElementById('cor-nome');
+const corDesc = document.getElementById('cor-desc');
+const corDisplay = document.getElementById('cor-display');
+
+/* =========================================================
+   3. ATUALIZAÇÃO DOS PAINÉIS
+   ========================================================= */
+function atualizarDisplays() {
+  velValor.textContent = velocidade;
+  coresValor.textContent = numCores;
+  freqFusao.textContent = (velocidade / 60).toFixed(1) + ' Hz';
+
+  if (pausado) {
+    estadoDisco.textContent = 'Pausado';
+  } else if (velocidade === 0) {
+    estadoDisco.textContent = 'Parado';
+  } else if (velocidade >= 1500) {
+    estadoDisco.textContent = 'Branco Puro';
+  } else if (velocidade >= 800) {
+    estadoDisco.textContent = 'Fundindo...';
+  } else {
+    estadoDisco.textContent = 'Girando';
+  }
+}
+
+velInput.addEventListener('input', e => {
+  velocidade = parseInt(e.target.value);
+  atualizarDisplays();
+});
+
+coresInput.addEventListener('input', e => {
+  numCores = parseInt(e.target.value);
+  atualizarDisplays();
+});
+
+btnPausarDisco.addEventListener('click', () => {
+  pausado = !pausado;
+  btnPausarDisco.textContent = pausado ? '▶ Retomar' : '⏸ Pausar';
+  atualizarDisplays();
+});
+
+btnResetDisco.addEventListener('click', () => {
+  velocidade = 50;
+  numCores = 7;
+  pausado = false;
+  velInput.value = 50;
+  coresInput.value = 7;
+  btnPausarDisco.textContent = '⏸ Pausar';
+  atualizarDisplays();
+});
+
+atualizarDisplays();
+
+/* =========================================================
+   4. SKETCH P5.JS — DISCO PERFEITO + FUSÃO AO BRANCO PURO
+   ========================================================= */
+const discoSketch = (p) => {
+  let angulo = 0;
+  let raio = 170;
+
+  p.setup = () => {
+    const wrapper = document.getElementById('disco-canvas-wrapper');
+    const w = Math.min(wrapper.offsetWidth - 20, 460);
+    const h = 400;
+    const canvas = p.createCanvas(w, h);
+    canvas.parent('disco-canvas-wrapper');
+    raio = Math.min(w, h) / 2 - 20;
+    p.angleMode(p.RADIANS);
+  };
+
+  p.draw = () => {
+    p.clear();
+    p.translate(p.width / 2, p.height / 2);
+
+    // Rotação proporcional à velocidade (RPM)
+    if (!pausado && !document.documentElement.classList.contains('pausado')) {
+      angulo += (velocidade / 60) * 0.05;
+    }
+
+    // Fator de fusão cromática (0 = cores puras, 1 = branco puro)
+    let fatorFusao = 0;
+    if (velocidade > 800) {
+      fatorFusao = p.constrain(p.map(velocidade, 800, 1500, 0, 1), 0, 1);
+    }
+
+    // Ângulo EXATO por fatia => todas rigorosamente iguais
+    const angSetor = p.TWO_PI / numCores;
+    let hoverIndex = -1;
+
+    p.rotate(angulo);
+
+    if (fatorFusao >= 1) {
+      // Disco 100% BRANCO: círculo único perfeito
+      p.noStroke();
+      p.fill(255, 255, 255);
+      p.circle(0, 0, raio * 2);
+    } else {
+      // Fatias iguais em modo PIE (setor fechado até o centro)
+      for (let i = 0; i < numCores; i++) {
+        const cor = ESPECTRO[i % ESPECTRO.length];
+        p.fill(
+          p.lerp(cor.rgb[0], 255, fatorFusao),
+          p.lerp(cor.rgb[1], 255, fatorFusao),
+          p.lerp(cor.rgb[2], 255, fatorFusao)
+        );
+        p.noStroke();
+        p.arc(0, 0, raio * 2, raio * 2, i * angSetor, (i + 1) * angSetor, p.PIE);
+      }
+
+      // Separadores finos e uniformes (mesma espessura em todas as fatias)
+      if (fatorFusao < 0.95) {
+        p.stroke(255, 255, 255, p.lerp(60, 0, fatorFusao));
+        p.strokeWeight(1);
+        for (let i = 0; i < numCores; i++) {
+          const a = i * angSetor;
+          p.line(0, 0, p.cos(a) * raio, p.sin(a) * raio);
+        }
+      }
+    }
+
+    // Anel externo contínuo => acabamento de círculo perfeito
+    p.noFill();
+    p.stroke(255, 255, 255, 90);
+    p.strokeWeight(2);
+    p.circle(0, 0, raio * 2);
+
+    // Eixo central simétrico
+    p.noStroke();
+    p.fill(250, 245, 234);
+    p.circle(0, 0, raio * 0.14);
+    p.fill(14, 34, 51);
+    p.circle(0, 0, raio * 0.05);
+
+    // Detecção de hover (apenas quando as cores ainda são distinguíveis)
+    if (fatorFusao < 0.8) {
+      const mx = p.mouseX - p.width / 2;
+      const my = p.mouseY - p.height / 2;
+      const rx = mx * p.cos(-angulo) - my * p.sin(-angulo);
+      const ry = mx * p.sin(-angulo) + my * p.cos(-angulo);
+      const dist = p.sqrt(rx * rx + ry * ry);
+
+      if (dist <= raio && dist > raio * 0.1) {
+        let mA = p.atan2(ry, rx);
+        if (mA < 0) mA += p.TWO_PI;
+        const idx = p.floor(mA / angSetor);
+        if (idx >= 0 && idx < numCores) {
+          hoverIndex = idx;
+          p.push();
+          p.fill(255, 255, 255, 100);
+          p.noStroke();
+          p.arc(0, 0, raio * 2, raio * 2, idx * angSetor, (idx + 1) * angSetor, p.PIE);
+          p.pop();
+        }
+      }
+    }
+
+    // Atualização do painel de cor identificada
+    if (hoverIndex >= 0) {
+      const c = ESPECTRO[hoverIndex % ESPECTRO.length];
+      corSwatch.style.background = c.hex;
+      corNome.textContent = c.nome + ' (' + c.lambda + ')';
+      corDesc.textContent = c.desc;
+      corDisplay.classList.add('ativa');
+    } else if (fatorFusao >= 0.8) {
+      corSwatch.style.background = '#FFFFFF';
+      corNome.textContent = 'Branco Puro (Síntese Aditiva)';
+      corDesc.textContent = 'As cores se fundiram completamente devido à alta velocidade.';
+      corDisplay.classList.add('ativa');
+    } else {
+      corSwatch.style.background = '#333';
+      corNome.textContent = 'Passe o mouse sobre o disco';
+      corDesc.textContent = 'Cada fatia corresponde a uma cor do espectro visível.';
+      corDisplay.classList.remove('ativa');
+    }
+  };
+
+  p.windowResized = () => {
+    const wrapper = document.getElementById('disco-canvas-wrapper');
+    if (wrapper) {
+      const w = Math.min(wrapper.offsetWidth - 20, 460);
+      p.resizeCanvas(w, 400);
+      raio = Math.min(w, 400) / 2 - 20;
+    }
+  };
+};
+
+new p5(discoSketch);
+
+/* =========================================================
+   5. MENU MOBILE
+   ========================================================= */
+const btnMenu = document.getElementById('botao-menu');
+const menu = document.getElementById('menu-principal');
+
+btnMenu.addEventListener('click', () => {
+  const aberto = menu.classList.toggle('aberto');
+  btnMenu.setAttribute('aria-expanded', aberto);
+});
+
+menu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    menu.classList.remove('aberto');
+    btnMenu.setAttribute('aria-expanded', 'false');
+  });
+});
+
+/* =========================================================
+   6. VOLTAR AO TOPO
+   ========================================================= */
+const voltarTopo = document.getElementById('voltar-topo');
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 500) {
+    voltarTopo.classList.add('aparece');
+  } else {
+    voltarTopo.classList.remove('aparece');
+  }
+});
+
+voltarTopo.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* =========================================================
+   7. REVELAR ELEMENTOS AO ROLAR
+   ========================================================= */
+const revelarElementos = document.querySelectorAll('.revelar');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visivel');
+    }
+  });
+}, { threshold: 0.1 });
+revelarElementos.forEach(el => observer.observe(el));
+
+/* =========================================================
+   8. FAQ ACORDEÃO
+   ========================================================= */
+document.querySelectorAll('.faq-pergunta').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const aberta = item.classList.contains('aberta');
+
+    document.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('aberta');
+      i.querySelector('.faq-pergunta').setAttribute('aria-expanded', 'false');
+    });
+
+    if (!aberta) {
+      item.classList.add('aberta');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+
+/* =========================================================
+   9. FERRAMENTAS DE ACESSIBILIDADE
+   ========================================================= */
+let fontSize = 100;
+const btnAumentar = document.getElementById('btn-aumentar');
+const btnReduzir = document.getElementById('btn-reduzir');
+const btnPadrao = document.getElementById('btn-fonte-padrao');
+const btnContraste = document.getElementById('btn-contraste');
+const btnPausarGlobal = document.getElementById('btn-pausar');
+
+btnAumentar.addEventListener('click', () => {
+  fontSize = Math.min(150, fontSize + 10);
+  document.documentElement.style.fontSize = fontSize + '%';
+});
+
+btnReduzir.addEventListener('click', () => {
+  fontSize = Math.max(80, fontSize - 10);
+  document.documentElement.style.fontSize = fontSize + '%';
+});
+
+btnPadrao.addEventListener('click', () => {
+  fontSize = 100;
+  document.documentElement.style.fontSize = '100%';
+});
+
+btnContraste.addEventListener('click', () => {
+  const ativo = document.documentElement.classList.toggle('alto-contraste');
+  btnContraste.setAttribute('aria-pressed', ativo);
+});
+
+btnPausarGlobal.addEventListener('click', () => {
+  const pausadoGlobal = document.documentElement.classList.toggle('pausado');
+  btnPausarGlobal.setAttribute('aria-pressed', pausadoGlobal);
+});
+</script>
+</body>
+</html>
