@@ -1,390 +1,310 @@
-    <p class="nota-edicao">
-      <strong>Nota:</strong> Esta é a equipe real do projeto SpectraLab, um trabalho acadêmico interdisciplinar
-      do Centro Educacional Progressão (CEP) sobre o Disco de Newton e síntese aditiva.
-    </p>
-  </div>
-</section>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SpectraLab — tratado interativo sobre o Disco de Newton e a síntese aditiva das cores. Projeto do CEP.">
+<meta name="theme-color" content="#f4efe3">
+<title>SpectraLab • Tratado da Luz — CEP</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌈</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
-<!-- FAQ -->
-<section class="faixa faixa-clara-2" id="faq">
+<a class="pular" href="#conteudo">Pular para o conteúdo principal</a>
+
+<div class="barra-a11y" role="region" aria-label="Ferramentas de acessibilidade">
   <div class="miolo">
-    <span class="chip-secao">Apêndice — Perguntas Frequentes</span>
-    <h2 class="titulo-secao">Tire suas dúvidas sobre o Disco de Newton</h2>
-    <p class="subtitulo-secao">
-      Reunimos as perguntas mais comuns sobre síntese aditiva, as sete cores do espectro
-      e o experimento original de Isaac Newton.
-    </p>
-    <div class="faq">
-      <div class="faq-item">
-        <button class="faq-pergunta" aria-expanded="false">Por que exatamente sete cores?</button>
-        <div class="faq-resposta">
-          <p>O espectro visível é contínuo — não existem "sete cores" objetivas na natureza. Newton escolheu sete por razões musicais e filosóficas: uma analogia com as sete notas da escala diatônica. Cientificamente, poderíamos dividir o espectro em qualquer número de faixas.</p>
+    <span class="rotulo">Acessibilidade</span>
+    <button type="button" id="btn-aumentar" aria-label="Aumentar o tamanho da fonte">A+</button>
+    <button type="button" id="btn-reduzir" aria-label="Reduzir o tamanho da fonte">A−</button>
+    <button type="button" id="btn-fonte-padrao" aria-label="Restaurar tamanho padrão da fonte">A padrão</button>
+    <span class="sep" aria-hidden="true"></span>
+    <button type="button" id="btn-contraste" aria-pressed="false">◐ Alto contraste</button>
+    <button type="button" id="btn-pausar" aria-pressed="false">⏸ Pausar animações</button>
+  </div>
+</div>
+
+<header class="cabecalho">
+  <div class="miolo">
+    <a class="marca" href="#inicio" aria-label="SpectraLab — página inicial">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <defs>
+          <linearGradient id="gradDisco" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#E63946"/><stop offset="16%" stop-color="#F77F00"/>
+            <stop offset="32%" stop-color="#FCBF49"/><stop offset="48%" stop-color="#2A9D8F"/>
+            <stop offset="64%" stop-color="#0077B6"/><stop offset="80%" stop-color="#5A189A"/>
+            <stop offset="100%" stop-color="#9D4EDD"/>
+          </linearGradient>
+        </defs>
+        <circle cx="24" cy="24" r="18" fill="url(#gradDisco)" stroke="#181410" stroke-width="2"/>
+        <circle cx="24" cy="24" r="4" fill="#f4efe3" stroke="#181410" stroke-width="2"/>
+      </svg>
+      <span class="nome">SpectraLab<small>Tratado da Luz • CEP</small></span>
+    </a>
+    <button class="btn-menu" id="botao-menu" aria-expanded="false" aria-controls="menu-principal">☰ Menu</button>
+    <nav aria-label="Navegação principal">
+      <ul class="menu" id="menu-principal">
+        <li><a href="#projeto">O Projeto</a></li>
+        <li><a href="#optica">Óptica</a></li>
+        <li><a href="#simulador">Disco Interativo</a></li>
+        <li><a href="#acessibilidade">Acessibilidade</a></li>
+        <li><a href="#impacto">Impacto</a></li>
+        <li><a href="#equipe">Equipe</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="conteudo">
+
+  <section class="abertura" id="inicio" aria-label="Apresentação do projeto">
+    <div class="miolo">
+      <div>
+        <p class="olho"><span>Física · Óptica · Síntese Aditiva · Inclusão</span></p>
+        <h1 class="titulo-abertura">
+          <span class="linha-mask"><span>Sete cores giram,</span></span>
+          <span class="linha-mask"><span>o olho as funde,</span></span>
+          <span class="linha-mask"><span>e o <em class="hl">branco</em> renasce.</span></span>
+        </h1>
+        <p class="resumo">
+          Neste tratado interativo, o <strong>SpectraLab</strong> recria o célebre Disco de Newton (1704):
+          o experimento que provou ser a luz branca a soma de todas as cores do espectro.
+          Gire o disco depressa o bastante — e o branco emergirá da mistura, diante dos seus olhos.
+        </p>
+        <div class="acoes">
+          <a class="btn btn-sol" href="#simulador">❦ Girar o Disco</a>
+          <a class="btn btn-contorno" href="#optica">Ler a Óptica</a>
+        </div>
+        <div class="legenda-mini" aria-label="Resumo rápido">
+          <span><b>1704</b> Opticks, de Newton</span>
+          <span><b>7 cores</b> do espectro visível</span>
+          <span><b>WCAG 2.1</b> como meta de design</span>
         </div>
       </div>
-      <div class="faq-item">
-        <button class="faq-pergunta" aria-expanded="false">O disco vira branco mesmo, ou só parece branco?</button>
-        <div class="faq-resposta">
-          <p>Ele <em>parece</em> branco para o olho humano, mas fisicamente continua refletindo as sete cores separadamente. É uma ilusão de óptica baseada na persistência retiniana e na síntese aditiva. Uma câmera de alta velocidade veria as cores distintas em cada foto.</p>
+      <svg class="cena" viewBox="0 0 500 480" role="img" aria-label="Gravura animada: feixe de luz branca incide sobre disco giratório de sete cores e sai como luz branca recomposta.">
+        <defs><linearGradient id="gradBranco" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#F4F8FB"/></linearGradient></defs>
+        <rect x="30" y="200" width="60" height="80" rx="4" fill="#241e17" stroke="#c29a3f" stroke-width="1.5"/>
+        <text x="60" y="245" text-anchor="middle" fill="#efe8d8" font-size="11" font-family="monospace">LUZ BRANCA</text>
+        <g class="raio-branco" stroke="url(#gradBranco)" stroke-width="4" fill="none" opacity=".9"><line x1="90" y1="240" x2="170" y2="240"/></g>
+        <g class="disco-gira">
+          <circle cx="250" cy="240" r="90" fill="#FAF5EA" stroke="#181410" stroke-width="2"/>
+          <path d="M250,240 L340,240 A90,90 0 0,1 306.2,311.3 Z" fill="#E63946"/>
+          <path d="M250,240 L306.2,311.3 A90,90 0 0,1 228.5,328.8 Z" fill="#F77F00"/>
+          <path d="M250,240 L228.5,328.8 A90,90 0 0,1 164.6,287.5 Z" fill="#FCBF49"/>
+          <path d="M250,240 L164.6,287.5 A90,90 0 0,1 160.6,220.4 Z" fill="#2A9D8F"/>
+          <path d="M250,240 L160.6,220.4 A90,90 0 0,1 206.8,162.1 Z" fill="#0077B6"/>
+          <path d="M250,240 L206.8,162.1 A90,90 0 0,1 278.9,153.2 Z" fill="#5A189A"/>
+          <path d="M250,240 L278.9,153.2 A90,90 0 0,1 340,240 Z" fill="#9D4EDD"/>
+          <circle cx="250" cy="240" r="12" fill="#FAF5EA" stroke="#181410" stroke-width="2"/>
+        </g>
+        <g class="raio-branco" stroke="url(#gradBranco)" stroke-width="4" fill="none" opacity=".9"><line x1="340" y1="240" x2="460" y2="240"/></g>
+        <rect x="455" y="200" width="20" height="80" rx="3" fill="#FAF5EA" stroke="#c29a3f" stroke-width="1.5"/>
+        <text x="465" y="310" text-anchor="middle" fill="#8a8271" font-size="10" font-family="monospace">BRANCO</text>
+        <g class="selo-temp"><rect x="175" y="400" width="150" height="44" fill="none" stroke="#c29a3f" stroke-width="1.5"/><text x="250" y="428" text-anchor="middle" fill="#efe8d8" font-weight="600" font-size="12" font-family="monospace">SÍNTESE ADITIVA</text></g>
+      </svg>
+    </div>
+  </section>
+
+  <div class="letreiro" aria-hidden="true">
+    <div class="letreiro-trilho">
+      <span>❦ Luz branca = <b>soma das sete cores</b></span>
+      <span>❦ O olho funde as cores em <b>~1/16 de segundo</b></span>
+      <span>❦ Isaac Newton, <b>Opticks (1704)</b></span>
+      <span>❦ Design <b>inclusivo</b> e acessível</span>
+      <span>❦ ODS 4 — <b>Educação de qualidade</b></span>
+      <span>❦ Luz branca = <b>soma das sete cores</b></span>
+      <span>❦ O olho funde as cores em <b>~1/16 de segundo</b></span>
+      <span>❦ Isaac Newton, <b>Opticks (1704)</b></span>
+      <span>❦ Design <b>inclusivo</b> e acessível</span>
+      <span>❦ ODS 4 — <b>Educação de qualidade</b></span>
+    </div>
+  </div>
+
+  <section class="faixa faixa-clara" id="projeto">
+    <div class="miolo">
+      <span class="chip-secao">Cap. I — O Projeto</span>
+      <h2 class="titulo-secao">O Disco de Newton no laboratório do CEP</h2>
+      <p class="subtitulo-secao">Recriamos um dos experimentos mais elegantes da história da ciência: o disco de sete cores que, ao girar, revela que o branco não é ausência de cor — é a presença de todas elas.</p>
+      <div class="grade-projeto revelar">
+        <div class="colagem">
+          <figure class="foto-1"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23241e17' width='400' height='300'/%3E%3Ccircle cx='200' cy='140' r='85' fill='%23FAF5EA' stroke='%23c29a3f' stroke-width='2'/%3E%3Cpath d='M200,140 L285,140 A85,85 0 0,1 253,207 Z' fill='%23E63946'/%3E%3Cpath d='M200,140 L253,207 A85,85 0 0,1 178,224 Z' fill='%23F77F00'/%3E%3Cpath d='M200,140 L178,224 A85,85 0 0,1 117,185 Z' fill='%23FCBF49'/%3E%3Cpath d='M200,140 L117,185 A85,85 0 0,1 114,120 Z' fill='%232A9D8F'/%3E%3Cpath d='M200,140 L114,120 A85,85 0 0,1 157,63 Z' fill='%230077B6'/%3E%3Cpath d='M200,140 L157,63 A85,85 0 0,1 226,55 Z' fill='%235A189A'/%3E%3Cpath d='M200,140 L226,55 A85,85 0 0,1 285,140 Z' fill='%239D4EDD'/%3E%3Ctext x='200' y='270' text-anchor='middle' fill='%23c29a3f' font-size='14'%3EPrancha I%3C/text%3E%3C/svg%3E" alt="Disco dividido em sete fatias"><figcaption>Prancha I · Disco de 7 setores</figcaption></figure>
+          <figure class="foto-2"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23205249' width='400' height='300'/%3E%3Ccircle cx='200' cy='140' r='85' fill='%23FAF5EA' stroke='%23181410' stroke-width='2'/%3E%3Ctext x='200' y='148' text-anchor='middle' fill='%23241e17' font-size='22' font-weight='bold'%3EBRANCO%3C/text%3E%3C/svg%3E" alt="Disco girando aparece branco"><figcaption>Prancha II · Percepção do branco</figcaption></figure>
+          <figure class="foto-3"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%239c742c' width='400' height='300'/%3E%3Crect x='40' y='70' width='320' height='160' fill='%23241e17'/%3E%3Cdefs%3E%3ClinearGradient id='g1' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0%25' stop-color='%23E63946'/%3E%3Cstop offset='16%25' stop-color='%23F77F00'/%3E%3Cstop offset='32%25' stop-color='%23FCBF49'/%3E%3Cstop offset='48%25' stop-color='%232A9D8F'/%3E%3Cstop offset='64%25' stop-color='%230077B6'/%3E%3Cstop offset='80%25' stop-color='%235A189A'/%3E%3Cstop offset='100%25' stop-color='%239D4EDD'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='60' y='95' width='280' height='110' fill='url(%23g1)'/%3E%3C/svg%3E" alt="Faixa com as sete cores"><figcaption>Prancha III · Espectro visível</figcaption></figure>
         </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-pergunta" aria-expanded="false">Qual a diferença entre síntese aditiva e subtrativa?</button>
-        <div class="faq-resposta">
-          <p>Na <strong>síntese aditiva</strong> (luz), partimos do escuro e somamos cores-luz: vermelho + verde + azul = branco. Na <strong>síntese subtrativa</strong> (pigmentos), partimos do branco e subtraímos cores com tintas: ciano + magenta + amarelo ≈ preto.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-pergunta" aria-expanded="false">Por que o branco é a soma das cores?</button>
-        <div class="faq-resposta">
-          <p>Porque nossa retina possui três tipos de cones (S, M e L). Quando todos são estimulados de forma equilibrada e simultânea, o cérebro interpreta a combinação como branco. A luz solar "branca" contém todos os comprimentos do espectro visível.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-pergunta" aria-expanded="false">Quem foi Isaac Newton e quando fez esse experimento?</button>
-        <div class="faq-resposta">
-          <p>Isaac Newton (1643–1727) foi um físico, matemático e astrônomo inglês. Começou seus experimentos com prismas por volta de 1666 e publicou suas descobertas sobre a luz e as cores no livro <em>Opticks</em>, em 1704.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-pergunta" aria-expanded="false">Onde a síntese aditiva aparece no meu dia a dia?</button>
-        <div class="faq-resposta">
-          <p>Em praticamente toda tela! Monitores, TVs e smartphones usam pixels com subpixels vermelho, verde e azul (RGB). O Disco de Newton é o ancestral conceitual de toda a tecnologia de imagem moderna.</p>
+        <div>
+          <h3 style="font-family:var(--fonte-display);font-size:1.4rem;font-weight:600;margin-bottom:1rem;">Como funciona o Disco de Newton</h3>
+          <p style="color:var(--tinta-suave);margin-bottom:1.5rem;font-weight:300;">Em 1704, no livro <em>Opticks</em>, Newton apresentou um disco pintado com sete cores. Ao girá-lo rapidamente, as cores fundem-se no olho e o disco parece branco. Comprova-se que a <strong>luz branca é policromática</strong>.</p>
+          <ul class="lista-projeto">
+            <li><span class="icone">🌈</span><div><b>As 7 cores do espectro</b><p>Vermelho, laranja, amarelo, verde, azul, anil e violeta — cada uma com comprimento de onda entre 380nm e 750nm.</p></div></li>
+            <li><span class="icone">🧠</span><div><b>Persistência retiniana</b><p>O olho mantém a imagem por ~1/16 de segundo. Mais rápido que isso, o cérebro soma as sete cores.</p></div></li>
+            <li><span class="icone">✨</span><div><b>Síntese aditiva</b><p>A soma das cores-luz resulta no branco — o mesmo princípio de telas, monitores e projetores RGB.</p></div></li>
+            <li><span class="icone">🔬</span><div><b>Revolução na óptica</b><p>Antes de Newton, o branco era tido como "puro". Ele provou que é a soma de todas as cores.</p></div></li>
+          </ul>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+
+  <section class="faixa faixa-clara-2" id="optica">
+    <div class="miolo">
+      <span class="chip-secao">Cap. II — Fundamentos</span>
+      <h2 class="titulo-secao">A física por trás da síntese aditiva</h2>
+      <p class="subtitulo-secao">Como luz, olho e cérebro produzem, juntos, a percepção de que as sete cores somadas resultam em branco.</p>
+      <div class="optica-grade revelar">
+        <div class="optica-fixa">
+          <h3 style="font-family:var(--fonte-display);font-size:1.4rem;font-weight:600;margin-bottom:1rem;">O que é síntese aditiva?</h3>
+          <p style="color:var(--tinta-suave);margin-bottom:1rem;font-weight:300;">A <strong>síntese aditiva</strong> soma radiações luminosas para produzir uma nova cor. Diferente das tintas (subtrativa), na luz <em>adicionamos</em> energia: vermelho + verde + azul = branco.</p>
+          <p style="color:var(--tinta-suave);margin-bottom:1rem;font-weight:300;">No Disco de Newton, as faixas refletem suas cores em sequência rápida. Os cones da retina são estimulados tão depressa que o cérebro lê a média como branco.</p>
+          <div class="formulas">
+            <div class="formula">R + G + B = Branco<small>Primárias aditivas</small></div>
+            <div class="formula">f ≥ 16 Hz<small>Frequência de fusão</small></div>
+            <div class="formula">λ ∈ [380, 750] nm<small>Espectro visível</small></div>
+            <div class="formula">3 tipos de cones<small>S, M e L · retina</small></div>
+          </div>
+        </div>
+        <div class="principios">
+          <div class="principio"><h3>Decomposição da luz branca</h3><p>Um prisma separa a luz branca num arco-íris. Newton mostrou que as cores <em>não</em> vinham do vidro — já estavam na luz. O disco faz o inverso: recompõe o branco.</p><span class="tag">Opticks, 1704</span></div>
+          <div class="principio"><h3>Persistência retiniana</h3><p>A retina segura a imagem por ~1/16–1/20 s. Acima de ~10 rotações/s, as sete imagens se sobrepõem e o cérebro vê uma só: branca.</p><span class="tag">Fisiologia da visão</span></div>
+          <div class="principio"><h3>Visão tricromática</h3><p>Cones S (azul), M (verde) e L (vermelho). Estimulados juntos e equilibrados, o cérebro interpreta branco — como num pixel RGB.</p><span class="tag">Young–Helmholtz</span></div>
+          <div class="principio"><h3>Aditiva vs. subtrativa</h3><p>Aditiva (luz): somar cores → branco. Subtrativa (pigmento): somar tintas → preto/marrom (CMYK).</p><span class="tag">Cor-luz vs. cor-pigmento</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faixa faixa-escura" id="simulador">
+    <div class="miolo">
+      <span class="chip-secao">Cap. III — Experimento</span>
+      <h2 class="titulo-secao">Gire o Disco de Newton</h2>
+      <p class="subtitulo-secao">Leve a velocidade ao máximo: as cores fundem-se e o disco torna-se <strong>completamente BRANCO</strong> — a persistência retiniana em ação.</p>
+      <div class="sim-grade revelar">
+        <div class="painel">
+          <h3 style="font-family:var(--fonte-display);color:var(--latao-vivo);margin-bottom:1.5rem;font-weight:600;">Controles do disco</h3>
+          <div class="controle"><label for="velocidade">Velocidade <output id="vel-valor">50</output> rpm</label><input type="range" id="velocidade" min="0" max="3000" value="50" step="10"><div class="escala"><span>Parado</span><span>Fusão · Branco</span></div></div>
+          <div class="controle"><label for="num-cores">Cores <output id="cores-valor">7</output></label><input type="range" id="num-cores" min="2" max="12" value="7" step="1"><div class="escala"><span>2</span><span>12</span></div></div>
+          <div class="botoes-sim"><button class="btn-sim" id="btn-pausar-disco" type="button">⏸ Pausar</button><button class="btn-sim secundario" id="btn-reset-disco" type="button">↻ Reiniciar</button></div>
+          <div class="cor-identificada" id="cor-display" aria-live="polite">
+            <div class="swatch" id="cor-swatch"></div>
+            <div class="info"><span class="nome" id="cor-nome">Passe o mouse sobre o disco</span><span class="desc" id="cor-desc">Cada fatia é uma cor do espectro.</span></div>
+          </div>
+          <div class="resultados">
+            <div class="resultado"><div class="valor" id="freq-fusao">—</div><div class="nome">Frequência (Hz)</div></div>
+            <div class="resultado"><div class="valor" id="estado-disco">Girando</div><div class="nome">Estado visual</div></div>
+          </div>
+        </div>
+        <div class="painel">
+          <h3 style="font-family:var(--fonte-display);color:var(--latao-vivo);margin-bottom:1.5rem;font-weight:600;">A câmara do disco</h3>
+          <div id="disco-canvas-wrapper" aria-label="Disco de Newton interativo"></div>
+          <p class="fig-caption">Fig. 1 — Disco em rotação, tempo real</p>
+          <div class="notas-sim"><strong>Nota:</strong> acima de 800 RPM, a <em>fusão cromática</em> interpola cada cor rumo ao <strong>Branco Puro (#FFFFFF)</strong>, como a retina percebe.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faixa faixa-clara" id="acessibilidade">
+    <div class="miolo">
+      <span class="chip-secao">Cap. IV — Inclusão</span>
+      <h2 class="titulo-secao">Um tratado para todas as pessoas</h2>
+      <p class="subtitulo-secao">A ciência deve ser acessível. O SpectraLab segue WCAG 2.1 — um tratado da luz não pode deixar ninguém no escuro.</p>
+      <div class="acess-grid revelar">
+        <div>
+          <blockquote class="citacao">"Acessibilidade digital não é opcional — é direito fundamental que garante autonomia, inclusão e cidadania."<footer>— W3C WAI</footer></blockquote>
+          <ul class="check-a11y">
+            <li>Contraste mínimo 4.5:1</li><li>Tipografia serifada legível (Spectral)</li>
+            <li>Navegação por teclado com foco visível</li><li>Controle de tamanho de fonte (A+/A−)</li>
+            <li>Modo alto contraste</li><li>Pausar animações</li>
+            <li>Texto alternativo em imagens</li><li>HTML5 semântico + ARIA</li>
+            <li>Link "pular para o conteúdo"</li><li>Respeito a movimento reduzido</li>
+          </ul>
+          <div class="selos"><span class="selo">WCAG 2.1 AA</span><span class="selo">Teclado</span><span class="selo">Leitor de tela</span></div>
+        </div>
+        <div>
+          <h3 style="font-family:var(--fonte-display);font-size:1.4rem;font-weight:600;margin-bottom:1rem;">Como usar os recursos</h3>
+          <p style="color:var(--tinta-suave);margin-bottom:1.5rem;font-weight:300;">Na barra superior, ferramentas para personalizar sua leitura.</p>
+          <div class="caixa-info"><strong>🔤 Tamanho da fonte</strong><p>"A+" aumenta, "A−" diminui, "A padrão" restaura.</p></div>
+          <div class="caixa-info"><strong>◐ Alto contraste</strong><p>Preto/branco com amarelo — ideal para baixa visão ou fotofobia.</p></div>
+          <div class="caixa-info"><strong>⏸ Pausar animações</strong><p>Interrompe transições e reduz estímulos visuais.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faixa faixa-escura" id="impacto">
+    <div class="miolo">
+      <span class="chip-secao">Cap. V — Impacto</span>
+      <h2 class="titulo-secao">Alinhado aos Objetivos de Desenvolvimento Sustentável</h2>
+      <p class="subtitulo-secao">Educação de qualidade, inovação, redução de desigualdades e ciência acessível — Agenda 2030 da ONU.</p>
+      <div class="ods-linha">
+        <span class="ods ods-4">ODS 4 · Educação</span><span class="ods ods-9">ODS 9 · Inovação</span>
+        <span class="ods ods-10">ODS 10 · Desigualdades</span><span class="ods ods-11">ODS 11 · Cidades</span>
+      </div>
+      <div class="impacto-cols revelar">
+        <div class="impacto-card"><h3>ODS 4 — Educação</h3><p>Transforma conceitos abstratos de óptica num experimento visual e interativo, despertando interesse pela física.</p></div>
+        <div class="impacto-card"><h3>ODS 9 — Inovação</h3><p>O Disco é ancestral das telas RGB, holografia, LEDs e espectrômetros — compreender isso é fomentar inovação.</p></div>
+        <div class="impacto-card"><h3>ODS 10 — Desigualdades</h3><p>Simulador gratuito e site acessível democratizam o conhecimento científico, sem barreiras.</p></div>
+      </div>
+      <h3 style="font-family:var(--fonte-display);color:var(--latao-vivo);margin-top:3rem;margin-bottom:1rem;font-weight:600;">Cronograma</h3>
+      <ul class="linha-tempo">
+        <li><b>Fase 1 — Pesquisa histórica</b><p>Estudo de <em>Opticks</em> (1704), prismas e teoria da luz.</p></li>
+        <li><b>Fase 2 — Montagem experimental</b><p>Disco físico de 7 setores, motor e demonstração da fusão cromática.</p></li>
+        <li><b>Fase 3 — Desenvolvimento digital</b><p>Simulador em p5.js e site acessível com síntese aditiva dinâmica.</p></li>
+        <li><b>Fase 4 — Divulgação</b><p>Feiras científicas, oficinas e material aberto para escolas públicas.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="faixa faixa-clara" id="equipe">
+    <div class="miolo">
+      <span class="chip-secao">Cap. VI — Autores</span>
+      <h2 class="titulo-secao">Equipe SpectraLab</h2>
+      <p class="subtitulo-secao">Desenvolvedores unindo física, programação, design e comunicação para compor este tratado interativo.</p>
+      <div class="equipe-grade revelar">
+        <div class="membro"><div class="avatar">AL</div><h3>Agatha Letícia</h3><div class="funcao">Desenvolvedora</div><p>Arquitetura front-end e integração entre simulador e interface.</p></div>
+        <div class="membro"><div class="avatar">AB</div><h3>Angelina Brasil</h3><div class="funcao">Desenvolvedora</div><p>Simulador do Disco em p5.js e lógica de identificação/fusão das cores.</p></div>
+        <div class="membro"><div class="avatar">LM</div><h3>Lucca Marins</h3><div class="funcao">Desenvolvedor</div><p>Revisão de código, testes e otimização dos cálculos de síntese aditiva.</p></div>
+        <div class="membro"><div class="avatar">MG</div><h3>Maria Gabrielle</h3><div class="funcao">Desenvolvedora</div><p>Acessibilidade digital, design responsivo e componentes visuais.</p></div>
+        <div class="membro"><div class="avatar">YS</div><h3>Yasmin dos Santos</h3><div class="funcao">Desenvolvedora</div><p>Conteúdo científico interativo, testes de usabilidade e manutenção.</p></div>
+      </div>
+      <p class="nota-edicao"><strong>Nota:</strong> equipe real do projeto SpectraLab — trabalho interdisciplinar do Centro Educacional Progressão (CEP).</p>
+    </div>
+  </section>
+
+  <section class="faixa faixa-clara-2" id="faq">
+    <div class="miolo">
+      <span class="chip-secao">Apêndice — FAQ</span>
+      <h2 class="titulo-secao">Tire suas dúvidas sobre o Disco de Newton</h2>
+      <p class="subtitulo-secao">Perguntas comuns sobre síntese aditiva, as sete cores e o experimento de Newton.</p>
+      <div class="faq">
+        <div class="faq-item"><button class="faq-pergunta" aria-expanded="false">Por que exatamente sete cores?</button><div class="faq-resposta"><p>O espectro é contínuo. Newton escolheu sete por analogia musical (sete notas). Poderíamos dividir em qualquer número.</p></div></div>
+        <div class="faq-item"><button class="faq-pergunta" aria-expanded="false">Vira branco mesmo ou só parece?</button><div class="faq-resposta"><p>Parece branco ao olho (persistência retiniana + síntese aditiva). Fisicamente continua refletindo as cores. Uma câmera rápida veria cada uma.</p></div></div>
+        <div class="faq-item"><button class="faq-pergunta" aria-expanded="false">Aditiva vs. subtrativa?</button><div class="faq-resposta"><p>Aditiva (luz): somar → branco. Subtrativa (pigmento): somar tintas → preto/marrom (CMYK).</p></div></div>
+        <div class="faq-item"><button class="faq-pergunta" aria-expanded="false">Por que branco é soma das cores?</button><div class="faq-resposta"><p>Três cones (S, M, L). Estimulados juntos e equilibrados, o cérebro lê branco. A luz solar contém todo o espectro.</p></div></div>
+        <div class="faq-item"><button class="faq-pergunta" aria-expanded="false">Quem foi Newton e quando?</button><div class="faq-resposta"><p>Newton (1643–1727), físico inglês. Prismas por volta de 1666; publicou <em>Opticks</em> em 1704.</p></div></div>
+        <div class="faq-item"><button class="faq-pergunta" aria-expanded="false">Onde vejo isso no dia a dia?</button><div class="faq-resposta"><p>Toda tela RGB (TV, celular, monitor). O Disco é o ancestral da tecnologia de imagem moderna.</p></div></div>
+      </div>
+    </div>
+  </section>
 
 </main>
 
-<!-- COLOFÃO -->
 <footer class="rodape">
   <div class="miolo">
-    <div>
-      <h3>SpectraLab — Tratado da Luz</h3>
-      <p style="margin-bottom:1rem;">
-        Projeto interdisciplinar sobre o Disco de Newton e síntese aditiva do CEP,
-        unindo óptica, tecnologia e acessibilidade digital.
-      </p>
-      <p style="font-size:.85rem;">Composto com ❤️ pela equipe SpectraLab • Centro Educacional Progressão</p>
-    </div>
-    <div>
-      <h3>Índice</h3>
-      <ul>
-        <li><a href="#projeto">Cap. I — O Projeto</a></li>
-        <li><a href="#optica">Cap. II — Óptica</a></li>
-        <li><a href="#simulador">Cap. III — Experimento</a></li>
-        <li><a href="#acessibilidade">Cap. IV — Inclusão</a></li>
-        <li><a href="#impacto">Cap. V — Impacto</a></li>
-      </ul>
-    </div>
-    <div>
-      <h3>Referências</h3>
-      <ul>
-        <li><a href="#equipe">Cap. VI — Autores</a></li>
-        <li><a href="#faq">Apêndice — FAQ</a></li>
-        <li><a href="#inicio">Voltar ao topo</a></li>
-      </ul>
-    </div>
+    <div><h3>SpectraLab — Tratado da Luz</h3><p style="margin-bottom:1rem;">Projeto interdisciplinar sobre o Disco de Newton e síntese aditiva do CEP.</p><p style="font-size:.85rem;">Composto com ❤️ pela equipe SpectraLab • CEP</p></div>
+    <div><h3>Índice</h3><ul><li><a href="#projeto">Cap. I — O Projeto</a></li><li><a href="#optica">Cap. II — Óptica</a></li><li><a href="#simulador">Cap. III — Experimento</a></li><li><a href="#acessibilidade">Cap. IV — Inclusão</a></li><li><a href="#impacto">Cap. V — Impacto</a></li></ul></div>
+    <div><h3>Referências</h3><ul><li><a href="#equipe">Cap. VI — Autores</a></li><li><a href="#faq">Apêndice — FAQ</a></li><li><a href="#inicio">Voltar ao topo</a></li></ul></div>
   </div>
-  <div class="fim">
-    <p>© 2026 SpectraLab • Centro Educacional Progressão. Todos os direitos reservados.</p>
-    <p>Design acessível seguindo WCAG 2.1 AA</p>
-  </div>
+  <div class="fim"><p>© 2026 SpectraLab • CEP. Todos os direitos reservados.</p><p>Design acessível · WCAG 2.1 AA</p></div>
 </footer>
 
 <button class="voltar-topo" id="voltar-topo" aria-label="Voltar ao topo da página">↑</button>
 
-<script>
-/* =========================================================
-   1. PALETA DO DISCO DE NEWTON
-   ========================================================= */
-const ESPECTRO = [
-  { nome: "Vermelho", hex: "#E63946", rgb: [230, 57, 70],   lambda: "~700 nm", desc: "Maior comprimento de onda visível, menor energia." },
-  { nome: "Laranja",  hex: "#F77F00", rgb: [247, 127, 0],  lambda: "~620 nm", desc: "Transição entre vermelho e amarelo." },
-  { nome: "Amarelo",  hex: "#FCBF49", rgb: [252, 191, 73], lambda: "~580 nm", desc: "Alta luminosidade, muito sensível ao olho." },
-  { nome: "Verde",    hex: "#2A9D8F", rgb: [42, 157, 143], lambda: "~530 nm", desc: "Centro do espectro visível." },
-  { nome: "Azul",     hex: "#0077B6", rgb: [0, 119, 182],  lambda: "~470 nm", desc: "Alta energia, comprimento curto." },
-  { nome: "Anil",     hex: "#5A189A", rgb: [90, 24, 154],  lambda: "~430 nm", desc: "Entre azul e violeta." },
-  { nome: "Violeta",  hex: "#9D4EDD", rgb: [157, 78, 221], lambda: "~400 nm", desc: "Menor comprimento, maior energia." },
-  { nome: "Rosa",     hex: "#E91E63", rgb: [233, 30, 99],  lambda: "extra",  desc: "Cor extrassistêmica (mistura)." },
-  { nome: "Ciano",    hex: "#00BCD4", rgb: [0, 188, 212],  lambda: "extra",  desc: "Mistura aditiva de verde e azul." },
-  { nome: "Lima",     hex: "#CDDC39", rgb: [205, 220, 57], lambda: "extra",  desc: "Mistura aditiva de verde e amarelo." },
-  { nome: "Pêssego",  hex: "#FFAB91", rgb: [255, 171, 145],lambda: "extra",  desc: "Tom claro entre vermelho e laranja." },
-  { nome: "Lavanda",  hex: "#B39DDB", rgb: [179, 157, 219],lambda: "extra",  desc: "Tom claro entre violeta e branco." }
-];
-
-/* =========================================================
-   2. ESTADO GLOBAL E REFERÊNCIAS DOM
-   ========================================================= */
-let velocidade = 50;
-let numCores = 7;
-let pausado = false;
-
-const velInput = document.getElementById('velocidade');
-const coresInput = document.getElementById('num-cores');
-const velValor = document.getElementById('vel-valor');
-const coresValor = document.getElementById('cores-valor');
-const btnPausarDisco = document.getElementById('btn-pausar-disco');
-const btnResetDisco = document.getElementById('btn-reset-disco');
-const freqFusao = document.getElementById('freq-fusao');
-const estadoDisco = document.getElementById('estado-disco');
-const corSwatch = document.getElementById('cor-swatch');
-const corNome = document.getElementById('cor-nome');
-const corDesc = document.getElementById('cor-desc');
-const corDisplay = document.getElementById('cor-display');
-
-function atualizarDisplays() {
-  velValor.textContent = velocidade;
-  coresValor.textContent = numCores;
-  freqFusao.textContent = (velocidade / 60).toFixed(1) + ' Hz';
-
-  if (pausado) estadoDisco.textContent = 'Pausado';
-  else if (velocidade === 0) estadoDisco.textContent = 'Parado';
-  else if (velocidade >= 1500) estadoDisco.textContent = 'Branco Puro';
-  else if (velocidade >= 800) estadoDisco.textContent = 'Fundindo...';
-  else estadoDisco.textContent = 'Girando';
-}
-
-velInput.addEventListener('input', e => { velocidade = parseInt(e.target.value); atualizarDisplays(); });
-coresInput.addEventListener('input', e => { numCores = parseInt(e.target.value); atualizarDisplays(); });
-
-btnPausarDisco.addEventListener('click', () => {
-  pausado = !pausado;
-  btnPausarDisco.textContent = pausado ? '▶ Retomar' : '⏸ Pausar';
-  atualizarDisplays();
-});
-
-btnResetDisco.addEventListener('click', () => {
-  velocidade = 50; numCores = 7; pausado = false;
-  velInput.value = 50; coresInput.value = 7;
-  btnPausarDisco.textContent = '⏸ Pausar';
-  atualizarDisplays();
-});
-
-atualizarDisplays();
-
-/* =========================================================
-   3. SKETCH P5.JS — DISCO PERFEITO + FUSÃO AO BRANCO PURO
-   ========================================================= */
-const discoSketch = (p) => {
-  let angulo = 0;
-  let raio = 170;
-
-  p.setup = () => {
-    const wrapper = document.getElementById('disco-canvas-wrapper');
-    const w = Math.min(wrapper.offsetWidth - 20, 460);
-    const h = 400;
-    const canvas = p.createCanvas(w, h);
-    canvas.parent('disco-canvas-wrapper');
-    raio = Math.min(w, h) / 2 - 20;
-    p.angleMode(p.RADIANS);
-  };
-
-  p.draw = () => {
-    p.clear();
-    p.translate(p.width / 2, p.height / 2);
-
-    if (!pausado && !document.documentElement.classList.contains('pausado')) {
-      angulo += (velocidade / 60) * 0.05;
-    }
-
-    let fatorFusao = 0;
-    if (velocidade > 800) {
-      fatorFusao = p.constrain(p.map(velocidade, 800, 1500, 0, 1), 0, 1);
-    }
-
-    const angSetor = p.TWO_PI / numCores;
-    let hoverIndex = -1;
-
-    p.rotate(angulo);
-
-    if (fatorFusao >= 1) {
-      p.noStroke();
-      p.fill(255, 255, 255);
-      p.circle(0, 0, raio * 2);
-    } else {
-      for (let i = 0; i < numCores; i++) {
-        const cor = ESPECTRO[i % ESPECTRO.length];
-        p.fill(
-          p.lerp(cor.rgb[0], 255, fatorFusao),
-          p.lerp(cor.rgb[1], 255, fatorFusao),
-          p.lerp(cor.rgb[2], 255, fatorFusao)
-        );
-        p.noStroke();
-        p.arc(0, 0, raio * 2, raio * 2, i * angSetor, (i + 1) * angSetor, p.PIE);
-      }
-
-      if (fatorFusao < 0.95) {
-        p.stroke(255, 255, 255, p.lerp(60, 0, fatorFusao));
-        p.strokeWeight(1);
-        for (let i = 0; i < numCores; i++) {
-          const a = i * angSetor;
-          p.line(0, 0, p.cos(a) * raio, p.sin(a) * raio);
-        }
-      }
-    }
-
-    p.noFill();
-    p.stroke(255, 255, 255, 90);
-    p.strokeWeight(2);
-    p.circle(0, 0, raio * 2);
-
-    p.noStroke();
-    p.fill(250, 245, 234);
-    p.circle(0, 0, raio * 0.14);
-    p.fill(14, 34, 51);
-    p.circle(0, 0, raio * 0.05);
-
-    if (fatorFusao < 0.8) {
-      const mx = p.mouseX - p.width / 2;
-      const my = p.mouseY - p.height / 2;
-      const rx = mx * p.cos(-angulo) - my * p.sin(-angulo);
-      const ry = mx * p.sin(-angulo) + my * p.cos(-angulo);
-      const dist = p.sqrt(rx * rx + ry * ry);
-
-      if (dist <= raio && dist > raio * 0.1) {
-        let mA = p.atan2(ry, rx);
-        if (mA < 0) mA += p.TWO_PI;
-        const idx = p.floor(mA / angSetor);
-        if (idx >= 0 && idx < numCores) {
-          hoverIndex = idx;
-          p.push();
-          p.fill(255, 255, 255, 100);
-          p.noStroke();
-          p.arc(0, 0, raio * 2, raio * 2, idx * angSetor, (idx + 1) * angSetor, p.PIE);
-          p.pop();
-        }
-      }
-    }
-
-    if (hoverIndex >= 0) {
-      const c = ESPECTRO[hoverIndex % ESPECTRO.length];
-      corSwatch.style.background = c.hex;
-      corNome.textContent = c.nome + ' (' + c.lambda + ')';
-      corDesc.textContent = c.desc;
-      corDisplay.classList.add('ativa');
-    } else if (fatorFusao >= 0.8) {
-      corSwatch.style.background = '#FFFFFF';
-      corNome.textContent = 'Branco Puro (Síntese Aditiva)';
-      corDesc.textContent = 'As cores se fundiram completamente devido à alta velocidade.';
-      corDisplay.classList.add('ativa');
-    } else {
-      corSwatch.style.background = '#333';
-      corNome.textContent = 'Passe o mouse sobre o disco';
-      corDesc.textContent = 'Cada fatia corresponde a uma cor do espectro visível.';
-      corDisplay.classList.remove('ativa');
-    }
-  };
-
-  p.windowResized = () => {
-    const wrapper = document.getElementById('disco-canvas-wrapper');
-    if (wrapper) {
-      const w = Math.min(wrapper.offsetWidth - 20, 460);
-      p.resizeCanvas(w, 400);
-      raio = Math.min(w, 400) / 2 - 20;
-    }
-  };
-};
-
-new p5(discoSketch);
-
-/* =========================================================
-   4. MENU MOBILE
-   ========================================================= */
-const btnMenu = document.getElementById('botao-menu');
-const menu = document.getElementById('menu-principal');
-
-btnMenu.addEventListener('click', () => {
-  const aberto = menu.classList.toggle('aberto');
-  btnMenu.setAttribute('aria-expanded', aberto);
-});
-
-menu.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', () => {
-    menu.classList.remove('aberto');
-    btnMenu.setAttribute('aria-expanded', 'false');
-  });
-});
-
-/* =========================================================
-   5. VOLTAR AO TOPO
-   ========================================================= */
-const voltarTopo = document.getElementById('voltar-topo');
-
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 500) voltarTopo.classList.add('aparece');
-  else voltarTopo.classList.remove('aparece');
-});
-
-voltarTopo.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-/* =========================================================
-   6. REVELAR AO ROLAR
-   ========================================================= */
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) entry.target.classList.add('visivel');
-  });
-}, { threshold: 0.1 });
-document.querySelectorAll('.revelar').forEach(el => observer.observe(el));
-
-/* =========================================================
-   7. FAQ ACORDEÃO
-   ========================================================= */
-document.querySelectorAll('.faq-pergunta').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const item = btn.parentElement;
-    const aberta = item.classList.contains('aberta');
-
-    document.querySelectorAll('.faq-item').forEach(i => {
-      i.classList.remove('aberta');
-      i.querySelector('.faq-pergunta').setAttribute('aria-expanded', 'false');
-    });
-
-    if (!aberta) {
-      item.classList.add('aberta');
-      btn.setAttribute('aria-expanded', 'true');
-    }
-  });
-});
-
-/* =========================================================
-   8. FERRAMENTAS DE ACESSIBILIDADE
-   ========================================================= */
-let fontSize = 100;
-const btnAumentar = document.getElementById('btn-aumentar');
-const btnReduzir = document.getElementById('btn-reduzir');
-const btnPadrao = document.getElementById('btn-fonte-padrao');
-const btnContraste = document.getElementById('btn-contraste');
-const btnPausarGlobal = document.getElementById('btn-pausar');
-
-btnAumentar.addEventListener('click', () => {
-  fontSize = Math.min(150, fontSize + 10);
-  document.documentElement.style.fontSize = fontSize + '%';
-});
-
-btnReduzir.addEventListener('click', () => {
-  fontSize = Math.max(80, fontSize - 10);
-  document.documentElement.style.fontSize = fontSize + '%';
-});
-
-btnPadrao.addEventListener('click', () => {
-  fontSize = 100;
-  document.documentElement.style.fontSize = '100%';
-});
-
-btnContraste.addEventListener('click', () => {
-  const ativo = document.documentElement.classList.toggle('alto-contraste');
-  btnContraste.setAttribute('aria-pressed', ativo);
-});
-
-btnPausarGlobal.addEventListener('click', () => {
-  const pausadoGlobal = document.documentElement.classList.toggle('pausado');
-  btnPausarGlobal.setAttribute('aria-pressed', pausadoGlobal);
-});
-</script>
+<script src="script.js"></script>
 </body>
 </html>
