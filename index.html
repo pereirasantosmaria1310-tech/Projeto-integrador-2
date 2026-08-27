@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Projeto Integrador CEP — O Disco de Newton e o aquecimento sustentável da piscina: óptica, robótica e acessibilidade digital.">
+<title>Lumen CEP • O Disco de Newton e a Piscina Solar</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌈</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --bg:#f4f7fa; --card:#ffffff; --ink:#0c1a2a; --muted:#5a6b7c;
+  --teal:#0e7490; --teal-esc:#155e75; --sun:#f59e0b; --sun-esc:#b45309;
+  --sky:#0ea5e9; --linha:#e3e9f0; --foco:#b45309;
+  --raio:18px; --sombra:0 10px 30px -12px rgba(12,26,42,.18);
+  --grad:linear-gradient(90deg,#e63946,#f77f00,#fcbf49,#2a9d8f,#0077b6,#5a189a,#9d4edd);
+  --fd:'Sora',system-ui,sans-serif; --ft:'Manrope','Segoe UI',sans-serif;
+}
+html.alto-contraste{--bg:#000;--card:#000;--ink:#fff;--muted:#fff;--teal:#ffff00;--teal-esc:#ffff00;--sun:#ffff00;--sun-esc:#ffff00;--sky:#ffff00;--linha:#fff;--sombra:none;}
+html.alto-contraste a,html.alto-contraste button{text-decoration:underline;}
+html.pausado *,html.pausado *::before,html.pausado *::after{animation-play-state:paused!important;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--ft);background:var(--bg);color:var(--ink);line-height:1.7;}
+img,svg{max-width:100%;display:block;}
+a{color:inherit;} button{font-family:inherit;cursor:pointer;}
+:focus-visible{outline:3px solid var(--foco);outline-offset:3px;border-radius:6px;}
+.pular{position:absolute;left:-999px;top:0;z-index:9999;background:var(--sun);color:#1b1200;font-weight:700;padding:.8rem 1.4rem;border-radius:0 0 12px 0;}
+.pular:focus{left:0;}
+
+/* ============ BARRA A11Y + HEADER ============ */
+.a11y{background:var(--ink);color:#fff;font-size:.82rem;}
+html.alto-contraste .a11y{background:#000;border-bottom:1px solid #fff;}
+.a11y .miolo{max-width:1150px;margin:auto;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;padding:.45rem 1.2rem;}
+.a11y button{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:.25rem .8rem;font-size:.8rem;transition:.2s;}
+.a11y button:hover{background:var(--sun);color:#1b1200;border-color:var(--sun);}
+header{position:sticky;top:0;z-index:900;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--linha);}
+html.alto-contraste header{background:#000;}
+header::after{content:"";display:block;height:3px;background:var(--grad);}
+header .miolo{max-width:1150px;margin:auto;display:flex;align-items:center;gap:1.2rem;padding:.8rem 1.2rem;}
+.logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;font-family:var(--fd);font-weight:800;font-size:1.15rem;}
+.logo .bol{width:34px;height:34px;border-radius:50%;background:conic-gradient(#e63946,#f77f00,#fcbf49,#2a9d8f,#0077b6,#5a189a,#9d4edd,#e63946);box-shadow:0 0 0 3px #fff,0 0 14px rgba(14,116,144,.5);}
+nav ul{display:flex;gap:.2rem;list-style:none;margin-left:auto;flex-wrap:wrap;}
+nav a{text-decoration:none;font-weight:600;font-size:.9rem;color:var(--muted);padding:.5rem .9rem;border-radius:999px;transition:.25s;}
+nav a:hover{background:var(--teal);color:#fff;transform:translateY(-2px);}
+.btn-menu{display:none;margin-left:auto;background:none;border:1px solid var(--linha);border-radius:10px;padding:.45rem .8rem;font-size:1.1rem;}
+@media(max-width:900px){.btn-menu{display:block;} nav ul{position:absolute;top:100%;left:0;right:0;background:var(--card);flex-direction:column;padding:1rem;display:none;border-bottom:1px solid var(--linha);} nav ul.aberto{display:flex;}}
+
+/* ============ HERO ============ */
+.hero{background:radial-gradient(900px 500px at 85% -10%,rgba(14,165,233,.25),transparent 60%),radial-gradient(700px 500px at -10% 110%,rgba(245,158,11,.2),transparent 55%),linear-gradient(160deg,#0c1a2a,#155e75);color:#fff;padding:5rem 1.2rem 5.5rem;overflow:hidden;}
+.hero .miolo{max-width:1150px;margin:auto;display:grid;grid-template-columns:1.1fr .9fr;gap:3rem;align-items:center;}
+@media(max-width:900px){.hero .miolo{grid-template-columns:1fr;}}
+.chip{display:inline-block;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#fde68a;border:1px solid rgba(253,230,138,.5);border-radius:999px;padding:.4rem 1rem;margin-bottom:1.2rem;}
+h1{font-family:var(--fd);font-size:clamp(2.1rem,5vw,3.6rem);line-height:1.12;font-weight:800;margin-bottom:1.2rem;}
+h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{color:#cbd5e1;max-width:52ch;font-size:1.05rem;}
+.cta{display:flex;gap:.9rem;flex-wrap:wrap;margin-top:2rem;}
+.btn{display:inline-flex;gap:.5rem;align-items:center;padding:.9rem 1.7rem;border-radius:999px;font-weight:700;text-decoration:none;border:2px solid transparent;transition:.25s;font-size:.95rem;}
+.btn:hover{transform:translateY(-3px);}
+.btn-sol{background:var(--sun);color:#1b1200;box-shadow:0 12px 30px -12px rgba(245,158,11,.7);}
+.btn-linha{border-color:rgba(255,255,255,.4);color:#fff;}
+.btn-linha:hover{border-color:var(--sky);color:#bae6fd;}
+.stats{display:flex;gap:1.6rem;flex-wrap:wrap;margin-top:2.2rem;font-size:.85rem;color:#cbd5e1;}
+.stats b{color:#fff;}
+.disco-hero{width:min(340px,80vw);aspect-ratio:1;border-radius:50%;margin:auto;position:relative;background:conic-gradient(#e63946,#f77f00,#fcbf49,#2a9d8f,#0077b6,#5a189a,#9d4edd,#e63946);animation:girar 9s linear infinite;box-shadow:0 30px 80px -20px rgba(0,0,0,.6),0 0 60px rgba(14,165,233,.35);}
+.disco-hero::after{content:"";position:absolute;inset:42%;border-radius:50%;background:#fff;box-shadow:0 0 0 6px rgba(255,255,255,.25);}
+@keyframes girar{to{transform:rotate(360deg);}}
+
+/* ============ SEÇÕES ============ */
+section{padding:4.5rem 1.2rem;scroll-margin-top:90px;}
+.miolo{max-width:1150px;margin:auto;}
+.tag{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:800;color:var(--teal);}
+h2{font-family:var(--fd);font-size:clamp(1.7rem,3.5vw,2.5rem);font-weight:800;margin:.6rem 0 1rem;line-height:1.2;}
+h2::after{content:"";display:block;width:80px;height:5px;border-radius:99px;background:var(--grad);margin-top:.8rem;}
+.sub{color:var(--muted);max-width:66ch;font-size:1.03rem;}
+.grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.4rem;margin-top:2.4rem;}
+.card{background:var(--card);border:1px solid var(--linha);border-radius:var(--raio);padding:1.8rem;box-shadow:var(--sombra);transition:.3s;position:relative;overflow:hidden;}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--grad);opacity:0;transition:.3s;}
+.card:hover{transform:translateY(-6px);box-shadow:0 20px 45px -18px rgba(12,26,42,.3);}
+.card:hover::before{opacity:1;}
+.card .ico{font-size:2rem;margin-bottom:.8rem;}
+.card h3{font-family:var(--fd);font-size:1.1rem;margin-bottom:.6rem;}
+.card p,.card li{color:var(--muted);font-size:.94rem;}
+.card ul{padding-left:1.1rem;display:grid;gap:.35rem;}
+
+/* Linha do tempo */
+.tl{margin-top:2.5rem;border-left:3px solid var(--teal);padding-left:1.8rem;display:grid;gap:1.6rem;max-width:760px;}
+.tl li{list-style:none;position:relative;background:var(--card);border:1px solid var(--linha);border-radius:var(--raio);padding:1.2rem 1.4rem;box-shadow:var(--sombra);}
+.tl li::before{content:"";position:absolute;left:-2.35rem;top:1.3rem;width:14px;height:14px;border-radius:50%;background:var(--sun);border:3px solid var(--bg);}
+.tl b{font-family:var(--fd);color:var(--teal-esc);}
+.tl p{color:var(--muted);font-size:.93rem;}
+
+/* Newton bio */
+.bio{display:grid;grid-template-columns:.8fr 1.2fr;gap:2.5rem;align-items:center;margin-top:2.4rem;}
+@media(max-width:900px){.bio{grid-template-columns:1fr;}}
+.retrato{background:linear-gradient(160deg,var(--teal-esc),var(--teal));border-radius:var(--raio);padding:2.2rem;color:#fff;text-align:center;box-shadow:var(--sombra);}
+.retrato .ini{font-family:var(--fd);font-size:4rem;font-weight:800;}
+.retrato .anos{font-size:.85rem;letter-spacing:.2em;text-transform:uppercase;color:#a5f3fc;margin-top:.4rem;}
+
+/* Simulador */
+.simwrap{background:linear-gradient(160deg,#0c1a2a,#134e5e);border-radius:24px;padding:2.5rem;color:#fff;margin-top:2.5rem;box-shadow:var(--sombra);}
+.simgrid{display:grid;grid-template-columns:1fr 1.1fr;gap:2.5rem;}
+@media(max-width:900px){.simgrid{grid-template-columns:1fr;}}
+.ctl{margin-bottom:1.5rem;}
+.ctl label{display:flex;justify-content:space-between;font-weight:700;font-size:.9rem;margin-bottom:.5rem;}
+.ctl output{color:#fde68a;font-family:var(--fd);}
+input[type=range]{width:100%;height:8px;border-radius:99px;background:rgba(255,255,255,.2);-webkit-appearance:none;appearance:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--sun);border:3px solid #fff;cursor:pointer;box-shadow:0 0 14px rgba(245,158,11,.8);}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--sun);border:3px solid #fff;cursor:pointer;}
+.bts{display:flex;gap:.7rem;flex-wrap:wrap;}
+.bsim{background:var(--sun);color:#1b1200;border:none;border-radius:999px;padding:.6rem 1.3rem;font-weight:800;font-size:.85rem;transition:.2s;}
+.bsim.ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.35);}
+.bsim:hover{transform:translateY(-2px);}
+.corbox{margin-top:1.2rem;display:flex;gap:1rem;align-items:center;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:.9rem 1.1rem;min-height:76px;}
+.corbox .sw{width:50px;height:50px;border-radius:50%;background:#333;border:3px solid rgba(255,255,255,.4);flex:none;transition:.25s;}
+.corbox .nm{font-family:var(--fd);font-weight:700;}
+.corbox .ds{font-size:.82rem;color:#cbd5e1;}
+#disco-wrapper{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.18);border-radius:18px;min-height:400px;display:flex;align-items:center;justify-content:center;}
+#disco-wrapper canvas{display:block!important;}
+.mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:1.2rem;}
+.ms{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:.8rem;text-align:center;}
+.ms b{font-family:var(--fd);font-size:1.2rem;color:#fde68a;display:block;}
+.ms span{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#cbd5e1;}
+
+/* Fluxograma */
+.fluxo{display:flex;flex-direction:column;align-items:center;gap:.4rem;margin-top:2.5rem;}
+.no{background:var(--card);border:2px solid var(--teal);border-radius:14px;padding:1.1rem 1.6rem;max-width:430px;width:100%;text-align:center;box-shadow:var(--sombra);transition:.25s;}
+.no:hover{transform:scale(1.04);border-color:var(--sun);}
+.no.dec{border-color:var(--sun);border-style:dashed;}
+.no.atu{border-color:var(--sky);}
+.no h4{font-family:var(--fd);font-size:.95rem;margin-bottom:.3rem;}
+.no p{font-size:.85rem;color:var(--muted);}
+.seta{font-size:1.6rem;color:var(--teal);}
+
+/* Equipe / FAQ / footer */
+.equipe{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.3rem;margin-top:2.4rem;}
+.membro{background:var(--card);border:1px solid var(--linha);border-radius:var(--raio);padding:1.6rem;text-align:center;box-shadow:var(--sombra);transition:.3s;}
+.membro:hover{transform:translateY(-6px);}
+.av{width:70px;height:70px;border-radius:50%;margin:0 auto .8rem;display:grid;place-items:center;font-family:var(--fd);font-weight:800;color:#fff;background:linear-gradient(135deg,var(--teal),var(--sky));}
+.membro h4{font-family:var(--fd);font-size:.98rem;}
+.membro .fun{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sun-esc);font-weight:800;margin:.3rem 0 .5rem;}
+.membro p{font-size:.82rem;color:var(--muted);}
+.faq{max-width:800px;margin:2.4rem auto 0;display:grid;gap:.8rem;}
+.fitem{background:var(--card);border:1px solid var(--linha);border-radius:14px;overflow:hidden;}
+.fq{width:100%;text-align:left;border:none;background:none;padding:1.1rem 1.3rem;font-weight:700;font-size:.98rem;display:flex;justify-content:space-between;gap:1rem;align-items:center;color:var(--ink);}
+.fq::after{content:"+";font-size:1.4rem;color:var(--teal);transition:.3s;}
+.fitem.aberta .fq::after{transform:rotate(45deg);}
+.fr{max-height:0;overflow:hidden;transition:max-height .35s;}
+.fitem.aberta .fr{max-height:400px;}
+.fr p{padding:0 1.3rem 1.2rem;color:var(--muted);font-size:.93rem;}
+footer{background:var(--ink);color:#cbd5e1;padding:3rem 1.2rem 1.5rem;border-top:4px solid transparent;border-image:var(--grad) 1;}
+footer .miolo{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:2rem;}
+@media(max-width:820px){footer .miolo{grid-template-columns:1fr;}}
+footer h4{font-family:var(--fd);color:#fff;margin-bottom:.8rem;}
+footer ul{list-style:none;display:grid;gap:.4rem;font-size:.9rem;}
+footer a{text-decoration:none;} footer a:hover{color:#fde68a;}
+.fim{max-width:1150px;margin:2rem auto 0;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,.15);font-size:.78rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.8rem;}
+.vtop{position:fixed;right:1.2rem;bottom:1.2rem;width:50px;height:50px;border-radius:50%;border:none;background:var(--grad);color:#fff;font-size:1.2rem;font-weight:800;opacity:0;pointer-events:none;transition:.3s;box-shadow:var(--sombra);z-index:950;}
+.vtop.on{opacity:1;pointer-events:auto;}
+.vtop:hover{transform:translateY(-4px);}
+.revelar{opacity:0;transform:translateY(26px);transition:.7s;}
+.revelar.vis{opacity:1;transform:none;}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;} html{scroll-behavior:auto;} .revelar{opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+<a class="pular" href="#main">Pular para o conteúdo principal</a>
+
+<div class="a11y" role="region" aria-label="Ferramentas de acessibilidade">
+  <div class="miolo">
+    <strong>♿ Acessibilidade:</strong>
+    <button id="a-mais" aria-label="Aumentar fonte">A+</button>
+    <button id="a-menos" aria-label="Diminuir fonte">A−</button>
+    <button id="a-ok" aria-label="Fonte padrão">A padrão</button>
+    <button id="btn-contraste" aria-pressed="false">◐ Alto contraste</button>
+    <button id="btn-pausar" aria-pressed="false">⏸ Pausar animações</button>
+  </div>
+</div>
+
+<header>
+  <div class="miolo">
+    <a class="logo" href="#inicio"><span class="bol" aria-hidden="true"></span> Lumen&nbsp;CEP</a>
+    <button class="btn-menu" id="botao-menu" aria-expanded="false" aria-controls="menu">☰</button>
+    <nav aria-label="Navegação principal">
+      <ul id="menu">
+        <li><a href="#historia">História</a></li>
+        <li><a href="#disco">O Disco</a></li>
+        <li><a href="#newton">Newton</a></li>
+        <li><a href="#optica">Óptica & Piscina</a></li>
+        <li><a href="#robotica">Automação</a></li>
+        <li><a href="#equipe">Equipe</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero" id="inicio">
+  <div class="miolo">
+    <div>
+      <span class="chip">Projeto Integrador • CEP • 2026</span>
+      <h1>O Disco de Newton e a <em>luz que aquece</em> a piscina do CEP</h1>
+      <p>Da descoberta de que o branco é a soma de todas as cores até um sistema sustentável de aquecimento solar com automação robótica — ciência de verdade, acessível a todos.</p>
+      <div class="cta">
+        <a class="btn btn-sol" href="#disco">🌈 Girar o disco</a>
+        <a class="btn btn-linha" href="#optica">☀️ Ver a aplicação</a>
+      </div>
+      <div class="stats">
+        <span><b>1704</b> · Opticks publicado</span>
+        <span><b>7</b> cores do espectro</span>
+        <span><b>−60%</b> energia na piscina</span>
+      </div>
+    </div>
+    <div class="disco-hero" role="img" aria-label="Disco de Newton girando com as sete cores do espectro visível"></div>
+  </div>
+</section>
+
+<section id="historia">
+  <div class="miolo">
+    <span class="tag">Contexto histórico</span>
+    <h2>Uma revolução chamada luz</h2>
+    <p class="sub">Antes de Newton, acreditava-se que a luz branca era pura e que as cores eram modificações dela. Newton provou o contrário — e mudou a física para sempre.</p>
+    <ul class="tl revelar">
+      <li><b>1666 — Os prismas.</b> Durante a peste, Newton faz a luz solar atravessar um prisma e observa o espectro de cores projetado na parede.</li>
+      <li><b>1672 — A teoria da luz.</b> Apresenta à Royal Society a ideia de que a luz branca é composta por várias cores, gerando grande debate científico.</li>
+      <li><b>1704 — Opticks e o Disco.</b> Publica o livro <i>Opticks</i> e descreve o disco colorido que, ao girar, recompõe o branco: nasce o Disco de Newton.</li>
+      <li><b>Hoje — O legado.</b> Telas RGB, LEDs, espectrômetros e painéis solares: toda tecnologia que domina a luz descende desse experimento.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="disco" style="background:var(--card);">
+  <div class="miolo">
+    <span class="tag">Como funciona</span>
+    <h2>O Disco de Newton, ao vivo</h2>
+    <p class="sub">Gire o disco e observe: em alta rotação, a <strong>persistência retiniana</strong> (o olho guarda cada imagem por ~1/16 s) faz o cérebro somar as sete cores — e o disco vira <strong>branco</strong>. É a síntese aditiva.</p>
+    <div class="simwrap revelar">
+      <div class="simgrid">
+        <div>
+          <div class="ctl"><label for="vel">Velocidade <output id="vel-val">60 rpm</output></label><input type="range" id="vel" min="0" max="3000" step="10" value="60"><div style="display:flex;justify-content:space-between;font-size:.7rem;color:#cbd5e1;"><span>Parado</span><span>Branco puro</span></div></div>
+          <div class="ctl"><label for="ncor">Cores <output id="ncor-val">7</output></label><input type="range" id="ncor" min="2" max="12" value="7"></div>
+          <div class="bts"><button class="bsim" id="b-pausa">⏸ Pausar</button><button class="bsim ghost" id="b-reset">↻ Reiniciar</button></div>
+          <div class="corbox" aria-live="polite"><div class="sw" id="c-sw"></div><div><span class="nm" id="c-nm">Passe o mouse no disco</span><span class="ds" id="c-ds" style="display:block;">para identificar cada cor do espectro.</span></div></div>
+          <div class="mini-stats"><div class="ms"><b id="st-hz">1.0 Hz</b><span>Frequência</span></div><div class="ms"><b id="st-est">Girando</b><span>Estado</span></div></div>
+        </div>
+        <div><div id="disco-wrapper" aria-label="Simulador interativo do Disco de Newton"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="newton">
+  <div class="miolo">
+    <span class="tag">Quem foi</span>
+    <h2>Isaac Newton, o decifrador da luz</h2>
+    <div class="bio revelar">
+      <div class="retrato"><div class="ini">IN</div><div>Isaac Newton</div><div class="anos">1643 — 1727</div></div>
+      <div class="card">
+        <h3>🍎 Um legado que atravessa séculos</h3>
+        <p>Físico, matemático e astrônomo inglês, Newton lançou as bases da ciência moderna. Durante a peste de 1666, em isolamento, realizou seus experimentos com prismas — o <i>annus mirabilis</i>.</p>
+        <ul style="margin-top:.8rem;">
+          <li><b>Opticks (1704):</b> a natureza da luz e das cores, com o Disco de Newton.</li>
+          <li><b>Principia (1687):</b> a lei da gravitação universal e as leis do movimento.</li>
+          <li><b>Cálculo:</b> desenvolveu o método das fluxões, base do cálculo moderno.</li>
+          <li><b>Telescópio refletor:</b> inventou o telescópio de espelho, usado até hoje.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="optica" style="background:var(--card);">
+  <div class="miolo">
+    <span class="tag">Tecnociência • Óptica aplicada</span>
+    <h2>Do disco à piscina: a luz que vira calor</h2>
+    <p class="sub">O mesmo comportamento da luz revelado pelo Disco de Newton e pela Câmara Escura explica a eficiência dos coletores solares que aquecem a piscina térmica do CEP.</p>
+    <div class="grade revelar">
+      <article class="card"><div class="ico">⚫</div><h3>Absorção — o "anti-disco"</h3><p>O disco branco reflete todas as cores; o coletor <b>preto</b> faz o oposto: absorve todo o espectro (95%+) e converte fótons em calor. A analogia direta com o Disco de Newton justifica a cor da placa.</p></article>
+      <article class="card"><div class="ico">🪞</div><h3>Reflexão dirigida</h3><p>Superfícies polidas de alumínio refletem a luz que passaria direto para dentro do coletor, como espelhos — aumentando a irradiância útil sobre a placa absorvedora.</p></article>
+      <article class="card"><div class="ico">🔍</div><h3>Refração + efeito estufa</h3><p>A tampa de vidro refrata a luz solar para dentro, mas bloqueia a re-emissão infravermelha da placa quente — um "efeito estufa seletivo" que soma até +40% de eficiência.</p></article>
+      <article class="card"><div class="ico">📷</div><h3>Câmara escura</h3><p>Como na câmara escura, a luz entra pela abertura e fica presa na caixa isolada, propagando-se em linha reta até a placa. A inclinação de ~23° maximiza a captação na latitude do CEP.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="robotica">
+  <div class="miolo">
+    <span class="tag">Robótica & programação</span>
+    <h2>Automação do aquecimento</h2>
+    <p class="sub">Um Arduino lê sensores e decide sozinho quando circular a água da piscina pelo coletor solar — eficiência sem desperdício.</p>
+    <div class="grade revelar">
+      <article class="card"><h3>🌡️ Sensor DS18B20</h3><p>Mede a temperatura da água (à prova d'água, precisão ±0,5°C).</p></article>
+      <article class="card"><h3>🔆 Sensor LDR</h3><p>Mede a irradiância solar: só vale a pena bombear com sol suficiente.</p></article>
+      <article class="card"><h3>⚙️ Relé + Bomba 12V</h3><p>O atuador: o relé liga/desliga a bomba que circula a água pelo coletor.</p></article>
+    </div>
+    <div class="fluxo revelar" role="img" aria-label="Fluxograma: início lê sensores; decisão verifica irradiância maior que 300 e temperatura menor que 28; atuador liga a bomba; loop recalcula a cada 5 minutos.">
+      <div class="no"><h4>🟢 INÍCIO</h4><p>Ler DS18B20 (temperatura) + LDR (irradiância)</p></div>
+      <div class="seta" aria-hidden="true">↓</div>
+      <div class="no dec"><h4> DECISÃO</h4><p>Irradiância &gt; 300 W/m² <b>E</b> temperatura &lt; 28°C?</p></div>
+      <div class="seta" aria-hidden="true">↓</div>
+      <div class="no atu"><h4>🔵 ATUADOR</h4><p>Acionar relé → bomba 12V (circulação forçada)</p></div>
+      <div class="seta" aria-hidden="true">↓</div>
+      <div class="no"><h4>🔁 LOOP</h4><p>Recalcular a cada 5 minutos</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="acessibilidade" style="background:var(--card);">
+  <div class="miolo">
+    <span class="tag">Acessibilidade digital</span>
+    <h2>Um site para todas as pessoas</h2>
+    <div class="grade revelar">
+      <article class="card"><div class="ico">🔤</div><h3>Fonte ajustável</h3><p>Botões A+ / A− / padrão na barra superior, para conforto de leitura.</p></article>
+      <article class="card"><div class="ico">◐</div><h3>Alto contraste</h3><p>Modo preto/amarelo para baixa visão e fotofobia, com um clique.</p></article>
+      <article class="card"><div class="ico">⌨️</div><h3>Teclado & leitores de tela</h3><p>Foco visível, link "pular", HTML semântico, ARIA e textos alternativos.</p></article>
+      <article class="card"><div class="ico">⏸</div><h3>Movimento reduzido</h3><p>Botão pausa animações e respeito ao <i>prefers-reduced-motion</i> do sistema.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="impacto">
+  <div class="miolo">
+    <span class="tag">Inovação & impacto social</span>
+    <h2>Sustentabilidade que ensina</h2>
+    <div class="grade revelar">
+      <article class="card"><div class="ico">🌱</div><h3>−60% de energia</h3><p>Aquecimento solar passivo + bombeamento inteligente reduzem o consumo da piscina do CEP.</p></article>
+      <article class="card"><div class="ico">🎓</div><h3>ODS 4 · Educação</h3><p>O site vira material didático aberto de física, óptica e programação para outras escolas.</p></article>
+      <article class="card"><div class="ico">🤝</div><h3>ODS 10 · Inclusão</h3><p>Ciência acessível: simulador gratuito e navegação inclusiva, sem barreiras.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="equipe" style="background:var(--card);">
+  <div class="miolo">
+    <span class="tag">Quem faz acontecer</span>
+    <h2>Equipe do projeto</h2>
+    <div class="equipe revelar">
+      <div class="membro"><div class="av">AL</div><h4>Agatha Letícia</h4><div class="fun">Desenvolvedora</div><p>Arquitetura front-end e integração do simulador com a interface.</p></div>
+      <div class="membro"><div class="av">AB</div><h4>Angelina Brasil</h4><div class="fun">Desenvolvedora</div><p>Simulador do disco em p5.js e lógica de fusão das cores.</p></div>
+      <div class="membro"><div class="av">LM</div><h4>Lucca Marins</h4><div class="fun">Desenvolvedor</div><p>Revisão de código, testes e otimização de desempenho.</p></div>
+      <div class="membro"><div class="av">MG</div><h4>Maria Gabrielle</h4><div class="fun">Desenvolvedora</div><p>Acessibilidade digital, responsividade e componentes visuais.</p></div>
+      <div class="membro"><div class="av">YS</div><h4>Yasmin dos Santos</h4><div class="fun">Desenvolvedora</div><p>Conteúdo científico interativo e testes de usabilidade.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="miolo">
+    <span class="tag">Dúvidas frequentes</span>
+    <h2>Perguntas & respostas</h2>
+    <div class="faq">
+      <div class="fitem"><button class="fq" aria-expanded="false">Por que o disco vira branco?</button><div class="fr"><p>Pela persistência retiniana e síntese aditiva: o olho soma as sete cores que passam rápido demais para serem vistas separadamente.</p></div></div>
+      <div class="fitem"><button class="fq" aria-expanded="false">Por que o coletor solar é preto?</button><div class="fr"><p>Porque o preto absorve todo o espectro visível, convertendo luz em calor — o inverso do disco branco, que reflete tudo.</p></div></div>
+      <div class="fitem"><button class="fq" aria-expanded="false">O que a câmara escura tem a ver?</button><div class="fr"><p>Ela mostra que a luz viaja em linha reta e pode ficar "presa" numa caixa: o mesmo princípio do coletor, que captura luz e impede a saída do calor.</p></div></div>
+      <div class="fitem"><button class="fq" aria-expanded="false">Quando a bomba liga sozinha?</button><div class="fr"><p>Quando o LDR mede irradiância &gt; 300 W/m² e o DS18B20 mede água &lt; 28°C — o Arduino aciona o relé e recalcula a cada 5 minutos.</p></div></div>
+      <div class="fitem"><button class="fq" aria-expanded="false">O site é acessível?</button><div class="fr"><p>Sim: alto contraste, fonte ajustável, navegação por teclado, ARIA, textos alternativos e respeito ao movimento reduzido (WCAG 2.1).</p></div></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="miolo">
+    <div><h4>Lumen CEP</h4><p style="font-size:.9rem;">Projeto Integrador: Disco de Newton, óptica aplicada, automação e acessibilidade para o aquecimento sustentável da piscina do CEP.</p></div>
+    <div><h4>Navegação</h4><ul><li><a href="#historia">História</a></li><li><a href="#disco">O Disco</a></li><li><a href="#optica">Óptica & Piscina</a></li><li><a href="#robotica">Automação</a></li></ul></div>
+    <div><h4>Projeto</h4><ul><li><a href="#equipe">Equipe</a></li><li><a href="#faq">FAQ</a></li><li><a href="#inicio">Voltar ao topo</a></li></ul></div>
+  </div>
+  <div class="fim"><p>© 2026 Projeto Integrador • Centro Educacional Progressão</p><p>HTML5 + CSS3 + JavaScript + p5.js · WCAG 2.1</p></div>
+</footer>
+
+<button class="vtop" id="vtop" aria-label="Voltar ao topo">↑</button>
+
+<script>
+/* ===== Paleta ===== */
+const CORES=[
+ {n:"Vermelho",h:"#E63946",r:[230,57,70],d:"~700 nm · menor energia"},
+ {n:"Laranja",h:"#F77F00",r:[247,127,0],d:"~620 nm"},
+ {n:"Amarelo",h:"#FCBF49",r:[252,191,73],d:"~580 nm · alta luminosidade"},
+ {n:"Verde",h:"#2A9D8F",r:[42,157,143],d:"~530 nm · centro do espectro"},
+ {n:"Azul",h:"#0077B6",r:[0,119,182],d:"~470 nm"},
+ {n:"Anil",h:"#5A189A",r:[90,24,154],d:"~430 nm"},
+ {n:"Violeta",h:"#9D4EDD",r:[157,78,221],d:"~400 nm · maior energia"},
+ {n:"Rosa",h:"#E91E63",r:[233,30,99],d:"cor extra"},
+ {n:"Ciano",h:"#00BCD4",r:[0,188,212],d:"verde + azul"},
+ {n:"Lima",h:"#CDDC39",r:[205,220,57],d:"verde + amarelo"},
+ {n:"Pêssego",h:"#FFAB91",r:[255,171,145],d:"tom claro"},
+ {n:"Lavanda",h:"#B39DDB",r:[179,157,219],d:"tom claro"}
+];
+let vel=60,ncor=7,pausa=false;
+const $=id=>document.getElementById(id);
+function painel(){
+  $('vel-val').textContent=vel+' rpm'; $('ncor-val').textContent=ncor;
+  $('st-hz').textContent=(vel/60).toFixed(1)+' Hz';
+  $('st-est').textContent=pausa?'Pausado':vel===0?'Parado':vel>=1500?'Branco puro':vel>=800?'Fundindo…':'Girando';
+}
+$('vel').oninput=e=>{vel=+e.target.value;painel();};
+$('ncor').oninput=e=>{ncor=+e.target.value;painel();};
+$('b-pausa').onclick=function(){pausa=!pausa;this.textContent=pausa?'▶ Retomar':'⏸ Pausar';painel();};
+$('b-reset').onclick=()=>{vel=60;ncor=7;pausa=false;$('vel').value=60;$('ncor').value=7;$('b-pausa').textContent='⏸ Pausar';painel();};
+painel();
+
+/* ===== Simulador p5: círculo perfeito, fatias iguais, fusão ao branco ===== */
+new p5(p=>{
+  let ang=0,R=160;
+  p.setup=()=>{const w=Math.min($('disco-wrapper').offsetWidth-16,440);p.createCanvas(w,400).parent('disco-wrapper');R=Math.min(w,400)/2-18;};
+  p.draw=()=>{
+    p.clear();p.translate(p.width/2,p.height/2);
+    if(!pausa&&!document.documentElement.classList.contains('pausado'))ang+=(vel/60)*.05;
+    let f=vel>800?p.constrain(p.map(vel,800,1500,0,1),0,1):0;
+    const seg=p.TWO_PI/ncor;let hov=-1;
+    p.rotate(ang);
+    if(f>=1){p.noStroke();p.fill(255);p.circle(0,0,R*2);}
+    else{
+      for(let i=0;i<ncor;i++){const c=CORES[i%CORES.length];
+        p.fill(p.lerp(c.r[0],255,f),p.lerp(c.r[1],255,f),p.lerp(c.r[2],255,f));p.noStroke();
+        p.arc(0,0,R*2,R*2,i*seg,(i+1)*seg,p.PIE);}
+      if(f<.95){p.stroke(255,255,255,p.lerp(60,0,f));p.strokeWeight(1);
+        for(let i=0;i<ncor;i++){const a=i*seg;p.line(0,0,p.cos(a)*R,p.sin(a)*R);}}
+    }
+    p.noFill();p.stroke(255,255,255,90);p.strokeWeight(2);p.circle(0,0,R*2);
+    p.noStroke();p.fill(250,245,234);p.circle(0,0,R*.14);p.fill(12,26,42);p.circle(0,0,R*.05);
+    if(f<.8){const mx=p.mouseX-p.width/2,my=p.mouseY-p.height/2,
+      rx=mx*p.cos(-ang)-my*p.sin(-ang),ry=mx*p.sin(-ang)+my*p.cos(-ang),
+      d=p.sqrt(rx*rx+ry*ry);
+      if(d<=R&&d>R*.1){let a=p.atan2(ry,rx);if(a<0)a+=p.TWO_PI;
+        const i=p.floor(a/seg);if(i>=0&&i<ncor){hov=i;
+          p.push();p.fill(255,255,255,100);p.noStroke();
+          p.arc(0,0,R*2,R*2,i*seg,(i+1)*seg,p.PIE);p.pop();}}}
+    if(hov>=0){const c=CORES[hov%CORES.length];
+      $('c-sw').style.background=c.h;$('c-nm').textContent=c.n;$('c-ds').textContent=c.d;}
+    else if(f>=.8){$('c-sw').style.background='#fff';$('c-nm').textContent='Branco (síntese aditiva)';$('c-ds').textContent='As cores se fundiram pela alta velocidade.';}
+    else{$('c-sw').style.background='#333';$('c-nm').textContent='Passe o mouse no disco';$('c-ds').textContent='para identificar cada cor do espectro.';}
+  };
+  p.windowResized=()=>{const w=Math.min($('disco-wrapper').offsetWidth-16,440);p.resizeCanvas(w,400);R=Math.min(w,400)/2-18;};
+});
+
+/* ===== Menu / topo / revelar / FAQ / a11y ===== */
+$('botao-menu').onclick=()=>{const a=$('menu').classList.toggle('aberto');$('botao-menu').setAttribute('aria-expanded',a);};
+document.querySelectorAll('#menu a').forEach(a=>a.onclick=()=>{$('menu').classList.remove('aberto');$('botao-menu').setAttribute('aria-expanded','false');});
+const vt=$('vtop');
+onscroll=()=>vt.classList.toggle('on',scrollY>500);
+vt.onclick=()=>scrollTo({top:0,behavior:'smooth'});
+const obs=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('vis')),{threshold:.12});
+document.querySelectorAll('.revelar').forEach(el=>obs.observe(el));
+document.querySelectorAll('.fq').forEach(b=>b.onclick=()=>{
+  const it=b.parentElement,ab=it.classList.contains('aberta');
+  document.querySelectorAll('.fitem').forEach(i=>{i.classList.remove('aberta');i.querySelector('.fq').setAttribute('aria-expanded','false');});
+  if(!ab){it.classList.add('aberta');b.setAttribute('aria-expanded','true');}
+});
+let fz=100;
+$('a-mais').onclick=()=>{fz=Math.min(150,fz+10);document.documentElement.style.fontSize=fz+'%';};
+$('a-menos').onclick=()=>{fz=Math.max(80,fz-10);document.documentElement.style.fontSize=fz+'%';};
+$('a-ok').onclick=()=>{fz=100;document.documentElement.style.fontSize='100%';};
+$('btn-contraste').onclick=function(){this.setAttribute('aria-pressed',document.documentElement.classList.toggle('alto-contraste'));};
+$('btn-pausar').onclick=function(){this.setAttribute('aria-pressed',document.documentElement.classList.toggle('pausado'));};
+</script>
+</body>
+</html>
